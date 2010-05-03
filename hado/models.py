@@ -23,17 +23,17 @@ class User(User):
 			
 			
 
-def Membership(models.Model):
+class Membership(models.Model):
 	start = models.DateField()
 	end = models.DateField()
-	tier = models.ForeignKeyField("Tier", blank=False, null=True)
-	user = models.ForeignKeyField(User, blank=False, null=True, related_name="memberships")
+	tier = models.ForeignKey("Tier", blank=False, null=True)
+	user = models.ForeignKey(User, blank=False, null=True, related_name="memberships")
 	
 	def __unicode__(self):
 		return self.user.__unicode__() + u": " + self.tier.__unicode__()
 		
 
-def Tier(models.Model):
+class Tier(models.Model):
 	fee = models.FloatField()
 	desc = models.CharField(max_length=255)
 	
@@ -41,7 +41,7 @@ def Tier(models.Model):
 		return self.desc + u": " + self.desc
 
 
-def Payment(models.Model):
+class Payment(models.Model):
 	PAYMENT_TYPES = (
 		('EFT', 'Electronic Fund Transfer'),
 		('CHK', 'Cheque'),
@@ -52,8 +52,8 @@ def Payment(models.Model):
 	date_paid = models.DateField(auto_now_add=True)
 	method = models.CharField(max_length=3, choices=PAYMENT_TYPES, default='EFT')
 	desc = models.CharField(max_length=255, blank=True)
-	user = models.ForeignKeyField(User, blank=False)
-	membership = models.ForeignKeyField(Membership, blank=False)
+	user = models.ForeignKey(User, blank=False)
+	membership = models.ForeignKey(Membership, blank=False)
 	
 	def __unicode__(self):
 		return self.membership.__unicode__() + u" " + self.date_paid
