@@ -4,6 +4,9 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+import os
+ROOT_PATH = os.path.dirname(__file__) # Handy for dynamic paths across Dev and Production
+
 urlpatterns = patterns('',
     # Example:
     # (r'^hackdo/', include('hackdo.foo.urls')),
@@ -20,5 +23,5 @@ urlpatterns = patterns('',
 # Serve static files in DEBUG = TRUE environment
 if settings.DEBUG:
     urlpatterns = urlpatterns + patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/ruiwen/Projects/HackDo/hackdo/media/', 'show_indexes': True}),
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH + '/hackdo/media/', 'show_indexes': True}),
     )
