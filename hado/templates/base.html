@@ -1,0 +1,58 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+	<title>{% block title %}{% endblock %} - HackDo</title>
+	
+  {% block js %}
+	  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  {% endblock %}
+  
+  {% block css %}
+	  <link href="{{ MEDIA_URL }}css/hado.css" media="screen" rel="stylesheet" type="text/css" />
+	  <!--[if IE]>
+	    <link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
+	  <![endif]-->
+  {% endblock %}	
+</head>
+<body>
+	<div id="header">
+		{% block header %}
+			<h1><a href="/">HackDo</a></h1>
+			
+			<div id="header-nav">
+				<ul>
+					{% if user.is_authenticated %}
+						<li>Welcome, {{ user }}!</li> |
+						<li><a href="{% url django.contrib.auth.views.logout %}">Logout</a></li>
+					{% else %}
+						<li><a href="{% url django.contrib.auth.views.login %}">Login</a></li>
+					{% endif %}
+				</ul>
+			</div>
+			
+		{% endblock %}
+	</div>
+
+	<div id="content">
+      {% block content-header %}
+        {% if error %}<div class="error">{{ error }}</div>{% endif %}
+        {% if info %}<div class="info">{{ info }}</div>{% endif %}
+        {% if success %}<div class="success">{{ success }}</div>{% endif %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="info">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endblock %}
+      {% block content %}{% endblock %}
+	</div>
+	
+	<div id="footer">
+		{% block footer %}
+			Made for <a href="http://hackerspace.sg">HackerspaceSG</a> CC-BY-SA 2010
+		{% endblock %}
+	</div>
+</body>
+</html>
