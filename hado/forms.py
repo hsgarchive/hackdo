@@ -36,7 +36,7 @@ class PaymentAdminForm(forms.ModelForm):
 #			
 #		return years
 
-	for_month = forms.ChoiceField(choices=Payment.MONTHS,  initial=unicode(datetime.date.today().month))
+#	for_month = forms.ChoiceField(choices=Payment.MONTHS,  initial=unicode(datetime.date.today().month))
 	class Meta:
 		model = Payment
 		

@@ -19,8 +19,8 @@ class PaymentInline(admin.TabularInline):
 class TierInline(admin.TabularInline):
 	model = Tier
 
-class MembershipInline(admin.TabularInline):
-	model = Membership
+class ContractInline(admin.TabularInline):
+	model = Contract
 	extra = 1
 
 
@@ -29,16 +29,17 @@ class PaymentAdmin(admin.ModelAdmin):
 	form = PaymentAdminForm
 
 
-class MembershipAdmin(admin.ModelAdmin):
+class ContractAdmin(admin.ModelAdmin):
 	inlines = [ PaymentInline, ]
 
 class UserAdmin(admin.ModelAdmin):
 	list_display = ('__unicode__', 'email')
 	list_display_links = ('__unicode__',)
-	inlines = [ MembershipInline, PaymentInline ]
+	inlines = [ ContractInline, PaymentInline ]
 	fields = ('username', 'email', 'first_name', 'last_name')
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Membership, MembershipAdmin)
+admin.site.register(ContractType)
+admin.site.register(Contract, ContractAdmin)
 admin.site.register(Tier)
 admin.site.register(Payment, PaymentAdmin)
