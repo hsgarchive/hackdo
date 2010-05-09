@@ -1,0 +1,42 @@
+[
+ {
+  "pk": 1, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 32.0, 
+   "desc": "Trial"
+  }
+ }, 
+ {
+  "pk": 2, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 64.0, 
+   "desc": "Youth"
+  }
+ }, 
+ {
+  "pk": 3, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 128.0, 
+   "desc": "Regular"
+  }
+ }, 
+ {
+  "pk": 4, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 256.0, 
+   "desc": "Hotdesk"
+  }
+ }, 
+ {
+  "pk": 5, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 512.0, 
+   "desc": "Resident"
+  }
+ }
+]
