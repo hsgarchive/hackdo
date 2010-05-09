@@ -2,11 +2,21 @@
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import User, UserManager
-import datetime
+from django.db.models.signals import pre_save, post_save
+import datetime, calendar
 # Create your models here.
 
 def get_image_path(instance, filename):
 	return os.path.join('users', instance.id, filename) 
+
+
+# Attaching a post_save signal handler to the Payment model to update the appropriate Contract
+def update_contract_with_payments(sender, **kwargs):
+	c = instance.contract
+	c.update_with_payment(instance)
+
+post_save.connect(update_contract_with_payments, sender="Payment")
+
 
 
 class User(User):
@@ -53,15 +63,51 @@ class Contract(models.Model):
 		('PEN', 'Pending')
 	)
 
-	start = models.DateField(auto_now_add=True)
-	end = models.DateField(auto_now_add=True)
-	ctype = models.ForeignKey(ContractType, blank=False, null=True)
+	start = models.DateField()
+	end = models.DateField()
+	ctype = models.ForeignKey(ContractType, blank=False, null=True, verbose_name="Contract type")
 	tier = models.ForeignKey("Tier", blank=False, null=True)
-	user = models.ForeignKey(User, blank=False, null=True, related_name="memberships")
+	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
 	status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
 	
+	# Takes a Payment object, calculates how many month's worth it is, and extends the contract end date accordingly
+	def update_with_payment(self, p):
+		if isinstance(p, Payment):
+			# Get number of multiples of Contract for this Payment
+			multiples = int(p.amount / self.tier.fee)
+			
+			# Get the future end month
+			future_end_month = self.end.month + multiples
+			jump_year = 0
+			while future_end_month > 12: # Have we skipped a year end?
+				future_end_month = future_end_month % 12
+				jump_year += 1  # Keep counting how many years we're jumping ahead
+			
+			# Identify the last day of the future_end_month
+			if jump_year:
+				future_year = self.end.year + jump_year
+			else:
+				future_year = self.end.year
+				
+			future_last_day = calendar.monthrange(future_year, future_end_month)[1]
+			
+			# Update the end date for this Contract
+			self.end = datetime.date(future_year, future_end_month, future_last_day)
+			
+			self.save()
+			
+		else:
+			return False	
+	
+	
+	def save(self):
+		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
+		self.end = datetime.date(self.end.year, self.end.month, last_day)
+		super(Contract, self).save()
+	
+	
 	def __unicode__(self):
-		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" " + " End :" + unicode(self.end)
+		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" @ $" + unicode(self.tier.fee) + "/mth Start: " + u" " + unicode(self.start.strftime('%d %b %Y')) +  u" End: " + unicode(self.end.strftime('%d %b %Y'))
 		
 
 class Tier(models.Model):
@@ -124,7 +170,7 @@ class Payment(models.Model):
 	user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
 	
 	def __unicode__(self):
-		return self.contract.__unicode__() + u" " + unicode(self.date_paid)
+		return self.contract.__unicode__() + u" Paid: " + unicode(self.date_paid)
 		
 
 
