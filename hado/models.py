@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import User, UserManager
 from django.db.models.signals import pre_save, post_save
+from django.core.exceptions import ValidationError
 import datetime, calendar
 # Create your models here.
 
@@ -168,6 +169,13 @@ class Payment(models.Model):
 	contract = models.ForeignKey(Contract, blank=False, null=True, related_name="payments")
 	desc = models.CharField(max_length=255, blank=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
+	
+		
+	def clean(self):
+		# Model validation to ensure that Payment amount is multiple of Contract tier fee
+		if (self.amount % self.contract.tier.fee) != 0:
+			raise ValidationError(_("Payment amount is not a multiple of selected Contract's tier fee"))
+
 	
 	def __unicode__(self):
 		return self.contract.__unicode__() + u" Paid: " + unicode(self.date_paid)
