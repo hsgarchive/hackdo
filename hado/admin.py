@@ -13,7 +13,7 @@ from hado.forms import *
 # Inline classes
 class PaymentInline(admin.TabularInline):
 	model = Payment
-	extra = 1
+	extra = 0
 
 
 class TierInline(admin.TabularInline):
@@ -21,7 +21,8 @@ class TierInline(admin.TabularInline):
 
 class ContractInline(admin.TabularInline):
 	model = Contract
-	extra = 1
+	extra = 0
+	inlines = [ PaymentInline, ]
 
 
 # ModelAdmin classes
@@ -32,11 +33,17 @@ class PaymentAdmin(admin.ModelAdmin):
 class ContractAdmin(admin.ModelAdmin):
 	inlines = [ PaymentInline, ]
 
+
 class UserAdmin(admin.ModelAdmin):
 	list_display = ('__unicode__', 'email')
 	list_display_links = ('__unicode__',)
 	inlines = [ ContractInline, PaymentInline ]
-	fields = ('username', 'email', 'first_name', 'last_name')
+	fieldsets = (
+		(None, {
+			'fields': ('username', ('first_name', 'last_name'), 'email')
+		}),
+	)
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(ContractType)
