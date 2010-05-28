@@ -108,7 +108,11 @@ class Contract(models.Model):
 		self.end = datetime.date(self.end.year, self.end.month, last_day)
 		super(Contract, self).save()
 	
-	
+	def clean(self):
+		# Model validation to ensure that validates that contract and tier are allowed
+		if self.ctype != self.tier.ctype:
+			raise ValidationError(_("Contract type and tier mismatched"))
+			
 	def __unicode__(self):
 		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" @ $" + unicode(self.tier.fee) + "/mth Start: " + u" " + unicode(self.start.strftime('%d %b %Y')) +  u" End: " + unicode(self.end.strftime('%d %b %Y'))
 		
@@ -116,10 +120,10 @@ class Contract(models.Model):
 class Tier(models.Model):
 	fee = models.FloatField(default=0.0)
 	desc = models.CharField(max_length=255)
+	ctype = models.ForeignKey("ContractType", blank=False, null=True)
 	
 	def __unicode__(self):
 		return self.desc + u": " + unicode(self.fee)
-
 
 class Payment(models.Model):
 	PAYMENT_METHODS = (

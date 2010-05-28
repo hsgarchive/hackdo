@@ -24,7 +24,6 @@ class ContractInline(admin.TabularInline):
 	extra = 0
 	inlines = [ PaymentInline, ]
 
-
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
 	form = PaymentAdminForm
