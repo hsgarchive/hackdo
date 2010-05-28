@@ -25,7 +25,8 @@
   "model": "hado.tier", 
   "fields": {
    "fee": 32.0, 
-   "desc": "Trial"
+   "desc": "Trial",
+   "ctype": 1
   }
  }, 
  {
@@ -33,7 +34,8 @@
   "model": "hado.tier", 
   "fields": {
    "fee": 64.0, 
-   "desc": "Youth"
+   "desc": "Youth",
+   "ctype": 1
   }
  }, 
  {
@@ -41,7 +43,8 @@
   "model": "hado.tier", 
   "fields": {
    "fee": 128.0, 
-   "desc": "Regular"
+   "desc": "Regular",
+   "ctype": 1
   }
  }, 
  {
@@ -49,7 +52,8 @@
   "model": "hado.tier", 
   "fields": {
    "fee": 256.0, 
-   "desc": "Hotdesk"
+   "desc": "Hotdesk",
+   "ctype": 1
   }
  }, 
  {
@@ -57,23 +61,26 @@
   "model": "hado.tier", 
   "fields": {
    "fee": 512.0, 
-   "desc": "Resident"
+   "desc": "Resident",
+   "ctype": 1
   }
- }
+ },
  {
   "pk": 6, 
   "model": "hado.tier", 
   "fields": {
    "fee": 10.0, 
-   "desc": "Locker Use"
+   "desc": "Locker Use",
+   "ctype": 2
   }
- }
+ },
  {
   "pk": 7, 
   "model": "hado.tier", 
   "fields": {
    "fee": 10.0, 
-   "desc": "Address Use"
+   "desc": "Address Use",
+   "ctype": 3
   }
  }
 ]
