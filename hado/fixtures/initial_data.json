@@ -60,4 +60,20 @@
    "desc": "Resident"
   }
  }
+ {
+  "pk": 6, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 10.0, 
+   "desc": "Locker Use"
+  }
+ }
+ {
+  "pk": 7, 
+  "model": "hado.tier", 
+  "fields": {
+   "fee": 10.0, 
+   "desc": "Address Use"
+  }
+ }
 ]
