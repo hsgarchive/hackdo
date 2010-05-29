@@ -106,6 +106,9 @@ class Contract(models.Model):
 		# Eg. if self.end is initially declared as 5 May 2010, we now force it to become 31 May 2010 before actually save()'ing the object.
 		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
 		self.end = datetime.date(self.end.year, self.end.month, last_day)
+		
+		#force start date to be normalised as 1st day of the month
+		self.start = datetime.date(self.start.year, self.start.month, 1)
 		super(Contract, self).save()
 	
 	def clean(self):
