@@ -2,14 +2,13 @@
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import User, UserManager
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_init, pre_init
 from django.core.exceptions import ValidationError
 import datetime, calendar
 # Create your models here.
 
 def get_image_path(instance, filename):
 	return os.path.join('users', instance.id, filename) 
-
 
 # Attaching a post_save signal handler to the Payment model to update the appropriate Contract
 def update_contract_with_payments(sender, **kwargs):
@@ -18,7 +17,15 @@ def update_contract_with_payments(sender, **kwargs):
 
 post_save.connect(update_contract_with_payments, sender="Payment")
 
-
+def lapsed_check(sender, **kwargs):
+	#Checks the end date of active contract and compares it with today. If contract is lapsed, update the contract status to lapsed.
+	instance = kwargs['instance']
+	if instance.status == u'ACT':
+		if instance.end < datetime.date.today():			
+			instance.status = u'LAP'
+			instance.save()
+				
+post_init.connect(lapsed_check, sender="Contract")
 
 class User(User):
 	"""Custom User model, extending Django's default User"""
@@ -71,8 +78,8 @@ class Contract(models.Model):
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
 	status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
 	
-	# Takes a Payment object, calculates how many month's worth it is, and extends the contract end date accordingly
 	def update_with_payment(self, p):
+		# Takes a Payment object, calculates how many month's worth it is, and extends the contract end date accordingly
 		if isinstance(p, Payment):
 			# Get number of multiples of Contract for this Payment
 			multiples = int(p.amount / self.tier.fee)
@@ -100,7 +107,7 @@ class Contract(models.Model):
 		else:
 			return False	
 	
-	
+		
 	def save(self):
 		# Overridden save() forces the date of self.end to be the last day of that given month.
 		# Eg. if self.end is initially declared as 5 May 2010, we now force it to become 31 May 2010 before actually save()'ing the object.
@@ -117,8 +124,7 @@ class Contract(models.Model):
 			raise ValidationError(_("Contract type and tier mismatched"))
 			
 	def __unicode__(self):
-		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" @ $" + unicode(self.tier.fee) + "/mth Start: " + u" " + unicode(self.start.strftime('%d %b %Y')) +  u" End: " + unicode(self.end.strftime('%d %b %Y'))
-		
+		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" @ $" + unicode(self.tier.fee) + "/mth Start: " + u" " + unicode(self.start.strftime('%d %b %Y')) +  u" End: " + unicode(self.end.strftime('%d %b %Y'))	
 
 class Tier(models.Model):
 	fee = models.FloatField(default=0.0)
