@@ -12,3 +12,16 @@ from hado.models import *
 class PaymentAdminForm(forms.ModelForm):
 	class Meta:
 		model = Payment
+		
+	def clean(self):
+		cd = self.cleaned_data
+
+		if cd.get('contract'):
+			if cd.get('user') and cd.get('user') != cd.get('contract').user:
+				self._errors['user'] = self.error_class([_('Payment User does not match the Contract User.')])
+				self._errors['contract'] = self.error_class([_('Payment User does not match the Contract User.')])
+
+			if (cd.get('amount') % cd.get('contract').tier.fee) != 0:
+				self._errors['amount'] = self.error_class([_('Payment amount ($%s) is not a clean multiple of Contract Fee ($%s)' % (cd.get('amount'), cd.get('contract').tier.fee))])
+				
+		return cd
