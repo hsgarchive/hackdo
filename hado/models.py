@@ -185,13 +185,6 @@ class Payment(models.Model):
 	desc = models.CharField(max_length=255, blank=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
 	
-		
-	def clean(self):
-		# Model validation to ensure that Payment amount is multiple of Contract tier fee
-		if (self.amount % self.contract.tier.fee) != 0:
-			raise ValidationError(_("Payment amount is not a multiple of selected Contract's tier fee"))
-
-	
 	def __unicode__(self):
 		return self.contract.__unicode__() + u" Paid: " + unicode(self.date_paid)
 		
