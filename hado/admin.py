@@ -16,6 +16,7 @@ from hado.forms import *
 class PaymentInline(admin.TabularInline):
 	model = Payment
 	extra = 0
+	fields = ('date_paid', 'amount', 'contract', 'method', 'desc')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
@@ -43,6 +44,7 @@ class ContractInline(admin.TabularInline):
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
 	form = PaymentAdminForm
+	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
