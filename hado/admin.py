@@ -43,7 +43,8 @@ class ContractInline(admin.TabularInline):
 
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
-	form = PaymentAdminForm
+	form = PaymentForm
+	
 	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
