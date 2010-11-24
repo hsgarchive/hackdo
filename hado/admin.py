@@ -15,7 +15,8 @@ from hado.forms import *
 # Inline classes
 class PaymentInline(admin.TabularInline):
 	model = Payment
-	extra = 0
+	extra = 1
+	
 	fields = ('date_paid', 'amount', 'contract', 'method', 'desc')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
