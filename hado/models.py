@@ -42,7 +42,7 @@ class User(User):
 
 	@property
 	def most_recent_payment(self):
-		return self.payments.all()[0]
+		return self.payments_made.all()[0]
 
 #	@property
 #	def payments(self):
