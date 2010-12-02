@@ -2,19 +2,19 @@
 <!DOCTYPE html>
 <html lang="">
 <head>
-  <meta charset="utf-8">
+	<meta charset="utf-8">
 	<title>{% block title %}{% endblock %} - HackDo</title>
 	
-  {% block js %}
-	  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-  {% endblock %}
+	{% block js %}
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	{% endblock %}
   
-  {% block css %}
-	  <link href="{{ MEDIA_URL }}css/hado.css" media="screen" rel="stylesheet" type="text/css" />
-	  <!--[if IE]>
-	    <link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
-	  <![endif]-->
-  {% endblock %}	
+	{% block css %}
+		<link href="{{ MEDIA_URL }}css/hado.css" media="screen" rel="stylesheet" type="text/css" />
+		<!--[if IE]>
+			<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
+		<![endif]-->
+	{% endblock %}	
 </head>
 <body>
 	<div id="header">
@@ -36,17 +36,17 @@
 	</div>
 
 	<div id="content">
-      {% block content-header %}
-        {% if error %}<div class="error">{{ error }}</div>{% endif %}
-        {% if info %}<div class="info">{{ info }}</div>{% endif %}
-        {% if success %}<div class="success">{{ success }}</div>{% endif %}
-        {% if messages %}
-          {% for message in messages %}
-            <div class="info">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endblock %}
-      {% block content %}{% endblock %}
+		{% block content-header %}
+			{% if error %}<div class="error">{{ error }}</div>{% endif %}
+			{% if info %}<div class="info">{{ info }}</div>{% endif %}
+			{% if success %}<div class="success">{{ success }}</div>{% endif %}
+			{% if messages %}
+				{% for message in messages %}
+					<div class="info">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+		{% endblock %}
+		{% block content %}{% endblock %}
 	</div>
 	
 	<div id="footer">
