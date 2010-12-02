@@ -28,7 +28,7 @@
 			<li><a href="">Current Members</a></li>
 		</ul>
 			
-		<!--
+		{% comment %}
 		<h1>Contracts</h1>
 		
 		<ul class="contracts choices">
@@ -49,7 +49,7 @@
 			<li><a href="">{{ _("New Corporate Sponsorship") }}</a></li> | 
 		</ul>
 	</div>
-	-->
+	{% endcomment %}
 	
 	<div id="event-log">
 		<h2>{% trans 'Recent Actions' %}</h2>
@@ -85,7 +85,7 @@
 {% endblock %}
 
 
-{% block sidebar %}<!--
+{% block sidebar %}{% comment %}
 <div id="content-related">
 	<div class="module" id="recent-actions-module">
 		<h2>{% trans 'Recent Actions' %}</h2>
@@ -114,5 +114,5 @@
 			</ul>
 			{% endif %}
 	</div>
-</div>-->
+</div>{% endcomment %}
 {% endblock %}
