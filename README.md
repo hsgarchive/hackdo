@@ -9,7 +9,5 @@ Most of the magic goes on in the Admin console (have a look in `hado/admin.py`).
 
 TODO
 ----
- - Generate reports for
-   - income from Payments made
-   - User stats (membership Active/Lapsed/Terminated/Pending)
- 
+
+See our [bug tracker](https://www.pivotaltracker.com/projects/155751) for details.
