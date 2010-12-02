@@ -7,7 +7,8 @@ Keeping track of membership is a chore that takes time and can end up quite mess
 
 Most of the magic goes on in the Admin console (have a look in `hado/admin.py`).
 
-TODO
-----
+Links
+-----
 
-See our [bug tracker](https://www.pivotaltracker.com/projects/155751) and [wiki](http://hackerspacesg.pbworks.com/w/page/33279936/Project:-HackDo) for details.
+  - [bug tracker](https://www.pivotaltracker.com/projects/155751)
+  - [wiki](http://hackerspacesg.pbworks.com/w/page/33279936/Project:-HackDo)
