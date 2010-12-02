@@ -27,7 +27,12 @@ Setup
 
        $ pip install -r src/requirements.txt
      
-!TODO
+1. Set up django's tables and migrations:
+
+       $ ./manage.py syncdb
+       $ ./manage.py migrate --all
+
+!TODO use sqlite3 for easy testing
 
 Links
 -----
