@@ -32,8 +32,6 @@ Setup
        $ ./manage.py syncdb
        $ ./manage.py migrate --all
 
-!TODO use sqlite3 for easy testing
-
 Links
 -----
 
