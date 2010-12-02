@@ -10,4 +10,4 @@ Most of the magic goes on in the Admin console (have a look in `hado/admin.py`).
 TODO
 ----
 
-See our [bug tracker](https://www.pivotaltracker.com/projects/155751) for details.
+See our [bug tracker](https://www.pivotaltracker.com/projects/155751) and [wiki](http://hackerspacesg.pbworks.com/w/page/33279936/Project:-HackDo) for details.
