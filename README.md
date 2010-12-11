@@ -31,6 +31,10 @@ Setup
 
        $ ./manage.py syncdb
        $ ./manage.py migrate --all
+       
+1. Creating a superuser (do not user Django's createsuperuser)
+
+       $ python create_hadouser.py
 
 Links
 -----
