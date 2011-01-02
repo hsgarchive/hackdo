@@ -10,22 +10,6 @@ import datetime, calendar
 def get_image_path(instance, filename):
 	return os.path.join('users', instance.id, filename) 
 
-# Attaching a post_save signal handler to the Payment model to update the appropriate Contract
-def update_contract_with_payments(sender, **kwargs):
-	c = instance.contract
-	c.update_with_payment(instance)
-
-post_save.connect(update_contract_with_payments, sender="Payment")
-
-def lapsed_check(sender, **kwargs):
-	#Checks the end date of active contract and compares it with today. If contract is lapsed, update the contract status to lapsed.
-	instance = kwargs['instance']
-	if instance.status == u'ACT':
-		if instance.end < datetime.date.today():			
-			instance.status = u'LAP'
-			instance.save()
-				
-post_init.connect(lapsed_check, sender="Contract")
 
 class User(User):
 	"""Custom User model, extending Django's default User"""
@@ -194,3 +178,22 @@ class Locker(models.Model):
 	user = models.ForeignKey(User, blank=False, null=True, related_name="locker")
 	num = models.IntegerField()
 	
+
+# Attaching a post_save signal handler to the Payment model to update the appropriate Contract
+def update_contract_with_payments(sender, **kwargs):
+	payment = kwargs['instance']
+	c = payment.contract
+	c.update_with_payment(payment)
+
+post_save.connect(update_contract_with_payments, sender=Payment)
+
+def lapsed_check(sender, **kwargs):
+	'''Checks the end date of active contract and compares it with today. If contract is lapsed, update the contract status to lapsed.'''
+
+	contract = kwargs['instance']	
+	if contract.status == u'ACT':
+		if contract.end < datetime.date.today():			
+			contract.status = u'LAP'
+			contract.save()
+				
+post_init.connect(lapsed_check, sender=Contract)
