@@ -70,7 +70,7 @@ class Contract(models.Model):
 	)
 
 	start = models.DateField()
-	end = models.DateField()
+	end = models.DateField(blank=True)
 	ctype = models.ForeignKey(ContractType, blank=False, null=True, verbose_name="Contract type", help_text="Locker and Address Use Contracts must use their respective Tiers. Membership contracts can accept all other Tiers")
 	tier = models.ForeignKey("Tier", blank=False, null=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
@@ -120,6 +120,11 @@ class Contract(models.Model):
 	def save(self):
 		# Overridden save() forces the date of self.end to be the last day of that given month.
 		# Eg. if self.end is initially declared as 5 May 2010, we now force it to become 31 May 2010 before actually save()'ing the object.
+		
+		# But first, is self.end even specified?
+		if not self.end:
+			self.end = self.start
+		
 		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
 		self.end = datetime.date(self.end.year, self.end.month, last_day)
 		
