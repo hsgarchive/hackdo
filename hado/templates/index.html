@@ -2,22 +2,11 @@
 
 {% block content %}
 
-	<h1>HackerspaceSG {{ _("Users") }}</h1>
+	<div id="login-form">
+		<form action="/login/" method="post">
+			<input type="text" name="username" placeholder="Username" pattern="">
+			<input type="password" name="password" placeholder="Password">
+		</form>
+	</div>	
 
-	<table>
-		<thead>
-			<tr>
-				<td>{{ _("Username") }}</td>
-				<td>{{ _("First name") }}</td>
-				<td>{{ _("Last name") }}</td>
-				<td>{{ _("Last payment") }}</td>
-			</tr>
-		</thead>
-		{% for user in userlist %}
-			<tr>
-				<
-			</tr>
-			
-		{% endfor %}
-	</table>
 {% endblock %}
