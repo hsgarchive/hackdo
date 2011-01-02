@@ -15,6 +15,7 @@ from hado.forms import *
 # Inline classes
 class PaymentInline(admin.TabularInline):
 	model = Payment
+	form = PaymentForm
 	extra = 1
 	
 	fields = ('date_paid', 'amount', 'contract', 'method', 'desc')
