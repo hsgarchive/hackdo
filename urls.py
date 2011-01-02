@@ -19,9 +19,3 @@ urlpatterns = patterns('',
 	# Uncomment the next line to enable the admin:
 	(r'^admin/', include(admin.site.urls)),
 )
-
-# Serve static files in DEBUG = TRUE environment
-if settings.DEBUG:
-	urlpatterns = urlpatterns + patterns('',
-		(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH + '/hackdo/media/', 'show_indexes': True}),
-	)
