@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 #from ragendja.template import render_to_response
 from django.shortcuts import *
-from utils import render_to_response
+from utils import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 
