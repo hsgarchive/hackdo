@@ -28,6 +28,20 @@ class User(User):
 	def most_recent_payment(self):
 		return self.payments_made.all().order_by('-date_paid')[0]
 
+
+	def total_paid(self, ptype=None):
+		'''Returns the total amount the User has paid either in total, or for a specified Contract type'''
+		if ptype is not None:
+			payments = self.payments_made.filter(contract__ctype__desc=ptype)
+		else:
+			payments = self.payments_made.all()
+			
+		total = 0.0
+		for p in payments:
+			total += p.amount
+			
+		return total
+
 #	@property
 #	def payments(self):
 #		return self.payments_made.order_by('-for_year', '-for_month').all()
@@ -61,6 +75,17 @@ class Contract(models.Model):
 	tier = models.ForeignKey("Tier", blank=False, null=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
 	status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
+
+	@property
+	def total_paid(self):
+		'''Returns total amount paid due to this Contract'''
+		payments = self.payments.all()		
+		total = 0.0
+		for p in payments:
+			total += p.amount
+			
+		return total
+	
 	
 	def update_with_payment(self, p):
 		# Takes a Payment object, calculates how many month's worth it is, and extends the contract end date accordingly
