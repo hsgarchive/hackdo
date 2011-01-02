@@ -47,12 +47,13 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ROOT_PATH + "/media/"
+MEDIA_ROOT = "%s/media/" % ROOT_PATH
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'http://ubuntuvm:8181/media/'
+MEDIA_URL = '/media/'
+
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -83,8 +84,8 @@ TEMPLATE_DIRS = (
 	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 	# Always use forward slashes, even on Windows.
 	# Don't forget to use absolute paths, not relative paths.
-	ROOT_PATH + "/templates",
-	ROOT_PATH + "/hado/templates",
+	"%s/templates" % ROOT_PATH,
+	"%s/hado/templates" % ROOT_PATH,
 )
 
 INSTALLED_APPS = (
