@@ -28,8 +28,8 @@ class PaymentInline(admin.TabularInline):
 			m = re.search("/.+\/(?P<id>\d+)\/?", request.path_info)
 			if m is not None:
 				user_id = m.groupdict()['id']
-
-			kwargs["queryset"] = Contract.objects.filter(user__id = user_id)
+				kwargs["queryset"] = Contract.objects.filter(user__id = user_id)
+			
 			return db_field.formfield(**kwargs)
 		return super(PaymentInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
