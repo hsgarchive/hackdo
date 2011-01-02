@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+	<article>
+		<header>{{ u.get_full_name }}</header>
+		<h2>Member since: {{ member_since }}</h2>
+		<h2>Membership Status: {{ current_status }}</h2>
+		<h2>Details:</h2>
+		
+		{% regroup contracts by ctype as contract_list %}
+		<ul id="member-contracts">
+			{% for contract in contract_list %}
+			<li>{{ contract.grouper }}</li>
+			<ul>
+				{% for c in contract.list %}
+				<li>{{ c }}</li>
+				{% endfor %}
+			</ul>
+			{% endfor %}
+		</ul>
+	</article>
+
+{% endblock content %}
