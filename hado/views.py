@@ -15,7 +15,7 @@ def index(request):
 	
 	userlist = User.objects.all()
 	
-	return render_to_response(request, 'index.html', {'userlist': userlist})
+	return render(request, 'index.html', {'userlist': userlist})
 
 
 def user_profile(request, username):
