@@ -4,6 +4,8 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+from hado.admin import hdadmin
+
 import os
 ROOT_PATH = os.path.dirname(__file__) # Handy for dynamic paths across Dev and Production
 
@@ -12,7 +14,7 @@ urlpatterns = patterns('',
 	# (r'^hackdo/', include('hackdo.foo.urls')),
 
 	# Uncomment the next line to enable the admin:
-	(r'^admin/', include(admin.site.urls)),
+	(r'^admin/', include(hdadmin.urls)),
 
 	
 	(r'', include('hado.urls')),
