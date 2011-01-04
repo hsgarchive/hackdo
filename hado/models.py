@@ -40,6 +40,14 @@ class User(User):
 			payments = self.payments_made
 		
 		return payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
+		
+		
+	def membership_status(self, pretty=False):
+		'''Returns string (see Contract::CONTRACT_STATUSES) indicating latest Membership status of this User'''
+		if pretty:
+			return self.contracts.filter(ctype__desc='Membership').latest('start').get_status_display()
+		else:
+			return self.contracts.filter(ctype__desc='Membership').latest('start').status
 
 #	@property
 #	def payments(self):
