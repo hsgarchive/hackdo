@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import User, UserManager
 from django.db.models.signals import pre_save, post_save, post_init, pre_init
+from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
 import datetime, calendar
 # Create your models here.
