@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.db.models import Sum
 from django.db.models.signals import pre_save, post_save, post_init, pre_init
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
@@ -31,16 +32,14 @@ class User(User):
 
 	def total_paid(self, ptype=None):
 		'''Returns the total amount the User has paid either in total, or for a specified Contract type'''
+		
+		# Construct the appropriate Queryset
 		if ptype is not None:
 			payments = self.payments_made.filter(contract__ctype__desc=ptype)
 		else:
-			payments = self.payments_made.all()
-			
-		total = 0.0
-		for p in payments:
-			total += p.amount
-			
-		return total
+			payments = self.payments_made
+		
+		return payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
 #	@property
 #	def payments(self):
@@ -79,12 +78,8 @@ class Contract(models.Model):
 	@property
 	def total_paid(self):
 		'''Returns total amount paid due to this Contract'''
-		payments = self.payments.all()		
-		total = 0.0
-		for p in payments:
-			total += p.amount
-			
-		return total
+
+		return self.payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
 	
 	
 	def update_with_payment(self, p):
