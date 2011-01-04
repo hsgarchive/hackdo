@@ -49,9 +49,6 @@ class User(User):
 		else:
 			return self.contracts.filter(ctype__desc='Membership').latest('start').status
 
-#	@property
-#	def payments(self):
-#		return self.payments_made.order_by('-for_year', '-for_month').all()
 	
 	def __unicode__(self):
 		if self.first_name and self.last_name:
