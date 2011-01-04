@@ -5,13 +5,42 @@
 
 {% block extrastyle %}
 	{{ block.super }}
+<!--
 	<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
 	<link href="{{ MEDIA_URL }}css/admin.css" media="screen" rel="stylesheet" type="text/css" />
+-->
 {% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 {% block content %}	
 	<div id="content-main">
+		
+		<h1>Stats</h1>
+		<ul>
+			<li>Members</li>
+			<ul>
+				{% for status,count in members.items %}
+				{% if status != 'total' %}
+				<li>{{ status|capfirst }} : {{ count }}</li>
+				{% endif %}
+				{% endfor %}
+				<li>Total : {{ members.total }}</li>
+			</ul>
+			<li>Income this month</li>
+			<ul>
+				{% for t,a in income.items %}
+				{% if t != 'summary' %}
+				<li>{{ t }} : {{ a }}</li>
+				{% endif %}				
+				{% endfor %}
+			</ul>
+			<li>Income summary</li>
+			<ul>
+				<li>Supposed : {{ income.summary.supposed }}</li>
+				<li>Actual : {{ income.summary.actual }}</li>
+				<li>Shortfall : {{ income.summary.shortfall }}</li>
+			</ul>
+		</ul>
 		
 		<h1>Admin</h1>
 		<ul class="choices">
@@ -51,6 +80,7 @@
 	</div>
 	{% endcomment %}
 	
+	{% comment %}
 	<div id="event-log">
 		<h2>{% trans 'Recent Actions' %}</h2>
 			{% load log %}
@@ -81,6 +111,7 @@
 			{% endif %}
 
 	</div>
+	{% endcomment %}
 	
 {% endblock %}
 
