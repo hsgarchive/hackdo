@@ -225,5 +225,9 @@ def lapsed_check(sender, **kwargs):
 		if contract.end < datetime.date.today():			
 			contract.status = u'LAP'
 			contract.save()
+			
+	elif contract.status == u'LAP' and contract.end > datetime.date.today():
+		contract.status = u'ACT'
+		contract.save()
 				
 post_init.connect(lapsed_check, sender=Contract)
