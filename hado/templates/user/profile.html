@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 
 {% block content %}
 
@@ -7,19 +7,38 @@
 		<header>{{ u.get_full_name }}</header>
 		<h2>Member since: {{ member_since }}</h2>
 		<h2>Membership Status: {{ current_status }}</h2>
+		<h2>Paid to date: SGD {{ paid_to_date }}</h2>
 		<h2>Details:</h2>
 		
+		<h2>Contracts</h2>
 		{% regroup contracts by ctype as contract_list %}
 		<ul id="member-contracts">
 			{% for contract in contract_list %}
-			<li>{{ contract.grouper }}</li>
+			<li class="contract-type">{{ contract.grouper }}</li>
 			<ul>
 				{% for c in contract.list %}
-				<li>{{ c }}</li>
+				<li class="contract">{{ c }}</li>
 				{% endfor %}
 			</ul>
 			{% endfor %}
 		</ul>
+		
+		<h2>Payment history</h2>
+		<ul>
+			{% for p in payment_history %}
+			<li>
+				{% blocktrans with p.amount as amount and p.date_paid as date_paid and p.contract.ctype.desc as contract %}
+				{{ date_paid }}: ${{ amount }} for {{ contract }}				
+				{% endblocktrans %}
+			</li>
+			{% endfor %}
+		</ul>
+		
+		<h2>Submit a new Payment</h2>
+		<form method="post" action="">
+			{{ pform.as_ul }}
+			<input type='submit' value="Notify admins of new payment"
+		</form>
 	</article>
 
 {% endblock content %}
