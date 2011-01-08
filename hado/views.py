@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 
 # Models
 from hado.models import *
+from hado.forms import PaymentForm
 
 
 def index(request):
@@ -27,5 +28,10 @@ def user_profile(request, username):
 	
 	paid_to_date = u.total_paid()
 	
+	# Retrieve 10 most recent payments
+	payment_history = u.payments_made.order_by('-date_paid')[0:10]
 	
-	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status})
+	# Form for submitting payment
+	pform = PaymentForm(username, initial={'user':u})
+	
+	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status, 'paid_to_date': paid_to_date, "payment_history": payment_history, 'pform': pform })
