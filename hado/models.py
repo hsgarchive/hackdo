@@ -196,7 +196,7 @@ class Payment(models.Model):
 	amount = models.FloatField(default=0.0)
 	method = models.CharField(max_length=3, choices=PAYMENT_METHODS, default='EFT')
 	contract = models.ForeignKey(Contract, blank=False, null=True, related_name="payments")
-	desc = models.CharField(max_length=255, blank=True)
+	desc = models.CharField(max_length=255, blank=True, help_text="Eg. Cheque or transaction number, if applicable")
 	user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
 	
 	def __unicode__(self):
