@@ -14,7 +14,7 @@ hdadmin = HackdoAdmin()
 # Inline classes
 class PaymentInline(admin.TabularInline):
 	model = Payment
-	form = PaymentForm
+	form = PaymentFormAdmin
 	extra = 1
 	
 	fields = ('date_paid', 'amount', 'contract', 'method', 'desc')
@@ -44,7 +44,7 @@ class ContractInline(admin.TabularInline):
 
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
-	form = PaymentForm
+	form = PaymentFormAdmin
 	
 	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc')
 	

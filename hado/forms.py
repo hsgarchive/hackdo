@@ -9,7 +9,7 @@ import datetime
 
 from hado.models import *
 
-class PaymentForm(forms.ModelForm):
+class PaymentFormAdmin(forms.ModelForm):
 	class Meta:
 		model = Payment
 		
