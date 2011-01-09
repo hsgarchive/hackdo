@@ -1,7 +1,7 @@
-TallyUp (formerly known as HackDo)
+<del>TallyUp (formerly known as HackDo)</del> HackDo
 ----------------------------------
 
-TallyUp is meant to be a membership (and others) management system for Hackerspaces.
+<del>TallyUp</del> HackDo is meant to be a membership (and others) management system for Hackerspaces.
 
 Keeping track of membership is a chore that takes time and can end up quite messy, so let's try and solve that pain point.
 
@@ -12,7 +12,7 @@ Setup
 
 1. Grab the source code:
 
-       $ git clone git://github.com/hackerspacesg/TallyUp.git
+       $ git clone git://github.com/hackerspacesg/hackdo.git
 
 1. Since django has [a git mirror here](http://github.com/django/django), we can
    track it too. Checkout the django source we're running against:
