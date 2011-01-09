@@ -1,20 +1,32 @@
 {% load i18n %}
+{% load adminmedia %}
+
 <!DOCTYPE html>
 <html lang="">
 <head>
 	<meta charset="utf-8">
 	<title>{% block title %}{% endblock %} - HackDo</title>
 	
-	{% block js %}
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	{% endblock %}
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
+	<!-- For the admin widgets -->
+	<script type="text/javascript" src="/amedia/jsi18n/"></script>
+	<script type="text/javascript" src="/static/admin/js/core.js"></script>
+	<script type="text/javascript">
+		window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+	</script>
+	
+	{% block js %}{% endblock %}
   
-	{% block css %}
-		<link href="{{ STATIC_URL }}css/style.css" media="screen" rel="stylesheet" type="text/css" />
-		<!--[if IE]>
-			<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
-		<![endif]-->
-	{% endblock %}	
+	
+	<link href="{{ STATIC_URL }}css/style.css" media="screen" rel="stylesheet" type="text/css" />
+	<!--[if IE]>
+		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+
+	{% block css %}{% endblock %}	
 </head>
 <body>
 	<div id="header">

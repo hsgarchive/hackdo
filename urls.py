@@ -13,6 +13,8 @@ urlpatterns = patterns('',
 	# Example:
 	# (r'^hackdo/', include('hackdo.foo.urls')),
 
+	(r'^amedia/jsi18n', 'django.views.i18n.javascript_catalog'),
+
 	# Uncomment the next line to enable the admin:
 	(r'^admin/', include(hdadmin.urls)),
 
