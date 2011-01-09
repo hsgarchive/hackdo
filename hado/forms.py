@@ -36,6 +36,7 @@ class PaymentForm(PaymentFormAdmin):
 
 	def __init__(self, by_user=None, *args, **kwargs):
 		super(PaymentForm, self).__init__(*args, **kwargs)
+		self.fields['date_paid'].widget = widgets.AdminDateWidget()
 		if by_user is not None:
 			self.fields['contract'].queryset = Contract.objects.filter(user__username=by_user)
 			self.fields['user'].queryset = User.objects.filter(username=by_user)
