@@ -31,9 +31,19 @@
 <body>
 	<div id="header">
 		{% block header %}
-			<h1><a href="/">HackDo</a></h1>
-			
-			<div id="header-nav">
+			<div id="branding">
+				<h1 id="site-name"><a href="/">HackDo</a></h1>
+			</div>
+			<div id="user-tools">
+
+				{% if user.is_authenticated %}				
+				Welcome, {{ user }}!
+				
+				<a href="{% url django.contrib.auth.views.logout %}">Logout</a> 
+				{% else %}
+				<a href="{% url django.contrib.auth.views.login %}">Login</a>
+				{% endif %}
+				{% comment %}
 				<ul>
 					{% if user.is_authenticated %}
 						<li>Welcome, {{ user }}!</li> |
@@ -42,6 +52,7 @@
 						<li><a href="{% url django.contrib.auth.views.login %}">Login</a></li>
 					{% endif %}
 				</ul>
+				{% endcomment %}
 			</div>
 			
 		{% endblock %}
