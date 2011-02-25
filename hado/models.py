@@ -80,6 +80,22 @@ class Contract(models.Model):
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
 	status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
 
+
+	def __extend_by(self, num_months):
+		'''Extends the validity of this Contract by specified number of months (Assume 1 month = 28 days). THIS METHOD DOES NOT save() AUTOMATICALLY'''
+		
+# 		year = s.year + ((s.month + num_months) / 12)
+# 		month = ((s.month + num_months) % 12)		
+# 		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
+		
+		#self.end = datetime.date(year, month, last_day)
+		self.valid_till = self.valid_till + datetime.timedelta(days=(28*num_months))
+		
+		# Normalise date to end of that month
+		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, calendar.monthrange(self.valid_till.year, self.valid_till.month)[1])
+	
+
+
 	@property
 	def total_paid(self):
 		'''Returns total amount paid due to this Contract'''
@@ -93,24 +109,7 @@ class Contract(models.Model):
 			# Get number of multiples of Contract for this Payment
 			multiples = int(p.amount / self.tier.fee)
 			
-			# Get the future end month
-			future_end_month = self.end.month + multiples
-			jump_year = 0
-			while future_end_month > 12: # Have we skipped a year end?
-				future_end_month = future_end_month % 12
-				jump_year += 1  # Keep counting how many years we're jumping ahead
-			
-			# Identify the last day of the future_end_month
-			if jump_year:
-				future_year = self.end.year + jump_year
-			else:
-				future_year = self.end.year
-				
-			future_last_day = calendar.monthrange(future_year, future_end_month)[1]
-			
-			# Update the end date for this Contract
-			self.end = datetime.date(future_year, future_end_month, future_last_day)
-			
+			self.__extend_by(multiples)			
 			self.save()
 			
 		else:
