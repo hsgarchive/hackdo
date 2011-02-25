@@ -102,6 +102,25 @@ class Contract(models.Model):
 
 		return self.payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
 	
+
+	def balance(self, in_months=False):
+		'''Looks at how much has been paid for this Contract and determines if there is any balance owed by (-ve) / owed to (+ve) the Member'''
+		balance = 0
+		duration_in_months = 1
+		
+		if self.status == 'TER':			
+			duration_in_months = (self.end - self.start).days / 30 # Naive month calculation
+		else: 
+			duration_in_months = (datetime.date.today() - self.start).days / 30 # Naive month calculation
+				
+		balance = self.total_paid - (self.tier.fee * duration_in_months) 
+		
+		if in_months:
+			return balance / self.tier.fee
+			
+		else:	
+			return balance
+		
 	
 	def update_with_payment(self, p):
 		# Takes a Payment object, calculates how many month's worth it is, and extends the contract end date accordingly
