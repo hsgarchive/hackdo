@@ -27,7 +27,8 @@ class User(User):
 
 	@property
 	def most_recent_payment(self):
-		return self.payments_made.all().order_by('-date_paid')[0]
+		p = self.payments_made.all().order_by('-date_paid')
+		return p[0] if p else None
 
 
 	def total_paid(self, ptype=None):
