@@ -103,6 +103,23 @@ class Contract(models.Model):
 		'''Returns total amount paid due to this Contract'''
 
 		return self.payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
+
+
+	def sync(self):
+		'''Looks at the total amount paid to this Contract and recalculates its proper expiry (end) date, taking a month's deposit into account'''
+		
+		# Reset the clock
+		self.valid_till = self.start
+		
+		months_paid = self.total_paid / self.tier.fee
+		
+		if months_paid > 0:
+			# Take into account 1 month's deposit
+			months_paid -= 1 			
+			self.__extend_by(int(months_paid))
+
+		self.save()
+		
 	
 
 	def balance(self, in_months=False):
