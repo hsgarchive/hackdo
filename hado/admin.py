@@ -17,7 +17,7 @@ class PaymentInline(admin.TabularInline):
 	form = PaymentFormAdmin
 	extra = 1
 	
-	fields = ('date_paid', 'amount', 'contract', 'method', 'desc')
+	fields = ('date_paid', 'amount', 'contract', 'method', 'desc', 'verified')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
@@ -46,7 +46,7 @@ class ContractInline(admin.TabularInline):
 class PaymentAdmin(admin.ModelAdmin):
 	form = PaymentFormAdmin
 	
-	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc')
+	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc', 'verified')
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
