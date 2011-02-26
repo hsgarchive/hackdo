@@ -76,6 +76,7 @@ class Contract(models.Model):
 
 	start = models.DateField()
 	end = models.DateField(blank=True)
+	valid_till = models.DateField(editable=False)
 	ctype = models.ForeignKey(ContractType, blank=False, null=True, verbose_name="Contract type", help_text="Locker and Address Use Contracts must use their respective Tiers. Membership contracts can accept all other Tiers")
 	tier = models.ForeignKey("Tier", blank=False, null=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
