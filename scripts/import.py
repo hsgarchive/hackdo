@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/bin/python
 
 import csv
