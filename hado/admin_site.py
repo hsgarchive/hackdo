@@ -3,7 +3,9 @@ import datetime
 
 from django.contrib.admin.sites import AdminSite
 from django.db.models import Q
+from django.forms.models import modelformset_factory
 from hado.models import *
+from hado.forms import PaymentFormAdmin
 from utils import render
 
 # Subclassing a custom admin to provide a custom interface
@@ -36,7 +38,12 @@ class HackdoAdmin(AdminSite):
 		income['summary']['actual'] = payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
 		income['summary']['shortfall'] = income['summary']['supposed'] - income['summary']['actual']
 		
-		return render(request, 'admin/index.html', {'members':members, 'income':income})
+		
+		# Incoming Payments pending verification
+		PaymentFormAdminFormset = modelformset_factory(Payment)
+		pformset = PaymentFormAdminFormset(queryset=Payment.objects.filter(verified=False))
+		
+		return render(request, 'admin/index.html', {'members':members, 'income':income, 'pformset':pformset})
 
 
 

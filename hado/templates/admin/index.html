@@ -56,7 +56,14 @@
 			<li><a href="">Lapsed Members</a></li>
 			<li><a href="">Current Members</a></li>
 		</ul>
-			
+		
+		<h1>Payments to be verified</h1>
+		<form method="post" action="">
+			<table>
+				{{ pformset.as_table }}
+			</table>
+		</form>	
+		
 		{% comment %}
 		<h1>Contracts</h1>
 		
