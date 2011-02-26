@@ -217,6 +217,7 @@ class Payment(models.Model):
 	contract = models.ForeignKey(Contract, blank=False, null=True, related_name="payments")
 	desc = models.CharField(max_length=255, blank=True, help_text="Eg. Cheque or transaction number, if applicable")
 	user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
+	verified = models.BooleanField(default=False, blank=False, help_text="Has this Payment been verified/approved by an Admin?")
 	
 	def __unicode__(self):
 		return self.contract.__unicode__() + u" Paid: " + unicode(self.date_paid)
