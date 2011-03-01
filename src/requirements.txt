@@ -1,1 +1,2 @@
 South
+django_coverage
