@@ -159,11 +159,11 @@ class Contract(models.Model):
 		# Eg. if self.end is initially declared as 5 May 2010, we now force it to become 31 May 2010 before actually save()'ing the object.
 		
 		# But first, is self.end even specified?
-		if not self.end:
-			self.end = self.start
+		if not self.valid_till:
+			self.valid_till = self.start
 		
-		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
-		self.end = datetime.date(self.end.year, self.end.month, last_day)
+		last_day = calendar.monthrange(self.valid_till.year, self.valid_till.month)[1]
+		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, last_day)
 		
 		#force start date to be normalised as 1st day of the month
 		self.start = datetime.date(self.start.year, self.start.month, 1)
@@ -260,11 +260,11 @@ def lapsed_check(sender, **kwargs):
 
 	contract = kwargs['instance']	
 	if contract.status == u'ACT':
-		if contract.end < datetime.date.today():			
+		if contract.valid_till < datetime.date.today():			
 			contract.status = u'LAP'
 			contract.save()
 			
-	elif contract.status == u'LAP' and contract.end > datetime.date.today():
+	elif contract.status == u'LAP' and contract.valid_till > datetime.date.today():
 		contract.status = u'ACT'
 		contract.save()
 				
