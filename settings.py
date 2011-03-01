@@ -114,6 +114,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin',
 	'hado',
 	'south',
+	'django_coverage'
 )
 
 # A sample logging configuration. The only tangible logging
