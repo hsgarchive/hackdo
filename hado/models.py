@@ -258,7 +258,12 @@ post_save.connect(update_contract_with_payments, sender=Payment)
 def lapsed_check(sender, **kwargs):
 	'''Checks the end date of active contract and compares it with today. If contract is lapsed, update the contract status to lapsed.'''
 
-	contract = kwargs['instance']	
+	contract = kwargs['instance']
+	
+	# If this is a new Contract, check if we have a valid_till date set
+	if not contract.id and not contract.valid_till:
+		contract.valid_till = contract.start
+		
 	if contract.status == u'ACT':
 		if contract.valid_till < datetime.date.today():			
 			contract.status = u'LAP'
