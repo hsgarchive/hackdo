@@ -140,6 +140,12 @@ LOGGING = {
     }
 }
 
+
+# Authentication stuff
+LOGIN_URL='/login/'
+LOGOUT_URL='/logout/'
+
+
 # Config for custom extended User model
 AUTHENTICATION_BACKENDS = (
 	'hado.auth_backends.UserModelBackend',
