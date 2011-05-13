@@ -6,20 +6,25 @@ from django.shortcuts import *
 from utils import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 # Models
 from hado.models import *
 from hado.forms import PaymentForm
 
 
+
+@login_required
 def index(request):
-	
-	userlist = User.objects.all()
-	
-	return render(request, 'index.html', {'userlist': userlist})
+	return HttpResponseRedirect(request.user.get_absolute_url())
 
 
+@login_required
 def user_profile(request, username):
+
+	if not request.user.username == username:
+		return HttpResponseRedirect(request.user.get_absolute_url())
+
 	
 	u = User.objects.get(username=username)
 	contracts = u.contracts.all().order_by("ctype")

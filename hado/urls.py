@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 	url(r'login/$', 'django.contrib.auth.views.login', {'template_name' : 'user/login.html'}),
 	url(r'logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
 
-	url(r'user/(?P<username>[a-zA-Z0-9]+)', user_profile, name='user_profile'),
+	url(r'users/(?P<username>[a-zA-Z0-9]+)', user_profile, name='user_profile'),
 
 #	
 #	url(r'debug/$', debug, name='hado.debug'),
