@@ -35,7 +35,8 @@
 		</ul>
 		
 		<h2>Submit a new Payment</h2>
-		<form method="post" action="">
+		<form method="post" action="{% url user_profile u.username %}">
+			{% csrf_token %}
 			{{ pform.media }}
 			{{ pform.as_ul }}
 			<input type='submit' value="Notify admins of new payment"
