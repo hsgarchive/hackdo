@@ -150,6 +150,10 @@ class Contract(models.Model):
 			self.__extend_by(multiples)			
 			self.save()
 			
+			# sync() the Contract if this is the first Payment being made on this Contract
+			if self.payments.count() == 1:
+				self.sync()
+			
 		else:
 			return False	
 	
