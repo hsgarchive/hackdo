@@ -38,7 +38,9 @@
 
 				{% if user.is_authenticated %}				
 				Welcome, {{ user }}!
-				
+				{% if u.is_superuser %}
+					| <a href="/admin/">Admin</a></li> |
+				{% endif %}
 				<a href="{% url django.contrib.auth.views.logout %}">Logout</a> 
 				{% else %}
 				<a href="{% url django.contrib.auth.views.login %}">Login</a>
