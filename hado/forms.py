@@ -32,13 +32,12 @@ class PaymentForm(PaymentFormAdmin):
 
 	class Meta:
 		model = Payment
-		exclude = ['verified'] # Hide the 'verified' field from the User
+		exclude = ['user', 'verified'] # Hide the 'verified' field from the User
 
 	def __init__(self, by_user=None, *args, **kwargs):
 		super(PaymentForm, self).__init__(*args, **kwargs)
 		self.fields['date_paid'].widget = widgets.AdminDateWidget()
 		if by_user is not None:
-			self.fields['contract'].queryset = Contract.objects.filter(user__username=by_user)
-			self.fields['user'].queryset = User.objects.filter(username=by_user)
+			self.fields['contract'] = forms.ModelChoiceField(queryset=Contract.objects.filter(user__username=by_user).order_by('-start'), empty_label=None)
 
 		
