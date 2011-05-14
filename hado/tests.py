@@ -92,26 +92,26 @@ class ContractTest(TestCase):
 		
 	
 	def testContractValidTill(self):
-		'''After initial Payments added in setUp(), valid_till ought to be 31 July 2010'''
+		'''After initial Payments added in setUp(), valid_till ought to be 31 July 2010, non-inclusive of deposit'''
 		
+		self.c.sync()
 		self.assertEqual(self.c.valid_till, datetime.date(2010, 07, 31))
 		
 	
 	def testContractSync(self):
 		'''After initial Payments added in setUp(), and sync() is run, valid_till ought to be 31 July 2010'''
 		
-		self.c.sync()
 		self.assertEqual(self.c.valid_till, datetime.date(2010, 07, 31))
 		
 	
 	def testContractBalance(self):
-		'''After initial Payments added in setUp(), Contract should be 3 months (3*128) in arrears'''
+		'''After initial Payments added in setUp(), Contract should be <arrear_months> * 128 in arrears'''
 		
 		# Calculate arrears from Contract.valid_till till today
 		arrears_months = (datetime.date.today() - self.c.valid_till).days / 30 # Naive month calculation
 		
 		self.assertEqual(self.c.balance(), -(arrears_months*128))
-		self.assertEqual(self.c.balance(in_months=True), arrears_months)
+		self.assertEqual(self.c.balance(in_months=True), -arrears_months)
 		
 	
 	def testContractExtendWithPayment(self):
