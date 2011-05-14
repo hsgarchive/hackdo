@@ -26,9 +26,9 @@ class PaymentInline(admin.TabularInline):
 			# So we extract the user_id portion from that path and use it in our queryset filter
 			m = re.search("/.+\/(?P<id>\d+)\/?", request.path_info)
 			if m is not None:
-				user_id = m.groupdict()['id']
+				user_id = m.group('id')
 				kwargs["queryset"] = Contract.objects.filter(user__id = user_id).exclude(status = "TER")
-			
+				kwargs["empty_label"] = None
 			return db_field.formfield(**kwargs)
 		return super(PaymentInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -50,8 +50,14 @@ class PaymentAdmin(admin.ModelAdmin):
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
-		    kwargs["queryset"] = Contract.objects.exclude(status = "TER")
-		    return db_field.formfield(**kwargs)
+			# Assuming we're editing user in the address eg. "/admin/hado/user/3/"
+			# So we extract the user_id portion from that path and use it in our queryset filter
+			m = re.search("/.+\/(?P<id>\d+)\/?$", request.path_info)
+			if m is not None:
+				pid = m.group('id')
+				kwargs["queryset"] = Contract.objects.filter(user__id = Payment.objects.get(id=pid).user_id).exclude(status = "TER")
+				kwargs['empty_label'] = None
+			return db_field.formfield(**kwargs)
 		return super(PaymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
