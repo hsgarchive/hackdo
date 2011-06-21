@@ -83,6 +83,7 @@ class ContractTest(TestCase):
 		'''Test that we can retrieve the total amount paid for this Contract'''
 		
 		self.assertEqual(self.c.total_paid, self.c.payments.aggregate(Sum('amount'))['amount__sum'])
+		self.assertEqual(self.c.total_paid, 640)
 		
 	
 	def testContractStatusLapsed(self):
