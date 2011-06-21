@@ -81,6 +81,7 @@ class Contract(models.Model):
 	tier = models.ForeignKey("Tier", blank=False, null=True)
 	user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
 	status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
+	desc = models.CharField(max_length=1024, blank=True, help_text="Enter company name if Contract is for Address Use. May use for general remarks for other Contract types")
 
 
 	def __extend_by(self, num_months):
