@@ -32,6 +32,11 @@ def user_profile(request, username):
 	
 	paid_to_date = u.total_paid()
 	
+	# Calculate total account balance
+	account_balance = 0.0
+	for c in contracts:
+		account_balance += c.balance()
+	
 	# Retrieve payment history
 	payment_history = u.payments_made.order_by('-date_paid')
 	
@@ -49,4 +54,4 @@ def user_profile(request, username):
 	# Create a new form anyway
 	pform = PaymentForm(u.username)
 	
-	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status, 'paid_to_date': paid_to_date, "payment_history": payment_history, 'pform': pform })
+	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
