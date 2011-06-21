@@ -127,11 +127,12 @@ class Contract(models.Model):
 		balance = 0
 		duration_in_months = 1
 		
+		# Calculate number of months Contract has been in effect, ie. not Terminated
 		if self.status == 'TER':			
-			duration_in_months = (self.end - self.start).days / 30 # Naive month calculation
+			duration_in_months = (self.end - self.start).days / 28 # Naive month calculation
 		else: 
-			duration_in_months = (datetime.date.today() - self.start).days / 30 # Naive month calculation
-				
+			duration_in_months = (datetime.date.today() - self.start).days / 28 # Naive month calculation
+		
 		balance = self.total_paid - (self.tier.fee * duration_in_months) 
 		
 		if in_months:
