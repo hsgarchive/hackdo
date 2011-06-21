@@ -32,8 +32,8 @@ def user_profile(request, username):
 	
 	paid_to_date = u.total_paid()
 	
-	# Retrieve 10 most recent payments
-	payment_history = u.payments_made.order_by('-date_paid')[0:10]
+	# Retrieve payment history
+	payment_history = u.payments_made.order_by('-date_paid')
 	
 	# Form for submitting payment
 	if request.method == 'POST':
