@@ -8,6 +8,7 @@
 		<h2>Member since: {{ member_since }}</h2>
 		<h2>Membership Status: {{ current_status }}</h2>
 		<h2>Paid to date: SGD {{ paid_to_date }}</h2>
+		<h2>Overall balance: SGD <span class="{% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance }}</span></h2>
 		<h2>Details:</h2>
 		
 		<h2>Contracts</h2>
