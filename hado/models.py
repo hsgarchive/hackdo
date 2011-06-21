@@ -172,6 +172,12 @@ class Contract(models.Model):
 		
 		#force start date to be normalised as 1st day of the month
 		self.start = datetime.date(self.start.year, self.start.month, 1)
+		
+		# If we notice the Contract is now Terminated, set the end date
+		if self.status == 'TER':
+			today = datetime.date.today()
+			self.end = datetime.date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
+		
 		super(Contract, self).save()
 	
 	def clean(self):
