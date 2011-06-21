@@ -178,6 +178,8 @@ class Contract(models.Model):
 		if self.status == 'TER':
 			today = datetime.date.today()
 			self.end = datetime.date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
+		else:
+			self.end = None
 		
 		super(Contract, self).save()
 	
