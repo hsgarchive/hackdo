@@ -28,7 +28,6 @@ class PaymentInline(admin.TabularInline):
 			if m is not None:
 				user_id = m.group('id')
 				kwargs["queryset"] = Contract.objects.filter(user__id = user_id)#.exclude(status = "TER")
-				kwargs["empty_label"] = None
 			return db_field.formfield(**kwargs)
 		return super(PaymentInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
