@@ -18,7 +18,14 @@
 			<li class="contract-type">{{ contract.grouper }}</li>
 			<ul>
 				{% for c in contract.list %}
-				<li class="contract">{{ c }}</li>
+				<li class="contract">
+					{{ c }}
+					<ul>
+						{% with c.balance as balance %}
+						<li>Balance: <span class="{% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ balance }}</span></li>
+						{% endwith %}
+					</ul>
+				</li>
 				{% endfor %}
 			</ul>
 			{% endfor %}
