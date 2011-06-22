@@ -61,19 +61,19 @@
 						<th>Date</th>
 						<th>Amount (SGD)</th>
 						<th>Contract</th>
+						<th>Method</th>
 						<th>Description</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for p in payment_history %}
-					{% with p.amount as amount and p.date_paid as date_paid and p.contract as contract and p.desc as desc %}
-					<tr>
-						<td>{{ date_paid }}</td>
-						<td>{{ amount }}</td>
-						<td>{{ contract }}</td>
-						<td>{{ desc }}</td>
+					<tr class="payment {% if p.verified %}verified{% endif %}">
+						<td>{{ p.date_paid }}</td>
+						<td>{{ p.amount }}</td>
+						<td>{{ p.contract }}</td>
+						<td>{{ p.get_method_display }}</td>
+						<td>{{ p.desc }}</td>
 					</tr>
-					{% endwith %}
 					{% endfor %}
 				</tbody>
 			</table>			

@@ -411,6 +411,10 @@ ul {
 	background-color: #ffebeb;
 }
 
+.verified {
+	background-color: #eaffe0;
+}
+
 /** Footer styling **/
 
 #footer {
