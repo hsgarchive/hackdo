@@ -26,6 +26,10 @@
 	width: 100%;
 }
 
+#payment_verification table tr:hover {
+	background-color: #ffebeb;
+}
+
 #payment_verification form input[type=submit] {
 	float: right;
 	margin: 10px 0px;
