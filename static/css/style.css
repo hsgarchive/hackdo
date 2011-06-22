@@ -331,7 +331,15 @@ ul {
 }
 
 #user_profile > header{
-	font-size: 36px;
+	color: #efefef;
+	font-size: 90px;
+	right: 15px;
+	letter-spacing: -5px;
+	line-height: 0.8em;
+	position: absolute;
+	text-align: right;
+	width: 5em;
+	z-index: -1;
 }
 
 #user_profile section header {
