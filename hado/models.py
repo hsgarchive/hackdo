@@ -189,7 +189,8 @@ class Contract(models.Model):
 			raise ValidationError(_("Contract type and tier mismatched"))
 			
 	def __unicode__(self):
-		return self.user.__unicode__() + u": " + self.ctype.__unicode__() + u" @ $" + unicode(self.tier.fee) + "/mth Start: " + u" " + unicode(self.start.strftime('%d %b %Y')) +  u" End: " + unicode(self.end.strftime('%d %b %Y'))	
+		return "%s %s | %s to %s" % (self.tier, self.ctype, self.start.strftime('%b %Y'), self.valid_till.strftime('%b %Y'))
+
 
 class Tier(models.Model):
 	fee = models.FloatField(default=0.0)
@@ -197,7 +198,7 @@ class Tier(models.Model):
 	ctype = models.ForeignKey("ContractType", blank=False, null=True)
 	
 	def __unicode__(self):
-		return self.desc + u": " + unicode(self.fee)
+		return self.desc
 
 class Payment(models.Model):
 	PAYMENT_METHODS = (
@@ -252,8 +253,7 @@ class Payment(models.Model):
 	verified = models.BooleanField(default=False, blank=False, help_text="Has this Payment been verified/approved by an Admin?")
 	
 	def __unicode__(self):
-		return self.contract.__unicode__() + u" Paid: " + unicode(self.date_paid)
-		
+		return u"%s | %s %s | %s, %s" % (self.user, self.contract.tier, self.contract.ctype, self.amount, self.date_paid.strftime('%d %b %Y'))		
 
 
 class Locker(models.Model):
