@@ -42,6 +42,18 @@ class HackdoAdmin(AdminSite):
 		
 		
 		# Incoming Payments pending verification
+		if request.method == 'POST':
+			pformset = PaymentFormAdminFormset(request.POST, queryset=Payment.objects.filter(verified=False))
+	
+			if pformset.is_valid():
+				pformset.save()
+				
+				# On success, add a note
+				messages.success(request, "Payments verified")
+			else:
+				print pformset.errors
+
+		# Create a new formset anyway	
 		pformset = PaymentFormAdminFormset(queryset=Payment.objects.filter(verified=False))
 		
 		return render(request, 'admin/index.html', {'members':members, 'income':income, 'pformset':pformset})
