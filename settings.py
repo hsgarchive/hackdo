@@ -71,7 +71,8 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATICFILES_DIRS = (
 	('js', '%s/static/js' % ROOT_PATH),
 	('css', '%s/static/css' % ROOT_PATH),
-	('misc', '%s/static/misc' % ROOT_PATH)
+	('misc', '%s/static/misc' % ROOT_PATH),
+	('img', '%s/static/img' % ROOT_PATH)
 )
 
 # Make this unique, and don't share it with anybody.

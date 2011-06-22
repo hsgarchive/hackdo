@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block header %}{% endblock header %}
+
+{% block css %}
+	<style>
+		/** Overriding CSS on login page **/
+		
+		#content {
+			margin: 50px auto !important;
+			width: 960px;
+		}
+	</style>
+{% endblock css %}
+
+{% block content %}
+
+	<div id="login">
+		<img src="{{ STATIC_URL }}img/hackerspacesg-long.png" title="HackerspaceSG" alt="HackerspaceSG">
+	
+		{% if form.errors %}
+			<p>Your username and/or password did not match.</p>
+		{% endif %}
+	
+		<form method="post" action="/login/">
+			{% csrf_token %}
+			<input type="text" placeholder="username" id="id_username" name="username">
+			<input type="password" placeholder="password" id="id_password" name="password">
+			<input type="hidden" name="next" value="{{ next }}">
+			<input type="submit" value="login">	
+		</form>
+	</div>
+
+{% endblock content %}
