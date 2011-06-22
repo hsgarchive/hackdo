@@ -7,8 +7,9 @@
 	{{ block.super }}
 <!--
 	<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
-	<link href="{{ MEDIA_URL }}css/admin.css" media="screen" rel="stylesheet" type="text/css" />
 -->
+	<link href="{{ STATIC_URL }}css/admin.css" media="screen" rel="stylesheet" type="text/css" />
+
 {% endblock %}
 
 {% block coltype %}{% endblock %}
