@@ -4,6 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _, ugettext as __
 from django.forms.util import ErrorList
 from django.contrib.admin import widgets
+from django.forms.models import modelformset_factory
 
 import datetime
 
@@ -40,4 +41,6 @@ class PaymentForm(PaymentFormAdmin):
 		if by_user is not None:
 			self.fields['contract'] = forms.ModelChoiceField(queryset=Contract.objects.filter(user__username=by_user).exclude(status='TER').order_by('-start'), empty_label=None)
 
-		
+
+
+PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)

@@ -7,62 +7,114 @@
 	{{ block.super }}
 <!--
 	<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />
-	<link href="{{ MEDIA_URL }}css/admin.css" media="screen" rel="stylesheet" type="text/css" />
 -->
+	<link href="{{ STATIC_URL }}css/admin.css" media="screen" rel="stylesheet" type="text/css" />
+
 {% endblock %}
 
-{% block coltype %}colMS{% endblock %}
+{% block branding %}
+<h1 id="site-name">{% trans 'HackDo' %}</h1>
+{% endblock %}
+
+{% block coltype %}{% endblock %}
 {% block content %}	
-	<div id="content-main">
+	<div id="admin">
 		
-		<h1>Stats</h1>
-		<ul>
-			<li>Members</li>
+		<section id="stats">
+			<header><h1>Stats</h1></header>
 			<ul>
-				{% for status,count in members.items %}
-				{% if status != 'total' %}
-				<li>{{ status|capfirst }} : {{ count }}</li>
-				{% endif %}
-				{% endfor %}
-				<li>Total : {{ members.total }}</li>
+				<li>
+					<header><h2>Members</h2></header>
+					<ul>
+						{% for status,count in members.items %}
+						{% if status != 'total' %}
+						<li>{{ status|capfirst }} : {{ count }}</li>
+						{% endif %}
+						{% endfor %}
+						<li>Total : {{ members.total }}</li>
+					</ul>
+				</li>
+				<li>
+					<header><h2>Income this month</h2></header>
+					<ul>
+						{% for t,a in income.items %}
+						{% if t != 'summary' %}
+						<li>{{ t }} : {{ a }}</li>
+						{% endif %}				
+						{% endfor %}
+					</ul>
+				</li>
+				<li>
+					<header><h2>Income summary</h2></header>
+					<ul>
+						<li>Supposed : {{ income.summary.supposed }}</li>
+						<li>Actual : {{ income.summary.actual }}</li>
+						<li>Shortfall : {{ income.summary.shortfall }}</li>
+					</ul>
+				</li>
 			</ul>
-			<li>Income this month</li>
-			<ul>
-				{% for t,a in income.items %}
-				{% if t != 'summary' %}
-				<li>{{ t }} : {{ a }}</li>
-				{% endif %}				
-				{% endfor %}
+		</section>
+		
+		<hr>
+		
+		<section id="records">
+			<header><h1>Admin</h1></header>
+			<ul class="choices">
+				<li><a href="{% url admin:hado_user_changelist %}">Members</a></li>
+				<li><a href="{% url admin:hado_payment_add %}">Payment</a></li>
 			</ul>
-			<li>Income summary</li>
-			<ul>
-				<li>Supposed : {{ income.summary.supposed }}</li>
-				<li>Actual : {{ income.summary.actual }}</li>
-				<li>Shortfall : {{ income.summary.shortfall }}</li>
+		</section>
+		
+		<hr>
+		
+		<section id="reports">
+			<header><h1>Reports</h1></header>
+			
+			<ul class="choices">
+				<li><a href="">Monthly Revenue</a></li>
+				<li><a href="">Monthly Expenditure</a></li>
+				<li><a href="">Lapsed Members</a></li>
+				<li><a href="">Current Members</a></li>
 			</ul>
-		</ul>
+		</section>
 		
-		<h1>Admin</h1>
-		<ul class="choices">
-			<li><a href="{% url admin:hado_user_changelist %}">Members</a></li>
-			<li><a href="{% url admin:hado_payment_add %}">Payment</a></li>
-		</ul>
+		<hr>
 		
-		<h1>Reports</h1>
-		
-		<ul class="choices">
-			<li><a href="">Monthly Revenue</a></li>
-			<li><a href="">Monthly Expenditure</a></li>
-			<li><a href="">Lapsed Members</a></li>
-			<li><a href="">Current Members</a></li>
-		</ul>
-		
-		<h1>Payments to be verified</h1>
-		<form method="post" action="">
-			<table>
-				{{ pformset.as_table }}
-			</table>
-		</form>	
+		<section id="payment_verification">
+			<header><h1>Payments to be verified</h1></header>
+			<form method="post" action="" class="clearfix">
+				{% csrf_token %}
+				<table>
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>Date paid</th>
+							<th>Amount</th>
+							<th>Contract</th>
+							<th>Method</th>
+							<th>Description</th>
+							<th>Verified</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{ pformset.management_form }}
+						{% for p in pformset.forms %}
+						<tr>
+							{{ p.id }}
+							<td>{{ p.user }}</td>
+							<td>{{ p.date_paid }}</td>
+							<td>{{ p.amount }}</td>
+							<td>{{ p.contract }}</td>
+							<td>{{ p.method }}</td>
+							<td>{{ p.desc }}</td>
+							<td>{{ p.verified }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<input type="submit" value="Update">
+			</form>	
+		</section>
 		
 		{% comment %}
 		<h1>Contracts</h1>

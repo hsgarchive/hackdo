@@ -3,9 +3,11 @@ import datetime
 
 from django.contrib.admin.sites import AdminSite
 from django.db.models import Q
-from django.forms.models import modelformset_factory
+from django.contrib import messages
+
 from hado.models import *
-from hado.forms import PaymentFormAdmin
+from hado.forms import PaymentFormAdmin, PaymentFormAdminFormset
+
 from utils import render
 
 # Subclassing a custom admin to provide a custom interface
@@ -40,7 +42,18 @@ class HackdoAdmin(AdminSite):
 		
 		
 		# Incoming Payments pending verification
-		PaymentFormAdminFormset = modelformset_factory(Payment)
+		if request.method == 'POST':
+			pformset = PaymentFormAdminFormset(request.POST, queryset=Payment.objects.filter(verified=False))
+	
+			if pformset.is_valid():
+				pformset.save()
+				
+				# On success, add a note
+				messages.success(request, "Payments verified")
+			else:
+				print pformset.errors
+
+		# Create a new formset anyway	
 		pformset = PaymentFormAdminFormset(queryset=Payment.objects.filter(verified=False))
 		
 		return render(request, 'admin/index.html', {'members':members, 'income':income, 'pformset':pformset})

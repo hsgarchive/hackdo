@@ -48,10 +48,13 @@ def user_profile(request, username):
 			p.user = request.user
 			p.save()
 			
+			# Create a new form now that the previous entry has been saved
+			pform = PaymentForm(u.username)
+			
 			# On success, add a note
 			messages.success(request, "Payment submitted for verification")
-			
-	# Create a new form anyway
-	pform = PaymentForm(u.username)
+	else:		
+		# Create a new form
+		pform = PaymentForm(u.username)
 	
 	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
