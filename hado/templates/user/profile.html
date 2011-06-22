@@ -10,9 +10,9 @@
 			<header>Account summary</header>
 			<ul id="account_details">
 				<li><span class="detail_header">Member since</span> <span class="detail_value">{{ member_since|date:"M Y" }}</span></li>
-				<li><span class="detail_header">Membership status</span> <span class="detail_value {% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ current_status }}</span></li>
+				<li><span class="detail_header">Membership status</span> <span class="detail_value {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ current_status }}</span></li>
 				<li><span class="detail_header">Paid to date</span> <span class="detail_value currency">{{ paid_to_date|intcomma }}</span></li>
-				<li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
+				<li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
 			</ul>		
 		</section>
 		
@@ -42,7 +42,7 @@
 					<ul>
 						{% for c in contract.list %}
 						<li class="contract">
-							{{ c }} &mdash; <span title="Contract balance" class="balance currency {% if c.balance > 0.0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span>
+							{{ c }} &mdash; <span title="Contract balance" class="balance currency {% if c.balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span>
 						</li>
 						{% endfor %}
 					</ul>
