@@ -40,7 +40,7 @@ class HackdoAdmin(AdminSite):
 		
 		
 		# Incoming Payments pending verification
-		PaymentFormAdminFormset = modelformset_factory(Payment)
+		PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
 		pformset = PaymentFormAdminFormset(queryset=Payment.objects.filter(verified=False))
 		
 		return render(request, 'admin/index.html', {'members':members, 'income':income, 'pformset':pformset})
