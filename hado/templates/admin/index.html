@@ -83,6 +83,7 @@
 		<section id="payment_verification">
 			<header><h1>Payments to be verified</h1></header>
 			<form method="post" action="" class="clearfix">
+				{% csrf_token %}
 				<table>
 					<thead>
 						<tr>
@@ -90,6 +91,7 @@
 							<th>Date paid</th>
 							<th>Amount</th>
 							<th>Contract</th>
+							<th>Method</th>
 							<th>Description</th>
 							<th>Verified</th>
 						</tr>
@@ -98,10 +100,12 @@
 						{{ pformset.management_form }}
 						{% for p in pformset.forms %}
 						<tr>
+							{{ p.id }}
 							<td>{{ p.user }}</td>
 							<td>{{ p.date_paid }}</td>
 							<td>{{ p.amount }}</td>
 							<td>{{ p.contract }}</td>
+							<td>{{ p.method }}</td>
 							<td>{{ p.desc }}</td>
 							<td>{{ p.verified }}</td>
 						</tr>
