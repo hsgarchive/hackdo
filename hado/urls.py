@@ -4,7 +4,7 @@ from hado.views import *
 
 urlpatterns = patterns('',
 
-	url(r'^$', index, name='hado.index'),	
+	url(r'^$', index, name='index'),	
 #	
 #	# User methods
 #	url(r'user/(?P<username>\w+)/?$', user_profile, name="hado.user.show"),
