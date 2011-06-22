@@ -1,54 +1,84 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load humanize %}
 
 {% block content %}
 
-	<article>
+	<article id="user_profile">
 		<header>{{ u.get_full_name }}</header>
-		<h2>Member since: {{ member_since }}</h2>
-		<h2>Membership Status: {{ current_status }}</h2>
-		<h2>Paid to date: SGD {{ paid_to_date }}</h2>
-		<h2>Overall balance: SGD <span class="{% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance }}</span></h2>
-		<h2>Details:</h2>
 		
-		<h2>Contracts</h2>
-		{% regroup contracts by ctype as contract_list %}
-		<ul id="member-contracts">
-			{% for contract in contract_list %}
-			<li class="contract-type">{{ contract.grouper }}</li>
-			<ul>
-				{% for c in contract.list %}
-				<li class="contract">
-					{{ c }}
+		<section id="account_summary">
+			<header>Account summary</header>
+			<ul id="account_details">
+				<li><span class="detail_header">Member since</span> <span class="detail_value">{{ member_since|date:"M Y" }}</span></li>
+				<li><span class="detail_header">Membership status</span> <span class="detail_value {% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ current_status }}</span></li>
+				<li><span class="detail_header">Paid to date</span> <span class="detail_value currency">{{ paid_to_date|intcomma }}</span></li>
+				<li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
+			</ul>		
+		</section>
+		
+		<hr>
+
+		<section id="payment_submission">				
+			<header>Submit a new Payment</header>
+			<form method="post" action="{% url user_profile u.username %}">
+				{% csrf_token %}
+				{{ pform.media }}
+				<ul>
+					{{ pform.as_ul }}
+				</ul>
+				<input type='submit' value="Notify admins of new payment">
+			</form>
+		</section>
+
+		<hr>
+
+		<section id="contract_summaries">
+			<header>Contracts</header>
+			{% regroup contracts by ctype as contract_list %}
+			<ul id="user_contracts">
+				{% for contract in contract_list %}
+				<li class="contract_type">
+					{{ contract.grouper }}
 					<ul>
-						{% with c.balance as balance %}
-						<li>Balance: <span class="{% if balance > 0.0 %}positive{% else %}negative{% endif %}">{{ balance }}</span></li>
-						{% endwith %}
+						{% for c in contract.list %}
+						<li class="contract">
+							{{ c }} &mdash; <span title="Contract balance" class="balance currency {% if c.balance > 0.0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span>
+						</li>
+						{% endfor %}
 					</ul>
 				</li>
 				{% endfor %}
 			</ul>
-			{% endfor %}
-		</ul>
+		</section>
 		
-		<h2>Payment history</h2>
-		<ul>
-			{% for p in payment_history %}
-			<li>
-				{% blocktrans with p.amount as amount and p.date_paid as date_paid and p.contract.ctype.desc as contract %}
-				{{ date_paid }}: ${{ amount }} for {{ contract }}				
-				{% endblocktrans %}
-			</li>
-			{% endfor %}
-		</ul>
+		<hr>
 		
-		<h2>Submit a new Payment</h2>
-		<form method="post" action="{% url user_profile u.username %}">
-			{% csrf_token %}
-			{{ pform.media }}
-			{{ pform.as_ul }}
-			<input type='submit' value="Notify admins of new payment"
-		</form>
+		<section id="payment_history">
+			<header>Payment history</header>
+			<table id="payment_history_table">
+				<thead>
+					<tr>
+						<th>Date</th>
+						<th>Amount (SGD)</th>
+						<th>Contract</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for p in payment_history %}
+					{% with p.amount as amount and p.date_paid as date_paid and p.contract as contract and p.desc as desc %}
+					<tr>
+						<td>{{ date_paid }}</td>
+						<td>{{ amount }}</td>
+						<td>{{ contract }}</td>
+						<td>{{ desc }}</td>
+					</tr>
+					{% endwith %}
+					{% endfor %}
+				</tbody>
+			</table>			
+		</section>
+
 	</article>
 
 {% endblock content %}
