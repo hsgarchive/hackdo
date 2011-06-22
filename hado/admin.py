@@ -44,8 +44,12 @@ class ContractInline(admin.TabularInline):
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
 	form = PaymentFormAdmin
-	
-	fields = ('user', 'contract', 'date_paid', 'amount', 'method', 'desc', 'verified')
+
+	fieldsets = (
+		(None, {
+			'fields': ('user', ('date_paid', 'amount', 'contract', 'method'), 'desc', 'verified')
+		}),
+	)
 	
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
