@@ -415,6 +415,26 @@ ul {
 	background-color: #eaffe0;
 }
 
+.legend {
+	margin: 8px 0px;
+}
+
+.legend_block {
+	background-color: #eaffe0 ;
+	border: 1px solid #ccc;
+	height: 10px;
+	width: 10px;  
+}
+
+.legend_text {
+	font-style: italic;
+}
+
+.legend_block, .legend_text {
+	display: inline-block;
+	vertical-align: top;
+}
+
 /** Footer styling **/
 
 #footer {
