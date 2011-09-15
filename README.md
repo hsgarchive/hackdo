@@ -10,27 +10,24 @@ Most of the magic goes on in the Admin console (have a look in `hado/admin.py`).
 Setup
 -----
 
-1. Grab the source code:
+1. Create a virtualenv (install the package if you haven't already), eg. `dev`
 
-       $ git clone git://github.com/hackerspacesg/hackdo.git
+       `$ virtualenv --no-site-packages dev`
 
-1. Since django has [a git mirror here](http://github.com/django/django), we can
-   track it too. Checkout the django source we're running against:
+2. Grab the source code, and stick it in the virtualenv created above
 
-       $ git submodule init
-       $ git submodule update
-  
-   Note: if you already have a local checkout of the django's git mirror, pass
-   it to `submodule update` via `--reference`. (RTM)
-  
-1. Grab other dependencies:
+       `$ cd dev`  
+       `$ git clone git://github.com/hackerspacesg/hackdo.git`
 
-       $ pip install -r src/requirements.txt
+3. Grab other dependencies, and install them in the virtualenv
+
+       `$ cd ..`  
+       `$ pip install -r hackdo/scripts/requirements.txt`
      
-1. Set up django's tables and migrations:
+4. Set up django's tables and migrations:
 
-       $ ./manage.py syncdb
-       $ ./manage.py migrate --all
+       `$ ./manage.py syncdb`  
+       `$ ./manage.py migrate --all`
 
 Links
 -----
