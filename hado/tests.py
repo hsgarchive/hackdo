@@ -109,7 +109,7 @@ class ContractTest(TestCase):
 		'''After initial Payments added in setUp(), Contract should be <arrear_months> * 128 in arrears'''
 		
 		# Calculate arrears from Contract.valid_till till today
-		arrears_months = (datetime.date.today() - self.c.valid_till).days / 30 # Naive month calculation
+		arrears_months = (datetime.date.today() - self.c.valid_till).days / 28 # Naive month calculation
 		
 		self.assertEqual(self.c.balance(), -(arrears_months*128))
 		self.assertEqual(self.c.balance(in_months=True), -arrears_months)
