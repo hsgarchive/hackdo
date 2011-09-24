@@ -27,8 +27,6 @@ def user_profile(request, username):
 	
 	u = User.objects.get(username=username)
 	contracts = u.contracts.all().order_by("ctype")
-	member_since = u.contracts.filter(ctype__desc='Membership').order_by('start')[0].start
-	current_status = u.contracts.filter(ctype__desc='Membership').order_by('-start')[0].get_status_display()
 	
 	paid_to_date = u.total_paid()
 	
@@ -57,4 +55,4 @@ def user_profile(request, username):
 		# Create a new form
 		pform = PaymentForm(u.username)
 	
-	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'member_since':member_since, 'current_status': current_status, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
+	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
