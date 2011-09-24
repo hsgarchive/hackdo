@@ -15,6 +15,8 @@ import datetime
 class UserTest(TestCase):
 	'''Test various User functions'''
 	
+	fixtures = ['contracttype', 'tier']
+	
 	def setUp(self):
 		pass
 		
@@ -36,8 +38,39 @@ class UserTest(TestCase):
 		
 		# Check that fullname is returned
 		self.assertEqual(unicode(u), "Test User")
+
+
+	def testMemberSince(self):
+		'''Test that User::member_since returns the date the User joined as a member'''
 		
-		
+		# Create a new User
+		u = User(username="testuser")
+		u.set_password('testtest')
+		u.save()
+
+		date_start = datetime.date(2010, 04, 01)
+		date_end = datetime.date(2010, 05, 31)
+
+		# Attribute some membership Contracts
+		u.contracts.create(
+			start = date_start,
+			end = date_end,
+			ctype = ContractType.objects.get(desc='Membership'),
+			tier = Tier.objects.get(desc='Regular'),
+			status = u'TER'
+		)
+
+		u.contracts.create(
+			start = datetime.date(2010, 06, 01),
+			ctype = ContractType.objects.get(desc='Membership'),
+			tier = Tier.objects.get(desc='Youth'),
+			status = u'ACT'
+		)
+
+
+		self.assertEqual(date_start, u.member_since())
+
+
 class ContractTest(TestCase):
 
 	fixtures = ['contracttype', 'tier']
