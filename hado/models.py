@@ -185,7 +185,7 @@ class Contract(models.Model):
 			return False	
 	
 		
-	def save(self):
+	def save(self, *args, **kwargs):
 		# Overridden save() forces the date of self.end to be the last day of that given month.
 		# Eg. if self.end is initially declared as 5 May 2010, we now force it to become 31 May 2010 before actually save()'ing the object.
 		
@@ -203,8 +203,18 @@ class Contract(models.Model):
 		if self.status == 'TER' and self.end is None:
 			today = datetime.date.today()
 			self.end = datetime.date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
-		
-		super(Contract, self).save()
+
+		# If the model has been saved already, ie. has an id, force it to update
+		# otherwise, insert a new record		
+		if self.id:
+			kwargs['force_update'] = True
+			kwargs['force_insert'] = False
+		else:
+			kwargs['force_insert'] = True
+			kwargs['force_update'] = False
+
+		super(Contract, self).save(*args, **kwargs)
+
 	
 	def clean(self):
 		# Model validation to ensure that validates that contract and tier are allowed
