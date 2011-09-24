@@ -66,7 +66,7 @@ class User(User):
 			if not hasattr(self, '__member_since'):
 				ms = self.contracts.filter(ctype__desc='Membership').order_by('start')[0:1]
 				if len(ms) > 0:
-					self.__member_since = ms.pop().start
+					self.__member_since = ms[0].start
 				else:
 					self.__member_since = None
 			
