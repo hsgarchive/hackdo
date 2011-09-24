@@ -6,7 +6,7 @@ from django.db.models.signals import pre_save, post_save, post_init, pre_init
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
 
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 import datetime, calendar
 
@@ -128,6 +128,12 @@ class Contract(models.Model):
 		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, calendar.monthrange(self.valid_till.year, self.valid_till.month)[1])
 	
 
+	def __month_diff(self, end, start):
+		'''Returns the months between two dates'''
+		
+		r = relativedelta(end, start)
+		return r.months + (r.years * 12 if r.years else 0)
+
 
 	@property
 	def total_paid(self):
@@ -160,9 +166,9 @@ class Contract(models.Model):
 		
 		# Calculate number of months Contract has been in effect, ie. not Terminated
 		if self.status == 'TER':			
-			duration_in_months += relativedelta.relativedelta(self.end, self.start).months # Naive month calculation
+			duration_in_months += self.__month_diff(self.end, self.start)
 		else: 
-			duration_in_months += relativedelta.relativedelta(datetime.date.today(), self.start).months # Naive month calculation
+			duration_in_months += self.__month_diff(datetime.date.today(), self.start)
 		
 		balance = self.total_paid - (self.tier.fee * duration_in_months) 
 		

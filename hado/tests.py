@@ -7,7 +7,7 @@ Replace these with more appropriate tests for your application.
 
 from django.test import TestCase
 
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 from hado.models import *
 
@@ -149,7 +149,8 @@ class ContractTest(TestCase):
 		'''After initial Payments added in setUp(), Contract should be <arrear_months> * 128 in arrears'''
 		
 		# Calculate arrears from Contract.valid_till till today
-		arrears_months = relativedelta.relativedelta(datetime.date.today(), self.c.valid_till).months # Naive month calculation
+		r = relativedelta(datetime.date.today(), self.c.valid_till)
+		arrears_months = r.months + (r.years * 12 if r.years else 0) # Naive month calculation
 		
 		self.assertEqual(self.c.balance(), -(arrears_months*128))
 		self.assertEqual(self.c.balance(in_months=True), -arrears_months)
