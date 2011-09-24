@@ -2,7 +2,6 @@
 
 # use our django
 import sys
-sys.path.append('./src/django')
 
 from django.core.management import execute_manager
 try:
