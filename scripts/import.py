@@ -110,11 +110,13 @@ def import_contracts(interactive=False):
 		cc.id = c[0]
 		cc.user = User.objects.get(id=c[1]) 
 		cc.start = datetime.datetime.strptime(c[2], '%d-%b-%Y')
+		cc.status = c[8]
 		
-		if c[3]:
+		if c[3] != '':
 			cc.end = datetime.datetime.strptime(c[3], '%d-%b-%Y')
 			cc.status = 'TER'
 		else:
+			cc.end = None
 			cc.status = 'ACT' # Assume a default of Active
 		
 		cc.tier = Tier.objects.get(fee=c[4])
@@ -141,8 +143,8 @@ def import_contracts(interactive=False):
 		try:
 			cc.save()
 			print "Saved\n\n"		
-		except:
-			print "Contract %s failed" % cc
+		except Exception as e:
+			print "Contract %s failed: %s" % (cc, e)
 			CONTRACT_REJECTS.append(u)
 
 
@@ -179,6 +181,8 @@ def import_members(interactive=False):
 		u.is_active = True
 		
 		# Summary
+		print "\n\n\n"
+		print "=" * 20
 		print "User summary\n"
 		print "First name: %s" % u.first_name
 		print "Last name: %s" % u.last_name
@@ -199,7 +203,7 @@ def import_members(interactive=False):
 		try:
 			u.save()
 			print "Saved\n\n"		
-		except:
-			print "Member %s %s failed" % (u.first_name, u.last_name)
+		except Exception as e:
+			print "Member %s %s failed: %s" % (u.first_name, u.last_name, e)
 			MEMBER_REJECTS.append(u)
 		
