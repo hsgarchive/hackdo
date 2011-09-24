@@ -223,6 +223,7 @@ button {  width: auto; overflow: visible; }
     Author: 
  */
 
+
 /** Branding **/
 
 #header {
@@ -269,11 +270,16 @@ ul {
 	content: "SGD ";
 }
 
-.helptext {
+.helptext,
+.placeholder {
 	color: #999;
 	font-family: "Georgia", "Times New Roman", serif;
 	font-size: 10px;
 	font-style: italic;
+}
+
+.placeholder {
+	text-align: center;
 }
 
 #content {

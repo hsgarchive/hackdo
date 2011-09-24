@@ -47,6 +47,8 @@
 						{% endfor %}
 					</ul>
 				</li>
+				{% empty %}
+				<li class="placeholder">No contracts found</li>
 				{% endfor %}
 			</ul>
 		</section>
@@ -73,6 +75,10 @@
 						<td>{{ p.contract }}</td>
 						<td>{{ p.get_method_display }}</td>
 						<td>{{ p.desc }}</td>
+					</tr>
+					{% empty %}
+					<tr class="payment placeholder">
+						<td colspan="5">No payments found</td>
 					</tr>
 					{% endfor %}
 				</tbody>
