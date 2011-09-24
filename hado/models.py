@@ -5,7 +5,12 @@ from django.db.models import Sum
 from django.db.models.signals import pre_save, post_save, post_init, pre_init
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
+
+from dateutil import relativedelta
+
 import datetime, calendar
+
+
 # Create your models here.
 
 def get_image_path(instance, filename):
@@ -155,9 +160,9 @@ class Contract(models.Model):
 		
 		# Calculate number of months Contract has been in effect, ie. not Terminated
 		if self.status == 'TER':			
-			duration_in_months = (self.end - self.start).days / 28 # Naive month calculation
+			duration_in_months += relativedelta.relativedelta(self.end, self.start).months # Naive month calculation
 		else: 
-			duration_in_months = (datetime.date.today() - self.start).days / 28 # Naive month calculation
+			duration_in_months += relativedelta.relativedelta(datetime.date.today(), self.start).months # Naive month calculation
 		
 		balance = self.total_paid - (self.tier.fee * duration_in_months) 
 		
