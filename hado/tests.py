@@ -62,6 +62,9 @@ class UserTest(TestCase):
 			status = u'TER'
 		)
 
+		# Ensure we only have the one Contract created so far
+		self.assertEqual(u.contracts.all().count(), 1)
+
 		u.contracts.create(
 			start = datetime.date(2010, 06, 01),
 			ctype = ContractType.objects.get(desc='Membership'),
@@ -69,6 +72,8 @@ class UserTest(TestCase):
 			status = u'ACT'
 		)
 
+		# Now we have two
+		self.assertEqual(u.contracts.all().count(), 2)
 
 		self.assertEqual(date_start, u.member_since())
 
