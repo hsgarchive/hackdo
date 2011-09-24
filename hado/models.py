@@ -45,11 +45,20 @@ class User(User):
 		
 	def membership_status(self, pretty=False):
 		'''Returns string (see Contract::CONTRACT_STATUSES) indicating latest Membership status of this User'''
-		if pretty:
-			return self.contracts.filter(ctype__desc='Membership').latest('start').get_status_display()
-		else:
-			return self.contracts.filter(ctype__desc='Membership').latest('start').status
-
+		try:
+			if not hasattr(self, '__latest_membership'):
+				lm = self.contracts.filter(ctype__desc='Membership').latest('start')
+				if len(lm) > 0:
+					self.__latest_membership = lm.pop()
+				else:
+					self.__latest_membership = None
+					
+			return self.__latest_membership.get_status_display() if pretty else self.__latest_membership.status
+			
+		except Contract.DoesNotExist:
+			return None
+	
+	
 	
 	def __unicode__(self):
 		if self.first_name and self.last_name:
