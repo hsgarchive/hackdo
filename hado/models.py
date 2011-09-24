@@ -59,6 +59,22 @@ class User(User):
 			return None
 	
 	
+	def member_since(self):
+		'''Returns datetime object representing start date of earliest Membership Contract if found, None otherwise'''
+		
+		try:
+			if not hasattr(self, '__member_since'):
+				ms = self.contracts.filter(ctype__desc='Membership').order_by('start')[0:1]
+				if len(ms) > 0:
+					self.__member_since = ms.pop().start
+				else:
+					self.__member_since = None
+			
+			return self.__member_since
+			
+		except Contract.DoesNotExist:
+			return None
+	
 	
 	def __unicode__(self):
 		if self.first_name and self.last_name:
