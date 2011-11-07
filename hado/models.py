@@ -53,14 +53,12 @@ class User(User):
 		try:
 			if not hasattr(self, '__latest_membership'):
 				lm = self.contracts.filter(ctype__desc='Membership').latest('start')
-				if len(lm) > 0:
-					self.__latest_membership = lm.pop()
-				else:
-					self.__latest_membership = None
-					
+				self.__latest_membership = lm
+									
 			return self.__latest_membership.get_status_display() if pretty else self.__latest_membership.status
 			
 		except Contract.DoesNotExist:
+			self.__latest_membership = None
 			return None
 	
 	
