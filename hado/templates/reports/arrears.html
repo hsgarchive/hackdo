@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+	<article id="arrears">
+		<header><h1>Arrears</h1></header>
+
+		<section id="arrears_list">
+			{% regroup contracts by user as user_contracts %}
+			<ul>
+				{% for uc in user_contracts %}
+				<li class="contract_type">
+					{{ uc.grouper }}
+					<ul>
+						{% for c in uc.list %}
+						<li class="contract">{{ c.ctype }} &mdash; {{ c }} &mdash; <span class="{% if c.balance >= 0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span></li>
+						{% endfor %}
+					</ul>
+				{% endfor %}
+			</ul>
+		</section>
+	</article>
+
+{% endblock content	 %}

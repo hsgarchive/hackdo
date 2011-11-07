@@ -14,6 +14,8 @@ urlpatterns = patterns('',
 
 	url(r'users/(?P<username>[a-zA-Z0-9]+)', user_profile, name='user_profile'),
 
+	url(r'arrears/?$', arrears, name='arrears'),
+
 #	
 #	url(r'debug/$', debug, name='hado.debug'),
 

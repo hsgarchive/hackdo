@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 # Models
 from hado.models import *
@@ -55,3 +56,13 @@ def user_profile(request, username):
 		pform = PaymentForm(u.username)
 	
 	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
+
+
+@login_required
+def arrears(request):
+	'''Calculate arrears for all members'''
+
+	# Find all current, ie. non-terminated Contracts, sorted by member
+	contracts = Contract.objects.exclude(Q(status='PEN')).select_related('user', 'ctype', 'tier').order_by('user__first_name')
+
+	return render(request, 'reports/arrears.html', {'contracts': contracts})
