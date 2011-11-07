@@ -21,7 +21,7 @@ def index(request):
 @login_required
 def user_profile(request, username):
 
-	if not request.user.username == username:
+	if not request.user.is_superuser and request.user.username != username:
 		return HttpResponseRedirect(request.user.get_absolute_url())
 	
 	u = User.objects.get(username=username)
