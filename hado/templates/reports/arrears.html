@@ -14,7 +14,7 @@
 					{{ uc.grouper }}
 					<ul>
 						{% for c in uc.list %}
-						<li class="contract">{{ c.ctype }} &mdash; {{ c }} &mdash; <span class="{% if c.balance >= 0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span></li>
+						<li class="contract">({{ c.get_status_display }}) {{ c.ctype }} &mdash; {{ c }} &mdash; <span class="{% if c.balance >= 0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span></li>
 						{% endfor %}
 					</ul>
 				{% endfor %}
