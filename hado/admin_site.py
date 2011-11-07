@@ -4,11 +4,11 @@ import datetime
 from django.contrib.admin.sites import AdminSite
 from django.db.models import Q
 from django.contrib import messages
+from django.shortcuts import render
 
 from hado.models import *
 from hado.forms import PaymentFormAdmin, PaymentFormAdminFormset
 
-from utils import render
 
 # Subclassing a custom admin to provide a custom interface
 class HackdoAdmin(AdminSite):

@@ -2,7 +2,6 @@
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.shortcuts import *
-from utils import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
