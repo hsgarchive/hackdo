@@ -120,7 +120,11 @@ class Contract(models.Model):
 # 		last_day = calendar.monthrange(self.end.year, self.end.month)[1]
 		
 		#self.end = datetime.date(year, month, last_day)
-		self.valid_till = self.valid_till + datetime.timedelta(days=(28*num_months))
+		delta = {
+			'months': int(num_months % 12),
+			'years': int(num_months / 12)
+		}
+		self.valid_till = self.valid_till + relativedelta(**delta) #datetime.timedelta(days=(28*num_months))
 		
 		# Normalise date to end of that month
 		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, calendar.monthrange(self.valid_till.year, self.valid_till.month)[1])
