@@ -278,8 +278,15 @@ ul {
 	font-style: italic;
 }
 
-.placeholder {
+.placeholder,
+.center {
 	text-align: center;
+}
+
+.notice {
+	font-family: "Georgia", serif;
+	font-size: 12px;
+	font-style: italic;
 }
 
 #content {
@@ -444,11 +451,7 @@ ul {
 /** Footer styling **/
 
 #footer {
-	font-family: "Georgia", serif;
-	font-size: 12px;
-	font-style: italic;
 	margin: 50px auto;
-	text-align: center;
 	width: 50%;
 }
 
