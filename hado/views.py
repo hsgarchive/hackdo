@@ -91,6 +91,7 @@ def invoice(request):
 					'start': unicode(k.start),
 					'end': unicode(k.end) if k.end else "N/A"
 				})
+		ud['id'] = k.user.id
 		ud['email'] = k.user.email # Use the last instance of k
 		ud['membership_status'] = k.user.membership_status(pretty=True)
 		ud['monthly'] = k.user._User__latest_membership.tier.fee if hasattr(k.user, '_User__latest_membership') else "N/A"
