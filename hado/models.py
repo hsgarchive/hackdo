@@ -52,7 +52,7 @@ class User(User):
 		'''Returns string (see Contract::CONTRACT_STATUSES) indicating latest Membership status of this User'''
 		try:
 			if not hasattr(self, '__latest_membership'):
-				lm = self.contracts.filter(ctype__desc='Membership').latest('start')
+				lm = self.contracts.filter(ctype__desc='Membership').exclude(status='PEN').latest('start')
 				self.__latest_membership = lm
 									
 			return self.__latest_membership.get_status_display() if pretty else self.__latest_membership.status

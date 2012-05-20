@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 
 	url(r'arrears/?$', arrears, name='arrears'),
 
+	url(r'invoice/?$', invoice, name='invoice'),
+
 #	
 #	url(r'debug/$', debug, name='hado.debug'),
 
