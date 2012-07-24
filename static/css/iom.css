@@ -1,0 +1,298 @@
+/* Eric Meyer's Reset Reloaded */
+/* http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/ */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+/* =Clearfix (all browsers)
+--------------------------------*/
+.clearfix:after {
+content: ".";
+display: block;
+height: 0;
+clear: both;
+visibility: hidden;
+}
+/* IE6 */ 
+* html .clearfix {height: 1%;}
+/* IE7 */
+*:first-child+html .clearfix {min-height: 1px;}
+
+/** General styling **/
+body {
+	color: #444;
+	font-family: "Helvetica Neue", sans-serif;
+	margin: auto;
+	width: 960px;
+}
+
+
+section {
+	padding: 0px 20px;
+	margin: 20px 0px;
+}
+
+.currency:before {
+	content: "SGD ";
+}
+
+header h2 {
+	font-size: 1.5em;
+	margin: 15px 0px;
+	text-transform: uppercase;
+}
+
+header p {
+	text-align: left;
+	text-transform: lowercase;
+}
+
+address {
+	margin: 15px 0px;
+}
+
+.sub {
+	color: #999;
+}
+
+/** Header styling **/
+#header {
+	margin-bottom: 30px;
+	width: 100%;
+}
+
+
+#letterhead {
+	display: inline-block;
+}
+
+
+#meta {
+	color: #999;
+	font-size: 1.9em;
+	float: right;
+	display: inline-block;
+	margin: 0px;
+	text-align: right;
+	vertical-align: top;
+}
+
+/** Main styling **/
+
+
+
+/** Meta section styling **/
+#meta {
+}
+
+/** Client/Supplier combined settings **/
+
+
+#client header p, 
+#supplier header p {
+	color: #CD0D27;
+	font-style: italic;
+	font-weight: bold;
+}
+
+
+#client header h2,
+#supplier header h2 {
+	color: #002842;
+}
+
+#client address,
+#supplier address {
+	color: #888;
+}
+
+/** Client section styling **/
+
+#client {
+	float: left;
+	font-size: 1.1em;
+	text-align: right;
+	width: 45%;
+}
+
+#addressee {
+	margin: 10px 0px;
+}
+
+/** Supplier styling **/
+
+#supplier {
+	float: right;
+	font-size: 1.1em;
+	text-align: right;
+	width: 35%;
+}
+
+
+
+/** Items Table styling **/
+
+thead {
+	background-color: #CD0D27 !important;
+	color: #eee;
+	font-weight: bold;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+
+td {
+	border: 1px solid #ddd;
+	padding: 15px 20px;
+}
+
+td p {
+	margin: 20px 0px;
+}
+
+.item-desc {
+	width: 800px;
+}
+
+.item-desc li {
+	line-height: 1.5em;
+	list-style-type: disc;
+	margin: 1em 0px 1em 40px;
+}
+
+.item-date, .item-price {
+	width: 150px;
+}
+	
+/** Billing styling **/
+
+#billing {
+	float: right;
+	width: 312px;
+}
+
+#billing li {
+	display: table-row;
+}
+
+#billing dt:after {
+	content: "";
+}
+
+#billing dt, #billing dd {
+	border: 1px solid #ddd;
+	display: table-cell;
+	padding: 15px 20px;
+	margin: 0px;
+	width: 114px;
+}
+
+#billing dt {
+	background-color: #CD0D27;
+	color: #eee;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+/** Final styling **/
+#final {
+	margin: 70px 0px 20px;
+	text-align: center;
+}
+
+#final header {
+	color: #6f0f1b;
+	font-size: 3.5em;
+	font-weight: bolder;
+	text-transform: uppercase;
+}
+
+#final p {
+	color: #999;
+	font-size: smaller;
+	font-style: italic;
+}
+
+
+/** Separator styling **/
+
+hr {
+	margin: 60px 0px 40px;
+}
+
+
+/** Footer styling **/
+
+footer {
+	font-size: 0.9em;
+	font-style: italic;
+	text-align: center;
+}
+
+footer header {
+	margin: 10px 0px;
+}
+
+.details li {
+	margin: 5px 0px;
+}
+
+dt,dd {
+	display: inline-block;
+}
+
+dt {
+	text-align: right;
+	margin-right: 20px;
+	vertical-align: top;
+	width: 10em;
+}
+
+dt:after {
+	content: ":"
+}
+
+dd {
+	text-align: left;
+	width: 15em;
+}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+	<title></title>
+
+	<link href="{{ STATIC_URL }}css/iom.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="{{ STATIC_URL }}css/iom.css" media="print" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<article id="invoice">
+		<header id="header">
+			<img id="letterhead" src="{{ STATIC_URL }}img/hackerspacesg_550.png" title="Hackerspace.SG Pte Ltd" alt="Hackerspace.SG Pte Ltd">
+
+			<section id="meta">
+				<ul>
+					<li id="invoice-id">{{ data.id }}</li>
+					<li id="date-issued">{{ data.date_issued|date:"d M Y" }}</li>
+				</ul>
+			</section>
+		</header>
+	
+		<section id="client">
+			<header>
+				<p>Member</p>
+				<h2>{{ data.client.get_full_name }}</h2>
+			</header>
+			
+			<!--<p>{{ data.client.registration }} <span class="sub">(UEN)</span></p>-->
+
+			<div id="addressee">
+				{{ data.client.email }} <br>
+			</div>
+						
+			<!--<address>
+				{# {{ i.client.address | html }} #}
+			</address>-->
+		</section>
+		
+		<section id="supplier">
+			<header>
+				<p>Please Send Payment to</p>
+				<h2>{{ data.vendor.name }}</h2>
+			</header>
+			
+			<p>{{ data.vendor.registration }} <span class="sub">(UEN)</span></p>
+			
+			<div id="bank-details">
+				{{ data.vendor.bank.number }} /  {{ data.vendor.bank.branch }} / {{ data.vendor.bank.account }} <span class="sub">(BANK)</span> 
+			</div>
+			
+			<address>
+				{{ data.vendor.address|safe }}
+			</address>
+			
+		</section>
+		
+		<div style="clear: both;"></div>
+		
+		<section id="items">
+			<header><h2>Summary</h2></header>
+			
+			<table>
+				<thead>
+					<td class="item-desc">Description</td>
+					<td class="item-date">Date</td>
+					<td class="item-price">Price</td>
+				</thead>
+				<tbody>
+					{% for it in data.items %}
+					<tr>
+						<td class="item-desc">
+							<h2>{{ it.ctype.desc }}</h2>
+							<!--<p>{# {{ it.remarks|html }} #}</p>-->
+						</td>
+						
+						<td class="item-date">
+							{{ data.date_requested|date:"M Y" }}
+						</td>
+						
+						<td class="item-price">
+							{{ data.currency }} {{ it.tier.fee }}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</section>
+	
+		<section id="billing" class="clearfix">
+			<ul>
+				<li>
+					<dl>
+						<dt id="subtotal">Subtotal</dt>
+						<dd>{{ data.currency }} {{ data.item_sum }}</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
+						<dt id="taxes">Tax</dt>
+						<dd>{{ data.tax }}</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
+						<dt id="total">Total</dt>
+						<dd>{{ data.currency }} {{ data.item_sum }}</dd>
+					</dl>
+				</li>
+			</ul>
+			
+			<div id="company-stamp"></div>
+		</section>
+
+		<div style="clear: both;"></div>
+
+		<section id="final">
+			<header>THANK YOU</header>
+			
+			<p>
+				We enjoyed working with you!<br>
+				If you have any queries, please send them to {{ data.vendor.email }}
+			</p>
+			
+			<p>Please remit payment within <span id="payment-due">30</span> days of receiving this invoice.</p>
+			
+			<p>No receipt will be given for payment by cheque.</p>
+			
+			<p>E&OE</p>
+		</section>
+	</article>
+
+
+	<hr id="separator">
+
+	<footer id="footer">
+	
+		<header>Please attach this portion when paying by cheque</header>
+	
+		<ul id="invoice-cheque" class="details">
+
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-supplier">Supplier</dt>
+					<dd>{{ data.vendor.name }}</dd>
+				</dl>
+			</li>
+
+			
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-client">Client</dt>
+					<dd>{{ data.client.get_full_name }}</dd>
+				</dl>
+			</li>
+
+			
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-id">Invoice ID</dt>
+					<dd>{{ data.id }}</dd>
+				</dl>
+			</li>
+
+			
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-date-issued">Date Issued</dt>
+					<dd>{{ data.date_issued }}</dd>
+				</dl>
+			</li>
+
+			
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-date-due">Date Due</dt>
+					<dd>{{ data.date_due }}</dd>
+				</dl>
+			</li>
+
+			
+			<li>
+				<dl>			
+					<dt id="invoice-cheque-total">Total</dt>
+					<dd>{{ data.currency }} {{ data.item_sum }}</dd>
+				</dl>
+			</li>
+		
+		</dl>	
+	</footer>
+
+</body>
+</html>

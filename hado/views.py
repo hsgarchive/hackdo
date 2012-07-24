@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest
 from django.utils.translation import ugettext as _
 from django.shortcuts import *
 from django.core.urlresolvers import reverse
@@ -14,6 +14,9 @@ from hado.forms import PaymentForm
 
 import itertools
 import json
+import calendar
+
+from dateutil.relativedelta import relativedelta
 
 
 @login_required
@@ -68,6 +71,60 @@ def arrears(request):
 	contracts = Contract.objects.exclude(Q(status='PEN')).select_related('user', 'ctype', 'tier').order_by('user__first_name')
 
 	return render(request, 'reports/arrears.html', {'contracts': contracts})
+
+
+@login_required
+def user_invoices(request, username, year, month):
+
+	# Provided we are either admins or the proper user
+	if not request.user.is_superuser and request.user.username != username:
+		return HttpResponseRedirect(request.user.get_absolute_url())
+
+	try:
+		# For the given user
+		u = User.objects.get(username=username) if request.user.username != username else request.user
+
+		# For the given month and year, 
+		try:
+			year = int(year)
+			month = int(month)
+			start = datetime.date(year, month, 01) # Normalise date to beginning of that month
+			end = datetime.date(year, month, calendar.monthrange(year, month)[1]) # Normalise date to end of that month
+		except ValueError as e:
+			return HttpResponseBadRequest("Malformed date request")
+
+		# Find all Contracts that were active then, ie. non-Terminated, non-Pending
+		active_contracts = u.contracts.select_related('ctype', 'tier').filter(start__lte=start).exclude(status='TER').exclude(status='PEN')
+		item_sum = active_contracts.aggregate(sum=Sum('tier__fee'))['sum']
+
+		# Render to template
+		data = {
+			'id': 'HSG-TM-09001',
+			'client': u,
+			'currency': 'SGD',
+			'date_requested': start,
+			'date_issued': datetime.date.today(),
+			'date_due': datetime.date.today() + relativedelta(days=+30),
+			'items': active_contracts,
+			'item_sum': item_sum,
+			'tax': None,
+			'vendor': {
+				'name': "Hackerspace.SG Pte Ltd",
+				'registration': "200919232E",
+				'bank': {
+					'number': 7144,
+					'branch': '057',
+					'account': 5701304090
+				},
+				'address': "70A Bussorah Street<br>Singapore 199483"
+			}
+
+		}
+
+		return render(request, 'invoices/invoice.html', {'data': data})
+
+	except User.DoesNotExist as e:
+		return HttpResponseNotFound("User not found")
 
 
 def invoice(request):
