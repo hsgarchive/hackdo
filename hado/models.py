@@ -113,11 +113,13 @@ class Contract(models.Model):
 
 
 	def __extend_by(self, num_months):
-		'''Extends the validity of this Contract by specified number of months (Assume 1 month = 28 days). THIS METHOD DOES NOT save() AUTOMATICALLY'''
+		'''Extends the validity of this Contract by specified number of months. THIS METHOD DOES NOT save() AUTOMATICALLY'''
 		
+		# We subtract one day, such that if we start on the first of a month, eg. datetime.date(2011, 02, 01), extending the validity
+		# by 5 months, won't give us an end date of datetime.date(2011, 07, 01) [which is wrong], but datetime.date(2011, 06, 30) [which is right]
 		delta = {
-			'months': int(num_months % 12),
-			'years': int(num_months / 12)
+			'months': num_months,
+			'days': -1 
 		}
 		self.valid_till = self.valid_till + relativedelta(**delta) 
 		
