@@ -150,18 +150,15 @@ class Contract(models.Model):
 		months_paid = self.total_paid / self.tier.fee
 		
 		if months_paid > 0:
-			# Take into account 1 month's deposit
-			months_paid -= 1 			
 			self.__extend_by(int(months_paid))
 
 		self.save()
-		
 	
 
 	def balance(self, in_months=False):
 		'''Looks at how much has been paid for this Contract and determines if there is any balance owed by (-ve) / owed to (+ve) the Member'''
 		balance = 0
-		duration_in_months = 1
+		duration_in_months = 0 
 		
 		# Calculate number of months Contract has been in effect, ie. not Terminated
 		if self.status == 'TER':			
