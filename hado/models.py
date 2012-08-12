@@ -203,8 +203,9 @@ class Contract(models.Model):
 		last_day = calendar.monthrange(self.valid_till.year, self.valid_till.month)[1]
 		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, last_day)
 		
-		#force start date to be normalised as 1st day of the month
-		self.start = datetime.date(self.start.year, self.start.month, 1)
+		# Force start date to be normalised as 1st day of the month
+		if self.start.day != 1:
+			self.start = datetime.date(self.start.year, self.start.month, 1)
 		
 		# If we notice the Contract is now Terminated, and the end date has not been set, set the end date
 		if self.status == 'TER' and self.end is None:
