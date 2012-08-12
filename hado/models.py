@@ -128,10 +128,10 @@ class Contract(models.Model):
 	
 
 	def __month_diff(self, end, start):
-		'''Returns the months between two dates'''
+		'''Returns the months (inclusive of part thereof) between two dates'''
 		
-		r = relativedelta(end, start)
-		return r.months + (r.years * 12 if r.years else 0)
+		r = relativedelta(end + relativedelta(days=+1), start)
+		return r.months + (r.years * 12 if r.years else 0) + (1 if r.days else 0)
 
 
 	@property
