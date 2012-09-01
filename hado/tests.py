@@ -133,16 +133,21 @@ class ContractTest(TestCase):
 		
 	
 	def testContractValidTill(self):
-		'''After initial Payments added in setUp(), valid_till ought to be 31 July 2010, non-inclusive of deposit'''
+		'''After initial Payments added in setUp(), valid_till ought to be 31 Aug 2010, inclusive of deposit'''
 		
 		self.c.sync()
-		self.assertEqual(self.c.valid_till, datetime.date(2010, 07, 31))
+		self.assertEqual(self.c.valid_till, datetime.date(2010, 8, 31))
 		
 	
 	def testContractSync(self):
-		'''After initial Payments added in setUp(), and sync() is run, valid_till ought to be 31 July 2010'''
+		'''After initial Payments added in setUp(), and sync() is run, valid_till ought to be 31 Aug 2010'''
 		
-		self.assertEqual(self.c.valid_till, datetime.date(2010, 07, 31))
+		# Intentionally disrupt the valid_till date
+		self.c.valid_till = datetime.date(2010, 5, 12)
+
+		self.c.sync()
+
+		self.assertEqual(self.c.valid_till, datetime.date(2010, 8, 31))
 		
 	
 	def testContractBalance(self):
@@ -150,7 +155,7 @@ class ContractTest(TestCase):
 		
 		# Calculate arrears from Contract.valid_till till today
 		r = relativedelta(datetime.date.today(), self.c.valid_till)
-		arrears_months = r.months + (r.years * 12 if r.years else 0) # Naive month calculation
+		arrears_months = r.months + (r.years * 12 if r.years else 0) + (1 if r.days else 0) # Naive month calculation
 		
 		self.assertEqual(self.c.balance(), -(arrears_months*128))
 		self.assertEqual(self.c.balance(in_months=True), -arrears_months)

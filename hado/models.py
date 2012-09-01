@@ -113,11 +113,13 @@ class Contract(models.Model):
 
 
 	def __extend_by(self, num_months):
-		'''Extends the validity of this Contract by specified number of months (Assume 1 month = 28 days). THIS METHOD DOES NOT save() AUTOMATICALLY'''
+		'''Extends the validity of this Contract by specified number of months. THIS METHOD DOES NOT save() AUTOMATICALLY'''
 		
+		# We subtract one day, such that if we start on the first of a month, eg. datetime.date(2011, 02, 01), extending the validity
+		# by 5 months, won't give us an end date of datetime.date(2011, 07, 01) [which is wrong], but datetime.date(2011, 06, 30) [which is right]
 		delta = {
-			'months': int(num_months % 12),
-			'years': int(num_months / 12)
+			'months': num_months,
+			'days': -1 
 		}
 		self.valid_till = self.valid_till + relativedelta(**delta) 
 		
@@ -126,10 +128,10 @@ class Contract(models.Model):
 	
 
 	def __month_diff(self, end, start):
-		'''Returns the months between two dates'''
+		'''Returns the months (inclusive of part thereof) between two dates'''
 		
-		r = relativedelta(end, start)
-		return r.months + (r.years * 12 if r.years else 0)
+		r = relativedelta(end + relativedelta(days=+1), start)
+		return r.months + (r.years * 12 if r.years else 0) + (1 if r.days else 0)
 
 
 	@property
@@ -148,18 +150,15 @@ class Contract(models.Model):
 		months_paid = self.total_paid / self.tier.fee
 		
 		if months_paid > 0:
-			# Take into account 1 month's deposit
-			months_paid -= 1 			
 			self.__extend_by(int(months_paid))
 
 		self.save()
-		
 	
 
 	def balance(self, in_months=False):
 		'''Looks at how much has been paid for this Contract and determines if there is any balance owed by (-ve) / owed to (+ve) the Member'''
 		balance = 0
-		duration_in_months = 1
+		duration_in_months = 0 
 		
 		# Calculate number of months Contract has been in effect, ie. not Terminated
 		if self.status == 'TER':			
@@ -204,8 +203,9 @@ class Contract(models.Model):
 		last_day = calendar.monthrange(self.valid_till.year, self.valid_till.month)[1]
 		self.valid_till = datetime.date(self.valid_till.year, self.valid_till.month, last_day)
 		
-		#force start date to be normalised as 1st day of the month
-		self.start = datetime.date(self.start.year, self.start.month, 1)
+		# Force start date to be normalised as 1st day of the month
+		if self.start.day != 1:
+			self.start = datetime.date(self.start.year, self.start.month, 1)
 		
 		# If we notice the Contract is now Terminated, and the end date has not been set, set the end date
 		if self.status == 'TER' and self.end is None:
