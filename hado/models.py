@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.db.models.signals import pre_save, post_save, post_init, pre_init
 from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
@@ -301,6 +301,60 @@ class Locker(models.Model):
 	user = models.ForeignKey(User, blank=False, null=True, related_name="locker")
 	num = models.IntegerField()
 
+class Currency(models.Model):
+	"""List of available currencies"""
+	abbrev= models.CharField(max_length=3, unique=True)
+	desc = models.CharField(max_length=255)
+
+	def __unicode__(self):
+		return unicode(self.abbrev)
+
+class Invoice(models.Model):
+	"""Saved invoices"""
+	visible_id = models.CharField(max_length=255, editable=False, unique=True)
+	client = models.ForeignKey(User, null=False)
+	currency = models.ForeignKey(Currency)
+
+	date_for = models.DateField()
+	date_issued = models.DateField()
+	date_due = models.DateField(null=False, blank=True)
+	tax = models.FloatField()
+
+	def __unicode__(self):
+		return unicode(self.visible_id)
+
+	def save(self, *args, **kwargs):
+		"""
+		Overridden model.save() function to automatically generate visible_id
+		"""
+		if not self.date_due:
+			self.date_due = self.date_issued + datetime.timedelta(days=30)
+
+		if not self.pk:
+			super(Invoice, self).save(*args, **kwargs)
+
+		if not self.visible_id:
+			hex_id = hex(int(self.pk)).upper()
+			hex_id = '0' * (10 - len(hex_id)) + hex_id
+
+			self.visible_id = "HSG-" + hex_id
+
+			kwargs['force_update'] = True
+			kwargs['force_insert'] = False
+			super(Invoice, self).save(*args, **kwargs)
+
+	def clean(self):
+		"""Ensure that date_for is normalized to the beginning of the month"""
+		if self.date_for.day != 1:
+			self.date_for = datetime.date(self.date_for.year,
+			                              self.date_for.month, 1)
+
+class InvoiceItem(models.Model):
+	invoice = models.ForeignKey(Invoice, related_name='items')
+	desc = models.CharField(max_length=255)
+	amount = models.DecimalField(decimal_places=2, max_digits=10)
+
+	contract = models.ForeignKey(Contract, null=True)
 
 # Attaching a post_save signal handler to the Payment model to update the appropriate Contract
 def update_contract_with_payments(sender, **kwargs):

@@ -71,7 +71,7 @@
 					{% for it in data.items %}
 					<tr>
 						<td class="item-desc">
-							<h2>{{ it.ctype.desc }}</h2>
+							<h2>{{ it.desc }}</h2>
 							<!--<p>{# {{ it.remarks|html }} #}</p>-->
 						</td>
 
@@ -80,7 +80,7 @@
 						</td>
 
 						<td class="item-price">
-							{{ data.currency }} {{ it.tier.fee }}
+							{{ data.currency }} {{ it.amount }}
 						</td>
 					</tr>
 					{% endfor %}

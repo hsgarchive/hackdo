@@ -88,26 +88,48 @@ def user_invoices(request, username, year, month):
 		try:
 			year = int(year)
 			month = int(month)
-			start = datetime.date(year, month, 01) # Normalise date to beginning of that month
-			end = datetime.date(year, month, calendar.monthrange(year, month)[1]) # Normalise date to end of that month
+
+			# Normalize date to beginning of the month
+			this_month = datetime.date(year, month, 1)
+
 		except ValueError as e:
 			return HttpResponseBadRequest("Malformed date request")
 
-		# Find all Contracts that were active then, ie. non-Terminated, non-Pending
-		active_contracts = u.contracts.select_related('ctype', 'tier').filter(start__lte=start).exclude(status='TER').exclude(status='PEN')
-		item_sum = active_contracts.aggregate(sum=Sum('tier__fee'))['sum']
+		try:
+			invoice = Invoice.objects.select_related('currency').get(
+				client=u, date_for=this_month)
+			item_sum = invoice.items.aggregate(sum=Sum('amount'))['sum']
+
+		except Invoice.DoesNotExist:
+			currency = Currency.objects.get_or_create(abbrev='SGD')[0]
+			invoice = Invoice.objects.create(client=u,
+			                                 currency=currency,
+			                                 date_for=this_month,
+			                                 date_issued=datetime.date.today(),
+			                                 tax=0)
+
+			active_contracts = u.contracts.select_related('ctype', 'tier') \
+			    .filter(start__lte=this_month) \
+			    .exclude(status='TER') \
+			    .exclude(status='PEN')
+			item_sum = 0
+			for contract in active_contracts:
+				item_sum += contract.tier.fee
+				invoice.items.create(desc=contract.ctype.desc,
+				                     amount=contract.tier.fee,
+				                     contract=contract)
 
 		# Render to template
 		data = {
-			'id': 'HSG-TM-09001',
+			'id': invoice.visible_id,
 			'client': u,
-			'currency': 'SGD',
-			'date_requested': start,
-			'date_issued': datetime.date.today(),
-			'date_due': datetime.date.today() + relativedelta(days=+30),
-			'items': active_contracts,
+			'currency': invoice.currency,
+			'date_requested': invoice.date_for,
+			'date_issued': invoice.date_issued,
+			'date_due': invoice.date_due,
+			'items': invoice.items.all(),
 			'item_sum': item_sum,
-			'tax': None,
+			'tax': invoice.tax,
 			'vendor': {
 				'name': "Hackerspace.SG Pte Ltd",
 				'registration': "200919232E",
