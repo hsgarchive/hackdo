@@ -12,22 +12,22 @@ Setup
 
 1. Create a virtualenv (install the package if you haven't already), eg. `dev`
 
-       `$ virtualenv --no-site-packages dev`
+        $ virtualenv --no-site-packages dev
 
 2. Grab the source code, and stick it in the virtualenv created above
 
-       `$ cd dev`  
-       `$ git clone git://github.com/hackerspacesg/hackdo.git`
+        $ cd dev
+        $ git clone git://github.com/hackerspacesg/hackdo.git
 
 3. Grab other dependencies, and install them in the virtualenv
 
-       `$ cd ..`  
-       `$ pip install -r hackdo/scripts/requirements.txt`
+        $ cd ..
+        $ pip install -r hackdo/scripts/requirements.txt
      
 4. Set up django's tables and migrations:
 
-       `$ ./manage.py syncdb`  
-       `$ ./manage.py migrate --all`
+        $ ./manage.py syncdb
+        $ ./manage.py migrate --all
 
 Links
 -----
