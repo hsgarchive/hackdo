@@ -10,17 +10,17 @@ Most of the magic goes on in the Admin console (have a look in `hado/admin.py`).
 Setup
 -----
 
-1. Create a virtualenv (install the package if you haven't already), eg. `dev`
+1. Create a virtualenv (install the package if you haven't already), eg. `dev`:
 
         $ virtualenv --no-site-packages dev
         $ . dev/bin/activate
 
-2. Grab the source code, and stick it in the virtualenv created above
+2. Grab the source code, and stick it in the virtualenv created above:
 
         (dev)$ cd dev
         (dev)$ git clone git://github.com/hackerspacesg/hackdo.git
 
-3. Grab and install other dependencies in the virtualenv
+3. Grab and install other dependencies in the virtualenv:
 
         (dev)$ cd hackdo
         (dev)$ pip install -r scripts/requirements.txt
