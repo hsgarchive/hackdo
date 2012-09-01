@@ -5,25 +5,25 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Changing field 'Payment.for_year'
         db.alter_column('hado_payment', 'for_year', self.gf('django.db.models.fields.CharField')(max_length=4))
 
         # Changing field 'Payment.for_month'
         db.alter_column('hado_payment', 'for_month', self.gf('django.db.models.fields.CharField')(max_length=2))
-    
-    
+
+
     def backwards(self, orm):
-        
+
         # Changing field 'Payment.for_year'
         db.alter_column('hado_payment', 'for_year', self.gf('django.db.models.fields.IntegerField')())
 
         # Changing field 'Payment.for_month'
         db.alter_column('hado_payment', 'for_month', self.gf('django.db.models.fields.IntegerField')())
-    
-    
+
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -93,5 +93,5 @@ class Migration(SchemaMigration):
             'user_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True', 'primary_key': 'True'})
         }
     }
-    
+
     complete_apps = ['hado']

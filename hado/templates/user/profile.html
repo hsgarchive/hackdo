@@ -5,7 +5,7 @@
 
 	<article id="user_profile">
 		<header id="user_name">{{ u.get_full_name }}</header>
-		
+
 		<section id="account_summary">
 			<header>Account summary</header>
 			<ul id="account_details">
@@ -13,12 +13,12 @@
 				<li><span class="detail_header">Membership status</span> <span class="detail_value {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{% if u.membership_status %}{{ u.membership_status }}{% else %}-N/A-{% endif %}</span></li>
 				<li><span class="detail_header">Paid to date</span> <span class="detail_value currency">{{ paid_to_date|intcomma }}</span></li>
 				<li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
-			</ul>		
+			</ul>
 		</section>
-		
+
 		<hr>
 
-		<section id="payment_submission">				
+		<section id="payment_submission">
 			<header>Submit a new Payment</header>
 			<form method="post" action="{% url user_profile u.username %}">
 				{% csrf_token %}
@@ -52,9 +52,9 @@
 				{% endfor %}
 			</ul>
 		</section>
-		
+
 		<hr>
-		
+
 		<section id="payment_history">
 			<header>Payment history</header>
 			<table id="payment_history_table">
@@ -85,7 +85,7 @@
 			</table>
 			<div class="legend">
 				<span class="legend_block"></span> <span class="legend_text">verified payments</span>
-			</div>		
+			</div>
 		</section>
 
 	</article>

@@ -7,13 +7,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'Contract.desc'
         db.add_column('hado_contract', 'desc', self.gf('django.db.models.fields.CharField')(default='', max_length=1024, blank=True), keep_default=False)
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'Contract.desc'
         db.delete_column('hado_contract', 'desc')
 

@@ -17,9 +17,9 @@
 {% endblock %}
 
 {% block coltype %}{% endblock %}
-{% block content %}	
+{% block content %}
 	<div id="admin">
-		
+
 		<section id="stats">
 			<header><h1>Stats</h1></header>
 			<ul>
@@ -40,7 +40,7 @@
 						{% for t,a in income.items %}
 						{% if t != 'summary' %}
 						<li>{{ t }} : {{ a }}</li>
-						{% endif %}				
+						{% endif %}
 						{% endfor %}
 					</ul>
 				</li>
@@ -54,9 +54,9 @@
 				</li>
 			</ul>
 		</section>
-		
+
 		<hr>
-		
+
 		<section id="records">
 			<header><h1>Admin</h1></header>
 			<ul class="choices">
@@ -64,12 +64,12 @@
 				<li><a href="{% url admin:hado_payment_add %}">Payment</a></li>
 			</ul>
 		</section>
-		
+
 		<hr>
-		
+
 		<section id="reports">
 			<header><h1>Reports</h1></header>
-			
+
 			<ul class="choices">
 				<li><a href="">Monthly Revenue</a></li>
 				<li><a href="">Monthly Expenditure</a></li>
@@ -77,9 +77,9 @@
 				<li><a href="">Current Members</a></li>
 			</ul>
 		</section>
-		
+
 		<hr>
-		
+
 		<section id="payment_verification">
 			<header><h1>Payments to be verified</h1></header>
 			<form method="post" action="" class="clearfix">
@@ -113,32 +113,32 @@
 					</tbody>
 				</table>
 				<input type="submit" value="Update">
-			</form>	
+			</form>
 		</section>
-		
+
 		{% comment %}
 		<h1>Contracts</h1>
-		
+
 		<ul class="contracts choices">
-			<li><a href="/admin/hado/contract/add/">{{ _("New Membership") }}</a></li> | 
-			<li><a href="">{{ _("New Locker Use") }}</a></li> | 
+			<li><a href="/admin/hado/contract/add/">{{ _("New Membership") }}</a></li> |
+			<li><a href="">{{ _("New Locker Use") }}</a></li> |
 			<li><a href="">{{ _("New Address Use") }}</a></li>
 		</ul>
-		
+
 		<h1>Contract Form</h1>
 		{{ cform }}
-		
+
 		<h1>Payments</h1>
-		
+
 		<ul class="payments choices">
-			<li><a href="">{{ _("New Membership Renewal") }}</a></li> | 
-			<li><a href="">{{ _("New Public Donation") }}</a></li> | 
-			<li><a href="">{{ _("New Individual Donation") }}</a></li> | 
-			<li><a href="">{{ _("New Corporate Sponsorship") }}</a></li> | 
+			<li><a href="">{{ _("New Membership Renewal") }}</a></li> |
+			<li><a href="">{{ _("New Public Donation") }}</a></li> |
+			<li><a href="">{{ _("New Individual Donation") }}</a></li> |
+			<li><a href="">{{ _("New Corporate Sponsorship") }}</a></li> |
 		</ul>
 	</div>
 	{% endcomment %}
-	
+
 	{% comment %}
 	<div id="event-log">
 		<h2>{% trans 'Recent Actions' %}</h2>
@@ -151,14 +151,14 @@
 			{% for entry in admin_log %}
 			<li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
 				<a href="{{ entry.user.get_admin_url}}">{{ entry.user.get_full_name }}</a>: {{ entry.change_message }} <span class="mini quiet">{{ entry.action_time}}</span>
-				
+
 				<br/>
 				{% trans 'Item' %}:
 				{% if entry.is_deletion %}
 					{{ entry.object_repr }}
 				{% else %}
 					<a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-				{% endif %}			  
+				{% endif %}
 				{% if entry.content_type %}
 					<span class="mini quiet">({% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %})</span>
 				{% else %}
@@ -171,7 +171,7 @@
 
 	</div>
 	{% endcomment %}
-	
+
 {% endblock %}
 
 

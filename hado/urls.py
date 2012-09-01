@@ -4,11 +4,11 @@ from hado.views import *
 
 urlpatterns = patterns('',
 
-	url(r'^$', index, name='index'),	
-#	
+	url(r'^$', index, name='index'),
+#
 #	# User methods
 #	url(r'user/(?P<username>\w+)/?$', user_profile, name="hado.user.show"),
-#	
+#
 	url(r'login/$', 'django.contrib.auth.views.login', {'template_name' : 'user/login.html'}),
 	url(r'logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
 
@@ -19,7 +19,7 @@ urlpatterns = patterns('',
 
 	url(r'invoice/?$', invoice, name='invoice'),
 
-#	
+#
 #	url(r'debug/$', debug, name='hado.debug'),
 
 )

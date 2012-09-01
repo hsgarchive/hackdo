@@ -5,19 +5,19 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Tier.ctype'
         db.add_column('hado_tier', 'ctype', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['hado.ContractType'], null=True), keep_default=False)
-    
-    
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Tier.ctype'
         db.delete_column('hado_tier', 'ctype_id')
-    
-    
+
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -100,5 +100,5 @@ class Migration(SchemaMigration):
             'utype': ('django.db.models.fields.CharField', [], {'default': "'MEM'", 'max_length': '3'})
         }
     }
-    
+
     complete_apps = ['hado']

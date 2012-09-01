@@ -18,9 +18,9 @@ urlpatterns = patterns('',
 	# Uncomment the next line to enable the admin:
 	(r'^admin/', include(hdadmin.urls)),
 
-	
+
 	(r'', include('hado.urls')),
-	# Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+	# Uncomment the admin/doc line below and add 'django.contrib.admindocs'
 	# to INSTALLED_APPS to enable admin documentation:
 	# (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
