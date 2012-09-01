@@ -20,7 +20,7 @@ Setup
         (dev)$ cd dev
         (dev)$ git clone git://github.com/hackerspacesg/hackdo.git
 
-3. Grab other dependencies, and install them in the virtualenv
+3. Grab and install other dependencies in the virtualenv
 
         (dev)$ cd hackdo
         (dev)$ pip install -r scripts/requirements.txt
