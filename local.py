@@ -1,5 +1,5 @@
 # Local settings
-import os 
+import os
 
 # Live site settings (others should override in local.py)
 ROOT_PATH = os.path.dirname(__file__)

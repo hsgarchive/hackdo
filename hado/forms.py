@@ -13,7 +13,7 @@ from hado.models import *
 class PaymentFormAdmin(forms.ModelForm):
 	class Meta:
 		model = Payment
-		
+
 	def clean(self):
 		cd = self.cleaned_data
 
@@ -24,10 +24,10 @@ class PaymentFormAdmin(forms.ModelForm):
 
 # 			if (cd.get('amount') % cd.get('contract').tier.fee) != 0:
 # 				self._errors['amount'] = self.error_class([_('Payment amount ($%s) is not a clean multiple of Contract Fee ($%s)' % (cd.get('amount'), cd.get('contract').tier.fee))])
-				
+
 		return cd
-		
-		
+
+
 
 class PaymentForm(PaymentFormAdmin):
 

@@ -7,18 +7,18 @@ from django.db import models
 class Migration(DataMigration):
 
     no_dry_run = True
-    
+
     def forwards(self, orm):
         "Write your forwards methods here."
         if not db.dry_run:
             for c in orm.Contract.objects.all():
                 c.valid_till = c.end
                 c.save()
-    
+
     def backwards(self, orm):
         "Write your backwards methods here."
 	pass
-    
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -103,5 +103,5 @@ class Migration(DataMigration):
             'utype': ('django.db.models.fields.CharField', [], {'default': "'MEM'", 'max_length': '3'})
         }
     }
-    
+
     complete_apps = ['hado']

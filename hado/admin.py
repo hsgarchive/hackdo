@@ -1,4 +1,4 @@
-import re 
+import re
 
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -16,9 +16,9 @@ class PaymentInline(admin.TabularInline):
 	model = Payment
 	form = PaymentFormAdmin
 	extra = 1
-	
+
 	fields = ('date_paid', 'amount', 'contract', 'method', 'desc', 'verified')
-	
+
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
 
@@ -50,7 +50,7 @@ class PaymentAdmin(admin.ModelAdmin):
 			'fields': ('user', ('date_paid', 'amount', 'contract', 'method'), 'desc', 'verified')
 		}),
 	)
-	
+
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
 			# Assuming we're editing user in the address eg. "/admin/hado/user/3/"

@@ -16,28 +16,28 @@ class UserModelBackend(ModelBackend):
 			try:
 				ouser = oUser.objects.get(username=username)
 				u = cUser()
-				
+
 				if ouser.check_password(password):
 					u.password = ouser.password
 				else:
 					return None # Abort
-				
-				# Clone the User				
+
+				# Clone the User
 				u.id = ouser.id
 				u.username = ouser.username
 				u.first_name = ouser.first_name
 				u.last_name = ouser.last_name
 				u.email = ouser.email
-				u.is_active = ouser.is_active				
+				u.is_active = ouser.is_active
 				u.is_staff = ouser.is_staff
 				u.is_superuser = ouser.is_superuser
 				u.last_login = ouser.last_login
 				u.date_joined = ouser.date_joined
-				
+
 				# Perform the switch over
 				ouser.delete()
 				u.save()
-				
+
 				return u
 
 			except oUser.DoesNotExist:

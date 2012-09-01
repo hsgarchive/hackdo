@@ -5,9 +5,9 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Adding model 'User'
         db.create_table('hado_user', (
             ('user_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),
@@ -43,10 +43,10 @@ class Migration(SchemaMigration):
             ('desc', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
         ))
         db.send_create_signal('hado', ['Payment'])
-    
-    
+
+
     def backwards(self, orm):
-        
+
         # Deleting model 'User'
         db.delete_table('hado_user')
 
@@ -58,8 +58,8 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Payment'
         db.delete_table('hado_payment')
-    
-    
+
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -126,5 +126,5 @@ class Migration(SchemaMigration):
             'user_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True', 'primary_key': 'True'})
         }
     }
-    
+
     complete_apps = ['hado']

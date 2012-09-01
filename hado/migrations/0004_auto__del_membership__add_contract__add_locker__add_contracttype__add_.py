@@ -5,9 +5,9 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Deleting model 'Membership'
         db.delete_table('hado_membership')
 
@@ -60,10 +60,10 @@ class Migration(SchemaMigration):
 
         # Changing field 'Payment.user'
         db.alter_column('hado_payment', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['hado.User']))
-    
-    
+
+
     def backwards(self, orm):
-        
+
         # Adding model 'Membership'
         db.create_table('hado_membership', (
             ('tier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['hado.Tier'], null=True)),
@@ -106,8 +106,8 @@ class Migration(SchemaMigration):
 
         # Changing field 'Payment.user'
         db.alter_column('hado_payment', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['hado.User']))
-    
-    
+
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -188,5 +188,5 @@ class Migration(SchemaMigration):
             'utype': ('django.db.models.fields.CharField', [], {'default': "'MEM'", 'max_length': '3'})
         }
     }
-    
+
     complete_apps = ['hado']

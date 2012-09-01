@@ -5,19 +5,19 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 class Migration(SchemaMigration):
-    
+
     def forwards(self, orm):
-        
+
         # Adding field 'Contract.valid_till'
         db.add_column('hado_contract', 'valid_till', self.gf('django.db.models.fields.DateField')(null=True), keep_default=False)
-    
-    
+
+
     def backwards(self, orm):
-        
+
         # Deleting field 'Contract.valid_till'
         db.delete_column('hado_contract', 'valid_till')
-    
-    
+
+
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -102,5 +102,5 @@ class Migration(SchemaMigration):
             'utype': ('django.db.models.fields.CharField', [], {'default': "'MEM'", 'max_length': '3'})
         }
     }
-    
+
     complete_apps = ['hado']

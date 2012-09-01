@@ -24,7 +24,7 @@ Setup
 
         (dev)$ cd hackdo
         (dev)$ pip install -r scripts/requirements.txt
-     
+
 4. Set up django's tables and migrations:
 
         (dev)$ ./manage.py syncdb
