@@ -84,7 +84,7 @@ def user_invoices(request, username, year, month):
 		# For the given user
 		u = User.objects.get(username=username) if request.user.username != username else request.user
 
-		# For the given month and year, 
+		# For the given month and year,
 		try:
 			year = int(year)
 			month = int(month)

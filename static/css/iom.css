@@ -53,7 +53,7 @@ height: 0;
 clear: both;
 visibility: hidden;
 }
-/* IE6 */ 
+/* IE6 */
 * html .clearfix {height: 1%;}
 /* IE7 */
 *:first-child+html .clearfix {min-height: 1px;}
@@ -128,7 +128,7 @@ address {
 /** Client/Supplier combined settings **/
 
 
-#client header p, 
+#client header p,
 #supplier header p {
 	color: #CD0D27;
 	font-style: italic;
@@ -203,7 +203,7 @@ td p {
 .item-date, .item-price {
 	width: 150px;
 }
-	
+
 /** Billing styling **/
 
 #billing {
