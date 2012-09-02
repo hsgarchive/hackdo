@@ -311,7 +311,8 @@ class Currency(models.Model):
 
 class Invoice(models.Model):
 	"""Saved invoices"""
-	visible_id = models.CharField(max_length=255, editable=False, unique=True)
+	visible_id = models.CharField(max_length=255, editable=False, unique=True,
+	                              null=True, default=None)
 	client = models.ForeignKey(User, null=False)
 	currency = models.ForeignKey(Currency)
 
