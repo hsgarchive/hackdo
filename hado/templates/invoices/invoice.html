@@ -4,19 +4,24 @@
   <meta charset="utf-8">
 	<title></title>
 
-	<link href="{{ STATIC_URL }}css/iom.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="{{ STATIC_URL }}css/iom.css" media="print" rel="stylesheet" type="text/css" />
+	<link href="{{ STATIC_URL }}css/iom.css" media="screen" rel="stylesheet"
+	      type="text/css" />
+	<link href="{{ STATIC_URL }}css/iom.css" media="print" rel="stylesheet"
+	      type="text/css" />
 </head>
 <body>
 
 	<article id="invoice">
 		<header id="header">
-			<img id="letterhead" src="{{ STATIC_URL }}img/hackerspacesg_550.png" title="Hackerspace.SG Pte Ltd" alt="Hackerspace.SG Pte Ltd">
+			<img id="letterhead" src="{{ STATIC_URL }}img/hackerspacesg_550.png"
+			     title="Hackerspace.SG Pte Ltd" alt="Hackerspace.SG Pte Ltd">
 
 			<section id="meta">
 				<ul>
 					<li id="invoice-id">{{ data.id }}</li>
-					<li id="date-issued">{{ data.date_issued|date:"d M Y" }}</li>
+					<li id="date-issued">
+						{{ data.date_issued|date:"d M Y" }}
+					</li>
 				</ul>
 			</section>
 		</header>
@@ -27,7 +32,8 @@
 				<h2>{{ data.client.get_full_name }}</h2>
 			</header>
 
-			<!--<p>{{ data.client.registration }} <span class="sub">(UEN)</span></p>-->
+			<!--<p>{{ data.client.registration }}
+			    <span class="sub">(UEN)</span></p>-->
 
 			<div id="addressee">
 				{{ data.client.email }} <br>
@@ -47,7 +53,10 @@
 			<p>{{ data.vendor.registration }} <span class="sub">(UEN)</span></p>
 
 			<div id="bank-details">
-				{{ data.vendor.bank.number }} /  {{ data.vendor.bank.branch }} / {{ data.vendor.bank.account }} <span class="sub">(BANK)</span>
+				{{ data.vendor.bank.number }} /
+				{{ data.vendor.bank.branch }} /
+				{{ data.vendor.bank.account }}
+				<span class="sub">(BANK)</span>
 			</div>
 
 			<address>
@@ -120,10 +129,12 @@
 
 			<p>
 				We enjoyed working with you!<br>
-				If you have any queries, please send them to {{ data.vendor.email }}
+				If you have any queries, please send them to
+				{{ data.vendor.email }}
 			</p>
 
-			<p>Please remit payment within <span id="payment-due">30</span> days of receiving this invoice.</p>
+			<p>Please remit payment within <span id="payment-due">30</span> days
+				of receiving this invoice.</p>
 
 			<p>No receipt will be given for payment by cheque.</p>
 
