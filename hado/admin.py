@@ -1,3 +1,4 @@
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 import re
 
 from django.contrib import admin

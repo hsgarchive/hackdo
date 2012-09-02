@@ -1,3 +1,4 @@
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django.conf import settings
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import ImproperlyConfigured
