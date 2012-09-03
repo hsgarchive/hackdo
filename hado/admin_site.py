@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 import datetime
 
 from django.contrib.admin.sites import AdminSite
@@ -21,29 +21,42 @@ class HackdoAdmin(AdminSite):
 		users = User.objects.select_related('contracts')
 		members['total'] = len(users)
 
-		members['active'] = Contract.objects.filter(ctype__desc='Membership', status='ACT').count()
-		members['lapsed'] = Contract.objects.filter(ctype__desc='Membership', status='LAP').count()
+		members['active'] = Contract.objects.filter(ctype__desc='Membership',
+		                                            status='ACT').count()
+		members['lapsed'] = Contract.objects.filter(ctype__desc='Membership',
+		                                            status='LAP').count()
 
 		# Income stats
 		income = {}
 		this_month = datetime.date.today().month
-		payments_this_month = Payment.objects.filter(date_paid__month=this_month)
+		payments_this_month = Payment.objects.filter(
+			date_paid__month=this_month)
 		# Get ContracTypes
 		ctypes = ContractType.objects.all()
 		for c in ctypes:
-			income[c.desc] = payments_this_month.filter(contract__ctype__desc=c.desc).aggregate(Sum('amount'))['amount__sum'] or 0.0
+			income[c.desc] = payments_this_month \
+			    .filter(contract__ctype__desc=c.desc) \
+				.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
 
 		# Supposed income this month
 		income['summary'] = {}
-		income['summary']['supposed'] = Contract.objects.filter(Q(status='ACT') | Q(status='LAP')).aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
-		income['summary']['actual'] = payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
-		income['summary']['shortfall'] = income['summary']['supposed'] - income['summary']['actual']
+		income['summary']['supposed'] = \
+		    Contract.objects \
+		    .filter(Q(status='ACT') | Q(status='LAP')) \
+		    .aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
+
+		income['summary']['actual'] = \
+		    payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
+
+		income['summary']['shortfall'] = \
+		    income['summary']['supposed'] - income['summary']['actual']
 
 
 		# Incoming Payments pending verification
 		if request.method == 'POST':
-			pformset = PaymentFormAdminFormset(request.POST, queryset=Payment.objects.filter(verified=False))
+			pformset = PaymentFormAdminFormset(
+				request.POST, queryset=Payment.objects.filter(verified=False))
 
 			if pformset.is_valid():
 				pformset.save()
@@ -54,9 +67,11 @@ class HackdoAdmin(AdminSite):
 				print pformset.errors
 
 		# Create a new formset anyway
-		pformset = PaymentFormAdminFormset(queryset=Payment.objects.filter(verified=False))
+		pformset = PaymentFormAdminFormset(
+			queryset=Payment.objects.filter(verified=False))
 
-		return render(request, 'admin/index.html', {'members':members, 'income':income, 'pformset':pformset})
+		return render(request, 'admin/index.html',
+		              {'members':members, 'income':income, 'pformset':pformset})
 
 
 

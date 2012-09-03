@@ -1,3 +1,4 @@
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 """
 This file demonstrates two different styles of tests (one doctest and one
 unittest). These will both pass when you run "manage.py test".

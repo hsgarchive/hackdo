@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models import Sum, F

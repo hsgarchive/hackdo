@@ -1,3 +1,4 @@
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 import re
 
 from django.contrib import admin
@@ -22,14 +23,19 @@ class PaymentInline(admin.TabularInline):
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
 
-			# Assuming we're editing user in the address eg. "/admin/hado/user/3/"
-			# So we extract the user_id portion from that path and use it in our queryset filter
+			# Assuming we're editing user in the address eg.
+			# "/admin/hado/user/3/"
+			# So we extract the user_id portion from that path and use it in our
+			# queryset filter
 			m = re.search("/.+\/(?P<id>\d+)\/?", request.path_info)
 			if m is not None:
 				user_id = m.group('id')
-				kwargs["queryset"] = Contract.objects.filter(user__id = user_id)#.exclude(status = "TER")
+				kwargs["queryset"] = Contract.objects.filter(user__id = user_id)
+				#.exclude(status = "TER")
 			return db_field.formfield(**kwargs)
-		return super(PaymentInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+		return super(PaymentInline, self).formfield_for_foreignkey(db_field,
+		                                                           request,
+		                                                           **kwargs)
 
 
 
@@ -47,21 +53,28 @@ class PaymentAdmin(admin.ModelAdmin):
 
 	fieldsets = (
 		(None, {
-			'fields': ('user', ('date_paid', 'amount', 'contract', 'method'), 'desc', 'verified')
+			'fields': ('user', ('date_paid', 'amount', 'contract', 'method'),
+			           'desc', 'verified')
 		}),
 	)
 
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == "contract":
-			# Assuming we're editing user in the address eg. "/admin/hado/user/3/"
-			# So we extract the user_id portion from that path and use it in our queryset filter
+			# Assuming we're editing user in the address eg.
+			# "/admin/hado/user/3/"
+			# So we extract the user_id portion from that path and use it in our
+			# queryset filter
 			m = re.search("/.+\/(?P<id>\d+)\/?$", request.path_info)
 			if m is not None:
 				pid = m.group('id')
-				kwargs["queryset"] = Contract.objects.filter(user__id = Payment.objects.get(id=pid).user_id)#.exclude(status = "TER")
+				kwargs["queryset"] = Contract.objects.filter(
+					user__id=Payment.objects.get(id=pid).user_id)
+					#.exclude(status = "TER")
 				kwargs['empty_label'] = None
 			return db_field.formfield(**kwargs)
-		return super(PaymentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+		return super(PaymentAdmin, self).formfield_for_foreignkey(db_field,
+		                                                          request,
+		                                                          **kwargs)
 
 
 class ContractAdmin(admin.ModelAdmin):

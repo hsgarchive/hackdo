@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseBadRequest
+# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
+from django.http import (HttpResponseRedirect, HttpResponseNotFound,
+                         HttpResponseBadRequest)
 from django.utils.translation import ugettext as _
 from django.shortcuts import *
 from django.core.urlresolvers import reverse
@@ -60,7 +61,13 @@ def user_profile(request, username):
 		# Create a new form
 		pform = PaymentForm(u.username)
 
-	return render(request, 'user/profile.html', {'u':u, 'contracts':contracts, 'paid_to_date': paid_to_date, "account_balance": account_balance, "payment_history": payment_history, 'pform': pform })
+	return render(request, 'user/profile.html',
+	              {'u': u,
+	               'contracts':contracts,
+	               'paid_to_date': paid_to_date,
+	               'account_balance': account_balance,
+	               'payment_history': payment_history,
+	               'pform': pform})
 
 
 @login_required
@@ -68,7 +75,9 @@ def arrears(request):
 	'''Calculate arrears for all members'''
 
 	# Find all current, ie. non-terminated Contracts, sorted by member
-	contracts = Contract.objects.exclude(Q(status='PEN')).select_related('user', 'ctype', 'tier').order_by('user__first_name')
+	contracts = Contract.objects.exclude(Q(status='PEN')) \
+	    .select_related('user', 'ctype', 'tier') \
+	    .order_by('user__first_name')
 
 	return render(request, 'reports/arrears.html', {'contracts': contracts})
 
@@ -82,7 +91,9 @@ def user_invoices(request, username, year, month):
 
 	try:
 		# For the given user
-		u = User.objects.get(username=username) if request.user.username != username else request.user
+		u = User.objects.get(username=username) \
+		    if request.user.username != username \
+		    else request.user
 
 		# For the given month and year,
 		try:
@@ -153,7 +164,10 @@ def invoice(request):
 	'''Returns a JSON list of members, their monthly fee, and past arrears'''
 
 	# Find all current, ie. non-terminated Contracts, sorted by member
-	contracts = Contract.objects.exclude(Q(status='PEN')|Q(status='TER')).select_related('user', 'ctype', 'tier').order_by('-start').order_by('user__first_name')
+	contracts = Contract.objects.exclude(Q(status='PEN')|Q(status='TER')) \
+	    .select_related('user', 'ctype', 'tier') \
+	    .order_by('-start') \
+	    .order_by('user__first_name')
 
 	users = []
 
@@ -173,9 +187,12 @@ def invoice(request):
 		ud['id'] = k.user.id
 		ud['email'] = k.user.email # Use the last instance of k
 		ud['membership_status'] = k.user.membership_status(pretty=True)
-		ud['monthly'] = k.user._User__latest_membership.tier.fee if hasattr(k.user, '_User__latest_membership') else "N/A"
+		ud['monthly'] = k.user._User__latest_membership.tier.fee \
+		    if hasattr(k.user, '_User__latest_membership') \
+		    else "N/A"
 		users.append(ud)
 
 
-	return HttpResponse(json.dumps(users, indent=4), content_type='application/json')
+	return HttpResponse(json.dumps(users, indent=4),
+	                    content_type='application/json')
 
