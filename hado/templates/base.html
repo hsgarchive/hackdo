@@ -1,81 +1,79 @@
 {% load i18n %}
-{% load adminmedia %}
 
 <!DOCTYPE html>
 <html lang="">
-<head>
-	<meta charset="utf-8">
-	<title>{% block title %}{% endblock %} - HackDo</title>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %} - HackDo</title>
 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
-	<!-- For the admin widgets -->
-	<script type="text/javascript" src="/amedia/jsi18n/"></script>
-	<script type="text/javascript" src="/static/admin/js/core.js"></script>
-	<script type="text/javascript">
-		window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
-	</script>
+        <!-- For the admin widgets -->
+        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+        <script type="text/javascript" src="/amedia/jsi18n/"></script>
+        <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+        <script type="text/javascript" src="/static/admin/js/core.js"></script>
 
-	{% block js %}{% endblock %}
+        {% block js %}{% endblock %}
 
 
-	<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
-	<!--[if IE]>
-		<link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
-	<![endif]-->
-	<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
-	<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
+        <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
+        <!--[if IE]>
+        <link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
+        <![endif]-->
+        <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
 
-	{% block css %}{% endblock %}
-</head>
-<body>
-	<div id="header">
-		{% block header %}
-			<div id="branding">
-				<h1 id="site-name"><a href="{% url index %}"><img src="{{ STATIC_URL }}img/hackerspacesg-small.png"></a></h1>
-			</div>
-			<div id="user-tools">
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <div id="header">
+            {% block header %}
+            <div id="branding">
+                <h1 id="site-name"><a href="{% url "index" %}"><img src="{{ STATIC_URL }}img/hackerspacesg-small.png"></a></h1>
+            </div>
+            <div id="user-tools">
 
-				{% if user.is_authenticated %}
-				Welcome, <a href="{{ user.get_absolute_url }}">{{ user }}</a>!
-				{% if u.is_superuser %}
-					| <a href="/admin/">Admin</a></li> |
-				{% endif %}
-				<a href="{% url django.contrib.auth.views.logout %}">Logout</a>
-				{% else %}
-				<a href="{% url django.contrib.auth.views.login %}">Login</a>
-				{% endif %}
-				{% comment %}
-				<ul>
-					{% if user.is_authenticated %}
-						<li>Welcome, {{ user }}!</li> |
-						<li><a href="{% url django.contrib.auth.views.logout %}">Logout</a></li>
-					{% else %}
-						<li><a href="{% url django.contrib.auth.views.login %}">Login</a></li>
-					{% endif %}
-				</ul>
-				{% endcomment %}
-			</div>
+                {% if user.is_authenticated %}
+                Welcome, <a href="{{ user.get_absolute_url }}">{{ user }}</a>!
+                {% if u.is_superuser %}
+                | <a href="/admin/">Admin</a></li> |
+            {% endif %}
+            <a href="{% url "django.contrib.auth.views.logout" %}">Logout</a>
+            {% else %}
+            <a href="{% url "django.contrib.auth.views.login" %}">Login</a>
+            {% endif %}
+            {% comment %}
+            <ul>
+                {% if user.is_authenticated %}
+                <li>Welcome, {{ user }}!</li> |
+                <li><a href="{% url "django.contrib.auth.views.logout" %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url "django.contrib.auth.views.login" %}">Login</a></li>
+                {% endif %}
+            </ul>
+            {% endcomment %}
+        </div>
 
-		{% endblock %}
-	</div>
-	{% if messages %}
-	<ul class="messagelist">
-	{% for message in messages %}
-		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	{% endfor %}
-		</ul>
-	{% endif %}
+        {% endblock %}
+    </div>
+    {% if messages %}
+    <ul class="messagelist">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-	<div id="content">
-		{% block content %}{% endblock %}
-	</div>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
 
-	<footer id="footer">
-		{% block footer %}
-			<p>made for <a href="http://hackerspace.sg">hackerspacesg</a> | mit licensed | &copy; 2011</p>
-			<p><a href="https://github.com/hackerspacesg/hackdo">contribute</a></p>
-		{% endblock %}
-	</footer>
+    <footer id="footer">
+        {% block footer %}
+        <p>made for <a href="http://hackerspace.sg">hackerspacesg</a> | mit licensed | &copy; 2011</p>
+        <p><a href="https://github.com/hackerspacesg/hackdo">contribute</a></p>
+        {% endblock %}
+    </footer>
 </body>
 </html>

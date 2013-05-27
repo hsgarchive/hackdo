@@ -1,10 +1,14 @@
-pip>=1.0.2
-django==1.3
+pip>=1.3.1
+django==1.5
 # Need to apt-get install libmysqlclient-dev, a dependency of MySQL-python
-MySQL-python==1.2.3
+MySQL-python==1.2.4
 # Required: liblcms1-dev, libpng-dev, libjpeg8-dev
 PIL==1.1.7
-South==0.7.5
-coverage>=3.5
-django_coverage==1.2
+South>=0.8.1
 python-dateutil>=2.0
+# For test
+nose==1.3.0
+coverage>=3.5
+django_coverage==1.2.2
+behave==1.2.2
+django-behave==0.0.5

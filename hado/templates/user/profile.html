@@ -20,7 +20,7 @@
 
 		<section id="payment_submission">
 			<header>Submit a new Payment</header>
-			<form method="post" action="{% url user_profile u.username %}">
+			<form method="post" action="{% url "user_profile" u.username %}">
 				{% csrf_token %}
 				{{ pform.media }}
 				<ul>

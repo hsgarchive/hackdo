@@ -62,11 +62,6 @@ STATIC_ROOT = '%s/static/' % ROOT_PATH
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # A list of locations of additional static files
 STATICFILES_DIRS = (
 	('js', '%s/static/js' % ROOT_PATH),
@@ -111,7 +106,6 @@ INSTALLED_APPS = (
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django.contrib.humanize',
-	# Uncomment the next line to enable the admin:
 	'django.contrib.admin',
 	'hado',
 	'south',
@@ -126,9 +120,15 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
@@ -138,7 +138,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+    },
 }
 
 
