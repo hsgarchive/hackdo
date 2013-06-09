@@ -81,7 +81,6 @@ nosetests.xml
 [Bb]in
 [Ii]nclude
 [Ll]ib
-[Ss]cripts
 [Ll]ocal
 [Mm]an
 [Ss]hare

@@ -12,5 +12,6 @@ coverage>=3.5
 django_coverage==1.2.2
 behave==1.2.2
 django-behave==0.0.5
+django-extensions==1.1.1
 # For code style
 pep8==1.4.5
