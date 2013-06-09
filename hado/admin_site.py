@@ -13,70 +13,68 @@ from hado.forms import PaymentFormAdmin, PaymentFormAdminFormset
 # Subclassing a custom admin to provide a custom interface
 class HackdoAdmin(AdminSite):
 
-	def index(self, request):
-		'''This view forms the admin dashboard for HackDo'''
+    def index(self, request):
+        '''This view forms the admin dashboard for HackDo'''
 
-		# Members stats
-		members = {}
-		users = User.objects.select_related('contracts')
-		members['total'] = len(users)
+        # Members stats
+        members = {}
+        users = User.objects.select_related('contracts')
+        members['total'] = len(users)
 
-		members['active'] = Contract.objects.filter(ctype__desc='Membership',
-		                                            status='ACT').count()
-		members['lapsed'] = Contract.objects.filter(ctype__desc='Membership',
-		                                            status='LAP').count()
+        members['active'] = Contract.objects.filter(ctype__desc='Membership',
+                                                    status='ACT').count()
+        members['lapsed'] = Contract.objects.filter(ctype__desc='Membership',
+                                                    status='LAP').count()
 
-		# Income stats
-		income = {}
-		this_month = datetime.date.today().month
-		payments_this_month = Payment.objects.filter(
-			date_paid__month=this_month)
-		# Get ContracTypes
-		ctypes = ContractType.objects.all()
-		for c in ctypes:
-			income[c.desc] = payments_this_month \
-			    .filter(contract__ctype__desc=c.desc) \
-				.aggregate(Sum('amount'))['amount__sum'] or 0.0
-
-
-		# Supposed income this month
-		income['summary'] = {}
-		income['summary']['supposed'] = \
-		    Contract.objects \
-		    .filter(Q(status='ACT') | Q(status='LAP')) \
-		    .aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
-
-		income['summary']['actual'] = \
-		    payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
-
-		income['summary']['shortfall'] = \
-		    income['summary']['supposed'] - income['summary']['actual']
+        # Income stats
+        income = {}
+        this_month = datetime.date.today().month
+        payments_this_month = Payment.objects.filter(
+            date_paid__month=this_month)
+        # Get ContracTypes
+        ctypes = ContractType.objects.all()
+        for c in ctypes:
+            income[c.desc] = payments_this_month \
+                    .filter(contract__ctype__desc=c.desc) \
+                    .aggregate(Sum('amount'))['amount__sum'] or 0.0
 
 
-		# Incoming Payments pending verification
-		if request.method == 'POST':
-			pformset = PaymentFormAdminFormset(
-				request.POST, queryset=Payment.objects.filter(verified=False))
+        # Supposed income this month
+        income['summary'] = {}
+        income['summary']['supposed'] = \
+                Contract.objects \
+                .filter(Q(status='ACT') | Q(status='LAP')) \
+                .aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
 
-			if pformset.is_valid():
-				pformset.save()
+        income['summary']['actual'] = \
+                payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
-				# On success, add a note
-				messages.success(request, "Payments verified")
-			else:
-				print pformset.errors
-
-		# Create a new formset anyway
-		pformset = PaymentFormAdminFormset(
-			queryset=Payment.objects.filter(verified=False))
-
-		return render(request, 'admin/index.html',
-		              {'members':members, 'income':income, 'pformset':pformset})
+        income['summary']['shortfall'] = \
+                income['summary']['supposed'] - income['summary']['actual']
 
 
+        # Incoming Payments pending verification
+        if request.method == 'POST':
+            pformset = PaymentFormAdminFormset(
+                request.POST, queryset=Payment.objects.filter(verified=False))
 
-	def lapsed_contracts(self, request):
-		'''Shows details about lapsed contracts'''
-		pass
+            if pformset.is_valid():
+                pformset.save()
+
+                # On success, add a note
+                messages.success(request, "Payments verified")
+            else:
+                print pformset.errors
+
+        # Create a new formset anyway
+        pformset = PaymentFormAdminFormset(
+            queryset=Payment.objects.filter(verified=False))
+
+        return render(request, 'admin/index.html',
+                      {'members':members, 'income':income, 'pformset':pformset})
 
 
+
+    def lapsed_contracts(self, request):
+        '''Shows details about lapsed contracts'''
+        pass
