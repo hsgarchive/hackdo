@@ -4,6 +4,9 @@ import re
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import (
+    UserCreationForm, UserChangeForm
+)
 from django import forms
 
 import datetime
@@ -82,7 +85,33 @@ class ContractAdmin(admin.ModelAdmin):
     inlines = [ PaymentInline, ]
 
 
+class HackDoUserCreationForm(UserCreationForm):
+
+    class Meta:
+        model = HackDoUser
+        fields = ('username', 'email', )
+
+class HackDoUserChangeForm(UserChangeForm):
+
+    class Meta:
+        # TODO: Find a better way to add all required fields into the form
+        model = HackDoUser
+        fields = (
+            'username', 'email', 'is_active', 
+            'first_name', 'last_name', 'groups',
+            'is_staff', 'is_superuser', 'is_hackdo_admin',
+            'user_permissions', 'last_login', 'date_joined',
+        )
+
 class HackDoUserAdmin(UserAdmin):
+    form = HackDoUserChangeForm
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 
+                                       'is_hackdo_admin', 'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),

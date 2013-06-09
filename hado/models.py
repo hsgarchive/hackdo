@@ -59,7 +59,7 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _('staff status'), default=False,
         help_text=_('Designates whether the user \
-                    can log into this hackdo admin site.')
+                    can log into django default admin site.')
     )
     is_active = models.BooleanField(
         _('active'), default=False,
@@ -68,6 +68,12 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
     )
 
     # HackDo User required attribute
+    is_hackdo_admin = models.BooleanField(
+        _('hackdo admin'), default=False,
+        help_text=_('Designates whether the user \
+                    can log into hackdo admin site.')
+    )
+
     profile_image = models.ImageField(
         upload_to=get_image_path, 
         blank=True
