@@ -5,10 +5,12 @@ from django.contrib.admin.sites import AdminSite
 from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
 
 from hado.models import *
 from hado.forms import PaymentFormAdmin, PaymentFormAdminFormset
 
+User = get_user_model()
 
 # Subclassing a custom admin to provide a custom interface
 class HackdoAdmin(AdminSite):

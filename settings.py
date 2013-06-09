@@ -29,7 +29,7 @@ SECRET_KEY = 'fv0$p-bwy^8ic!4aj%cat+c5$z_ok6ii8f&iae69r7byi!qh5h'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    #	 'django.template.loaders.eggs.Loader',
+    #'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,18 +86,7 @@ LOGGING = {
     },
 }
 
-
-# Authentication stuff
-LOGIN_URL='/login/'
-LOGOUT_URL='/logout/'
-
-
-# Config for custom extended User model
-AUTHENTICATION_BACKENDS = (
-    'hado.auth_backends.UserModelBackend',
-)
-
-CUSTOM_USER_MODEL = 'hado.User'
+AUTH_USER_MODEL = 'hado.HackDoUser'
 
 # Django settings for hackdo project.
 try:
@@ -107,7 +96,6 @@ except NameError:
         from local_settings import *
     except ImportError:
         pass
-
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

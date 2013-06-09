@@ -1,35 +1,104 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.utils.http import urlquote
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db.models import Sum
 from django.db.models.signals import pre_save, post_save, post_init, pre_init
-from django.contrib.auth.models import User, UserManager
 from django.core.exceptions import ValidationError
+from django.conf import settings
+
+from hado.managers import HackDoUserManager
 
 from dateutil.relativedelta import relativedelta
-
 import datetime, calendar
-
-
-# Create your models here.
 
 def get_image_path(instance, filename):
     return os.path.join('users', instance.id, filename)
 
+class HackDoUser(AbstractBaseUser, PermissionsMixin):
 
-class User(User):
-    """Custom User model, extending Django's default User"""
+    """
+    Custom User model, extending Django's AbstractBaseUser
+    """
+
     USER_TYPES = (
         ('MEM', 'Member'),
         ('SPO', 'Sponsor'),
-        ('DON', 'Donation')
+        ('DON', 'Donation'),
     )
 
-    profile_image = models.ImageField(upload_to=get_image_path, blank=True)
-    utype = models.CharField(max_length=3, choices=USER_TYPES, default='MEM')
+    # Django User required attribute
+    username = models.CharField(
+        _('username'), 
+        max_length=40, 
+        unique=True,
+        db_index=True,
+    )
+    email = models.EmailField(
+        _('email'), 
+        max_length=255,
+        unique=True,
+        db_index=True,
+    )
+    first_name = models.CharField(
+        _('first name'),
+        max_length=30,
+        blank=True
+    )
+    last_name = models.CharField(
+        _('last name'),
+        max_length=30,
+        blank=True
+    )
+    date_joined = models.DateTimeField(
+        _('date joined'),
+        default=timezone.now
+    )
+    is_staff = models.BooleanField(
+        _('staff status'), default=False,
+        help_text=_('Designates whether the user \
+                    can log into this hackdo admin site.')
+    )
+    is_active = models.BooleanField(
+        _('active'), default=False,
+        help_text=_('Desingates whether the user \
+                    is a verified hackspacesg member.')
+    )
 
-    objects = UserManager()
+    # HackDo User required attribute
+    profile_image = models.ImageField(
+        upload_to=get_image_path, 
+        blank=True
+    )
 
+    utype = models.CharField(
+        max_length=3,
+        choices=USER_TYPES,
+        default='MEM',
+    )
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+
+    objects = HackDoUserManager()
+
+    # Django User required method
+    def get_full_name(self):
+         return self.email
+
+    def get_short_name(self):
+        return self.get_username()
+
+    def get_absolute_url(self):
+        return "/users/%s/" % urlquote(self.get_username())
+
+    def __unicode__(self):
+        return self.email
+
+
+    # HackDo method
     @property
     def most_recent_payment(self):
         p = self.payments_made.all().order_by('-date_paid')
@@ -78,23 +147,38 @@ class User(User):
         except Contract.DoesNotExist:
             return None
 
-
-    def __unicode__(self):
-        if self.first_name and self.last_name:
-            return self.get_full_name()
-        else:
-            return self.username
-
-
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
 class ContractType(models.Model):
-    desc = models.CharField(max_length=128, blank=False, null=True)
+
+    desc = models.CharField(
+        max_length=128, 
+        blank=False, 
+        null=True
+    )
+
+    def __unicode__(self):
+        return self.desc
+
+class Tier(models.Model):
+
+    fee = models.FloatField(default=0.0)
+    desc = models.CharField(max_length=255)
+    ctype = models.ForeignKey(
+        "ContractType", 
+        blank=False, 
+        null=True
+    )
 
     def __unicode__(self):
         return self.desc
 
 
+
 class Contract(models.Model):
+
     CONTRACT_STATUSES = (
         ('ACT', 'Active'),
         ('LAP', 'Lapsed'),
@@ -105,11 +189,28 @@ class Contract(models.Model):
     start = models.DateField()
     end = models.DateField(blank=True, null=True)
     valid_till = models.DateField(editable=False)
-    ctype = models.ForeignKey(ContractType, blank=False, null=True, verbose_name="Contract type", help_text="Locker and Address Use Contracts must use their respective Tiers. Membership contracts can accept all other Tiers")
+    ctype = models.ForeignKey(
+        ContractType, 
+        blank=False, 
+        null=True, 
+        verbose_name="Contract type", 
+        help_text="Locker and Address Use Contracts must use their respective Tiers.\
+        Membership contracts can accept all other Tiers"
+    )
     tier = models.ForeignKey("Tier", blank=False, null=True)
-    user = models.ForeignKey(User, blank=False, null=True, related_name="contracts")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        blank=False,
+        null=True,
+        related_name="contracts"
+    )
     status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
-    desc = models.CharField(max_length=1024, blank=True, help_text="Enter company name if Contract is for Address Use. May use for general remarks for other Contract types")
+    desc = models.CharField(
+        max_length=1024,
+        blank=True,
+        help_text="Enter company name if Contract is for Address Use.\
+        May use for general remarks for other Contract types"
+    )
 
 
     def __extend_by(self, num_months):
@@ -232,15 +333,6 @@ class Contract(models.Model):
     def __unicode__(self):
         return "%s %s | %s to %s" % (self.tier, self.ctype, self.start.strftime('%b %Y'), self.valid_till.strftime('%b %Y'))
 
-
-class Tier(models.Model):
-    fee = models.FloatField(default=0.0)
-    desc = models.CharField(max_length=255)
-    ctype = models.ForeignKey("ContractType", blank=False, null=True)
-
-    def __unicode__(self):
-        return self.desc
-
 class Payment(models.Model):
     PAYMENT_METHODS = (
         ('EFT', 'Electronic Fund Transfer'),
@@ -249,56 +341,85 @@ class Payment(models.Model):
         ('OTH', 'Others')
     )
 
-#	PAYMENT_TYPES = (
-#		('DPT', 'Deposit'),
-#		('FEE', 'Membership Fees'),
-#		('DNT', 'Donation')
-#	)
+    #	PAYMENT_TYPES = (
+    #		('DPT', 'Deposit'),
+    #		('FEE', 'Membership Fees'),
+    #		('DNT', 'Donation')
+    #	)
 
-#	MONTHS = (
-#		('1', 'Jan'),
-#		('2', 'Feb'),
-#		('3', 'Mar'),
-#		('4', 'Apr'),
-#		('5', 'May'),
-#		('6', 'Jun'),
-#		('7', 'Jul'),
-#		('8', 'Aug'),
-#		('9', 'Sep'),
-#		('10', 'Oct'),
-#		('11', 'Nov'),
-#		('12', 'Dec')
-#	)
+    #	MONTHS = (
+    #		('1', 'Jan'),
+    #		('2', 'Feb'),
+    #		('3', 'Mar'),
+    #		('4', 'Apr'),
+    #		('5', 'May'),
+    #		('6', 'Jun'),
+    #		('7', 'Jul'),
+    #		('8', 'Aug'),
+    #		('9', 'Sep'),
+    #		('10', 'Oct'),
+    #		('11', 'Nov'),
+    #		('12', 'Dec')
+    #	)
 
-#	@property
-#	def year_range(self):
-    #		this_year = datetime.today().year
-    #		years = ( (unicode(this_year), unicode(this_year)) )
-    #
-    #		for i in xrange(0, 10):
-        #			years.insert(0, (unicode(this_year-i), unicode(this_year-i)))
-        #			years.append((unicode(this_year+i), unicode(this_year+i)))
+    #	@property
+    #	def year_range(self):
+        #		this_year = datetime.today().year
+        #		years = ( (unicode(this_year), unicode(this_year)) )
         #
-        #		return years
+        #		for i in xrange(0, 10):
+            #			years.insert(0, (unicode(this_year-i), unicode(this_year-i)))
+            #			years.append((unicode(this_year+i), unicode(this_year+i)))
+            #
+            #		return years
 
-#	YEARS = (
-#		('2010', '2010'),
-#	)
+    #	YEARS = (
+    #		('2010', '2010'),
+    #	)
 
     date_paid = models.DateField()
     amount = models.FloatField(default=0.0)
-    method = models.CharField(max_length=3, choices=PAYMENT_METHODS, default='EFT')
-    contract = models.ForeignKey(Contract, blank=False, null=True, related_name="payments")
-    desc = models.CharField(max_length=255, blank=True, help_text="Eg. Cheque or transaction number, if applicable")
-    user = models.ForeignKey(User, blank=False, null=True, related_name="payments_made")
-    verified = models.BooleanField(default=False, blank=False, help_text="Has this Payment been verified/approved by an Admin?")
+    method = models.CharField(
+        max_length=3,
+        choices=PAYMENT_METHODS,
+        default='EFT'
+    )
+    contract = models.ForeignKey(
+        Contract,
+        blank=False,
+        null=True,
+        related_name="payments"
+    )
+    desc = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Eg. Cheque or transaction number,\
+        if applicable"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=False,
+        null=True,
+        related_name="payments_made"
+    )
+    verified = models.BooleanField(
+        default=False,
+        blank=False,
+        help_text="Has this Payment been \
+        verified/approved by an Admin?"
+    )
 
     def __unicode__(self):
         return u"%s | %s %s | %s, %s" % (self.user, self.contract.tier, self.contract.ctype, self.amount, self.date_paid.strftime('%d %b %Y'))
 
 
 class Locker(models.Model):
-    user = models.ForeignKey(User, blank=False, null=True, related_name="locker")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=False,
+        null=True,
+        related_name="locker"
+    )
     num = models.IntegerField()
 
 

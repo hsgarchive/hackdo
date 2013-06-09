@@ -1,8 +1,9 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 import re
 
+from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 from django import forms
 
 import datetime
@@ -81,18 +82,17 @@ class ContractAdmin(admin.ModelAdmin):
     inlines = [ PaymentInline, ]
 
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'email')
-    list_display_links = ('__unicode__',)
-    inlines = [ ContractInline, PaymentInline ]
-    fieldsets = (
+class HackDoUserAdmin(UserAdmin):
+    add_fieldsets = (
         (None, {
-            'fields': ('username', ('first_name', 'last_name'), 'email')
-        }),
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2')}
+        ),
     )
+    inlines = [ ContractInline, PaymentInline ]
 
 
-hdadmin.register(User, UserAdmin)
+hdadmin.register(HackDoUser, HackDoUserAdmin)
 hdadmin.register(ContractType)
 hdadmin.register(Contract, ContractAdmin)
 hdadmin.register(Tier)
