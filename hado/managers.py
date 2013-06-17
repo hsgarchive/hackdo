@@ -1,9 +1,8 @@
-from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import BaseUserManager
 
-class HackDoUserManager(BaseUserManager):
 
+class HackDoUserManager(BaseUserManager):
     """
     username, email and password are required.
     """
@@ -13,8 +12,9 @@ class HackDoUserManager(BaseUserManager):
         if not username:
             raise ValueError('The given username must be set')
         email = self.normalize_email(email)
-        user = self.model(username=username, email=email, is_hackdo_admin=False,
-                          is_staff=False, is_active=False, is_superuser=False,
+        user = self.model(username=username, email=email,
+                          is_hackdo_admin=False, is_staff=False,
+                          is_active=False, is_superuser=False,
                           last_login=now, date_joined=now, **extra_fields)
 
         user.set_password(password)
@@ -30,7 +30,8 @@ class HackDoUserManager(BaseUserManager):
 
     def create_superuser(self, username, email, password, **extra_fields):
         """
-        Creates and saves a Super User with the given username, email and password.
+        Creates and saves a Super User with the given username,
+        email and password.
         """
         u = self.get_user_unsaved(username, email, password, **extra_fields)
         u.is_staff = True

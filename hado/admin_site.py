@@ -7,10 +7,11 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
-from hado.models import *
-from hado.forms import PaymentFormAdmin, PaymentFormAdminFormset
+from hado.models import Contract, Payment, ContractType, Sum
+from hado.forms import PaymentFormAdminFormset
 
 User = get_user_model()
+
 
 # Subclassing a custom admin to provide a custom interface
 class HackdoAdmin(AdminSite):
@@ -23,8 +24,9 @@ class HackdoAdmin(AdminSite):
         users = User.objects.select_related('contracts')
         members['total'] = len(users)
 
-        members['active'] = Contract.objects.filter(ctype__desc='Membership',
-                                                    status='ACT').count()
+        members['active'] = Contract.objects.filter(
+            ctype__desc='Membership',
+            status='ACT').count()
         members['lapsed'] = Contract.objects.filter(ctype__desc='Membership',
                                                     status='LAP').count()
 
@@ -37,23 +39,21 @@ class HackdoAdmin(AdminSite):
         ctypes = ContractType.objects.all()
         for c in ctypes:
             income[c.desc] = payments_this_month \
-                    .filter(contract__ctype__desc=c.desc) \
-                    .aggregate(Sum('amount'))['amount__sum'] or 0.0
-
+                .filter(contract__ctype__desc=c.desc) \
+                .aggregate(Sum('amount'))['amount__sum'] or 0.0
 
         # Supposed income this month
         income['summary'] = {}
         income['summary']['supposed'] = \
-                Contract.objects \
-                .filter(Q(status='ACT') | Q(status='LAP')) \
-                .aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
+            Contract.objects \
+            .filter(Q(status='ACT') | Q(status='LAP')) \
+            .aggregate(Sum('tier__fee'))['tier__fee__sum'] or 0.0
 
         income['summary']['actual'] = \
-                payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
+            payments_this_month.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
         income['summary']['shortfall'] = \
-                income['summary']['supposed'] - income['summary']['actual']
-
+            income['summary']['supposed'] - income['summary']['actual']
 
         # Incoming Payments pending verification
         if request.method == 'POST':
@@ -73,9 +73,11 @@ class HackdoAdmin(AdminSite):
             queryset=Payment.objects.filter(verified=False))
 
         return render(request, 'admin/index.html',
-                      {'members':members, 'income':income, 'pformset':pformset})
-
-
+                      {
+                          'members': members,
+                          'income': income,
+                          'pformset': pformset
+                      })
 
     def lapsed_contracts(self, request):
         '''Shows details about lapsed contracts'''

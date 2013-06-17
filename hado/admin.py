@@ -7,12 +7,12 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 
-import datetime
-from hado.models import  *
-from hado.forms import *
+from hado.models import Payment, Contract, Tier, HackDoUser, ContractType
+from hado.forms import PaymentFormAdmin
 from hado.admin_site import HackdoAdmin
 
 hdadmin = HackdoAdmin()
+
 
 # Inline classes
 class PaymentInline(admin.TabularInline):
@@ -27,12 +27,14 @@ class PaymentInline(admin.TabularInline):
 
             # Assuming we're editing user in the address eg.
             # "/admin/hado/user/3/"
-            # So we extract the user_id portion from that path and use it in our
+            # So we extract the user_id portion
+            # from that path and use it in our
             # queryset filter
             m = re.search("/.+\/(?P<id>\d+)\/?", request.path_info)
             if m is not None:
                 user_id = m.group('id')
-                kwargs["queryset"] = Contract.objects.filter(user__id = user_id)
+                kwargs["queryset"] = Contract.objects.filter(
+                    user__id=user_id)
                 #.exclude(status = "TER")
                 return db_field.formfield(**kwargs)
         return super(PaymentInline, self).formfield_for_foreignkey(db_field,
@@ -40,14 +42,15 @@ class PaymentInline(admin.TabularInline):
                                                                    **kwargs)
 
 
-
 class TierInline(admin.TabularInline):
     model = Tier
+
 
 class ContractInline(admin.TabularInline):
     model = Contract
     extra = 0
-    inlines = [ PaymentInline, ]
+    inlines = [PaymentInline, ]
+
 
 # ModelAdmin classes
 class PaymentAdmin(admin.ModelAdmin):
@@ -64,7 +67,8 @@ class PaymentAdmin(admin.ModelAdmin):
         if db_field.name == "contract":
             # Assuming we're editing user in the address eg.
             # "/admin/hado/user/3/"
-            # So we extract the user_id portion from that path and use it in our
+            # So we extract the user_id portion
+            # from that path and use it in our
             # queryset filter
             m = re.search("/.+\/(?P<id>\d+)\/?$", request.path_info)
             if m is not None:
@@ -80,7 +84,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class ContractAdmin(admin.ModelAdmin):
-    inlines = [ PaymentInline, ]
+    inlines = [PaymentInline, ]
 
 
 class HackDoUserCreationForm(forms.ModelForm):
@@ -90,16 +94,19 @@ class HackDoUserCreationForm(forms.ModelForm):
     }
     username = forms.RegexField(label=_("Username"), max_length=40,
                                 regex=r'^[\w.@+-]+$',
-                                help_text=_("Required. 40 characters or fewer. Letters, digits and "
+                                help_text=_("Required. 40 characters or fewer "
+                                            "Letters, digits and "
                                             "@/./+/-/_ only."),
                                 error_messages={
-                                    'invalid': _("This value may contain only letters, numbers and "
+                                    'invalid': _("This value may contain only "
+                                                 "letters, numbers and "
                                                  "@/./+/-/_ characters.")})
     password1 = forms.CharField(label=_("Password"),
                                 widget=forms.PasswordInput)
     password2 = forms.CharField(label=_("Password confirmation"),
                                 widget=forms.PasswordInput,
-                                help_text=_("Enter the same password as above, for verification."))
+                                help_text=_("Enter the same password as above,"
+                                            " for verification."))
 
     def clean_username(self):
         # Since HackDoUser.username is unique, this check is redundant,
@@ -130,6 +137,7 @@ class HackDoUserCreationForm(forms.ModelForm):
         model = HackDoUser
         fields = ('username', 'email',)
 
+
 class HackDoUserChangeForm(UserChangeForm):
     username = forms.RegexField(
         label=_("Username"), max_length=40, regex=r"^[\w.@+-]+$",
@@ -149,25 +157,29 @@ class HackDoUserChangeForm(UserChangeForm):
             'user_permissions', 'last_login', 'date_joined',
         )
 
+
 class HackDoUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2')}
-        ),
+            'fields': (
+                'username', 'email', 'password1', 'password2')
+        }),
     )
     add_form = HackDoUserCreationForm
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 
-                                       'is_hackdo_admin', 'groups', 'user_permissions')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'is_hackdo_admin', 'groups',
+                                       'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     form = HackDoUserChangeForm
-    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_active', 'is_hackdo_admin')
+    list_display = ('username', 'email', 'is_staff', 'is_superuser',
+                    'is_active', 'is_hackdo_admin')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'is_hackdo_admin')
-    inlines = [ ContractInline, PaymentInline ]
+    inlines = [ContractInline, PaymentInline, ]
 
 
 hdadmin.register(HackDoUser, HackDoUserAdmin)

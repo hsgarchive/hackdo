@@ -1,15 +1,13 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django import forms
-from django.utils.translation import ugettext_lazy as _, ugettext as __
-from django.forms.util import ErrorList
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import widgets
 from django.forms.models import modelformset_factory
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
-import datetime
+from hado.models import Payment, Contract
 
-from hado.models import *
 
 class HackDoAuthenticationForm(forms.Form):
     """
@@ -35,7 +33,8 @@ class HackDoAuthenticationForm(forms.Form):
 
         # Set the label for the "username" field.
         UserModel = get_user_model()
-        self.username_field = UserModel._meta.get_field(UserModel.USERNAME_FIELD)
+        self.username_field = UserModel._meta.get_field(
+            UserModel.USERNAME_FIELD)
         if self.fields['username'].label is None:
             self.fields['username'].label = self.username_field.verbose_name
 
@@ -61,7 +60,9 @@ class HackDoAuthenticationForm(forms.Form):
     def get_user(self):
         return self.user_cache
 
+
 class PaymentFormAdmin(forms.ModelForm):
+
     class Meta:
         model = Payment
 
@@ -83,11 +84,13 @@ class PaymentFormAdmin(forms.ModelForm):
 
         return cd
 
+
 class PaymentForm(PaymentFormAdmin):
 
     class Meta:
         model = Payment
-        exclude = ['user', 'verified'] # Hide the 'verified' field from the User
+        exclude = ['user', 'verified']
+        # Hide the 'verified' field from the User
 
     def __init__(self, by_user=None, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
@@ -96,9 +99,9 @@ class PaymentForm(PaymentFormAdmin):
 
         if by_user is not None:
             self.fields['contract'] = forms.ModelChoiceField(
-                queryset=Contract.objects \
-                .filter(user__username=by_user) \
-                .exclude(status='TER') \
+                queryset=Contract.objects
+                .filter(user__username=by_user)
+                .exclude(status='TER')
                 .order_by('-start'),
                 empty_label=None)
 
