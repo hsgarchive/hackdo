@@ -17,3 +17,6 @@ django-extensions==1.1.1
 pep8==1.4.5
 flake8==2.0
 autopep8==0.9.1
+# For documentation
+docutils==0.10
+Pygments==1.6
