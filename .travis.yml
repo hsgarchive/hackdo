@@ -1,4 +1,7 @@
 language: python
+branches:
+only:
+- dev
 python:
 - "2.7"
 install:
