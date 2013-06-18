@@ -1,10 +1,20 @@
-language: python
 branches:
 only:
-- dev
+    - dev
+language: python
 python:
-- "2.7"
+    - "2.7"
+    - "pypy"
 install:
-- pip install -r scripts/requirements.txt --use-mirrors
+    - pip install -r scripts/requirements.txt --use-mirrors
+before_script:
+    - "pep8 --exclude=migrations --ignore=E501,E225 src"
+    - pyflakes -x W src
 script:
-- python manage.py test hado
+    - python manage.py test hado
+notifications:
+    email:
+    recipients:
+        - wgx731@gmail.com
+    on_success: never
+    on_failure: always
