@@ -93,3 +93,5 @@ logs/
 *.pot
 *.pyc
 local_settings.py
+
+!.travis.yml

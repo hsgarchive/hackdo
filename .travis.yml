@@ -1,0 +1,7 @@
+language: python
+python:
+- "2.7"
+install:
+- pip install -r scripts/requirements.txt --use-mirrors
+script:
+- python manage.py test hado
