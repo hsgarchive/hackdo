@@ -104,7 +104,9 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
         return "/users/%s/" % urlquote(self.get_username())
 
     def __unicode__(self):
-        return self.email
+        if self.first_name and self.last_name:
+            return "%s %s" % (self.first_name, self.last_name)
+        return self.username
 
     # HackDo method
     @property
@@ -338,6 +340,7 @@ class Contract(models.Model):
         if not self.valid_till:
             self.valid_till = self.start
 
+        today = datetime.date.today()
         last_day = calendar.monthrange(self.valid_till.year,
                                        self.valid_till.month)[1]
         self.valid_till = datetime.date(self.valid_till.year,
@@ -350,7 +353,6 @@ class Contract(models.Model):
         # If we notice the Contract is now Terminated,
         # and the end date has not been set, set the end date
         if self.status == 'TER' and self.end is None:
-            today = datetime.date.today()
             self.end = datetime.date(today.year,
                                      today.month,
                                      calendar.monthrange(today.year,
@@ -365,6 +367,9 @@ class Contract(models.Model):
         else:
             kwargs['force_insert'] = True
             kwargs['force_update'] = False
+
+        if self.valid_till > today:
+            self.status = u'ACT'
 
         super(Contract, self).save(*args, **kwargs)
 

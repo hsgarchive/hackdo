@@ -14,7 +14,7 @@ from dateutil.relativedelta import relativedelta
 from hado.models import Tier, ContractType, Contract, Sum, Payment
 User = get_user_model()
 
-from datetime import datetime
+import datetime
 
 
 class UserTest(TestCase):
@@ -224,7 +224,7 @@ class ContractTest(TestCase):
 
         # Shift valid_till forward past today()
         # so that we can cause it to shift back to being Active
-        t = datetime.today()
+        t = datetime.datetime.today()
         # Shift date 30 days forward
         cc.valid_till = t + datetime.timedelta(days=30)
         cc.save()
