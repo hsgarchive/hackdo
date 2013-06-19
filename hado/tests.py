@@ -18,6 +18,7 @@ import datetime
 
 
 class UserTest(TestCase):
+
     '''Test various User functions'''
 
     fixtures = ['contracttype', 'tier']
@@ -59,8 +60,8 @@ class UserTest(TestCase):
         u.set_password('testtest')
         u.save()
 
-        date_start = datetime.date(2010, 04, 01)
-        date_end = datetime.date(2010, 05, 31)
+        date_start = datetime.date(2010, 0o4, 0o1)
+        date_end = datetime.date(2010, 0o5, 31)
 
         # Attribute some membership Contracts
         u.contracts.create(
@@ -75,7 +76,7 @@ class UserTest(TestCase):
         self.assertEqual(u.contracts.all().count(), 1)
 
         u.contracts.create(
-            start=datetime.date(2010, 06, 01),
+            start=datetime.date(2010, 0o6, 0o1),
             ctype=ContractType.objects.get(desc='Membership'),
             tier=Tier.objects.get(desc='Youth'),
             status=u'ACT'
@@ -103,28 +104,28 @@ class ContractTest(TestCase):
         self.u.save()
 
         # Contract
-        self.c = Contract(start=datetime.date(2010, 04, 01),
+        self.c = Contract(start=datetime.date(2010, 0o4, 0o1),
                           ctype=ContractType.objects.get(desc='Membership'),
                           tier=Tier.objects.get(desc='Regular'),
                           user=self.u, status='ACT')
         # Add some Payments
         # Initial deposit, plus first month (Apr)
         self.c.payments.create(
-            date_paid=datetime.date(2010, 04, 14),
+            date_paid=datetime.date(2010, 0o4, 14),
             amount=256,
             user=self.u
         )
 
         # Payment for May and June
         self.c.payments.create(
-            date_paid=datetime.date(2010, 06, 01),
+            date_paid=datetime.date(2010, 0o6, 0o1),
             amount=256,
             user=self.u
         )
 
         # Payment due for July, paid in October
         self.c.payments.create(
-            date_paid=datetime.date(2010, 10, 05),
+            date_paid=datetime.date(2010, 10, 0o5),
             amount=128,
             user=self.u
         )
@@ -180,7 +181,7 @@ class ContractTest(TestCase):
         arrears_months = r.months + (r.years * 12 if r.years else 0)\
             + (1 if r.days else 0)
 
-        self.assertEqual(self.c.balance(), -(arrears_months*128))
+        self.assertEqual(self.c.balance(), -(arrears_months * 128))
         self.assertEqual(self.c.balance(in_months=True), -arrears_months)
 
     def testContractExtendWithPayment(self):
@@ -202,7 +203,7 @@ class ContractTest(TestCase):
         # Check the new valid_till month
         nmonth = self.c.valid_till.month
 
-        self.assertEqual(nmonth-bmonth, QUANTUM)
+        self.assertEqual(nmonth - bmonth, QUANTUM)
 
     def testContractCheckLapsed(self):
         '''

@@ -3,10 +3,10 @@
 
 import csv
 import datetime
-from hado.models import Contract, Payment, Tier, ContractType
-from hado.models import HackDoUser as User
+from .hado.models import Contract, Payment, Tier, ContractType
+from .hado.models import HackDoUser as User
 
-######
+#
 #
 #   Usage:
 #
@@ -27,7 +27,7 @@ from hado.models import HackDoUser as User
 #
 #   Finally. check in the Django admin to ensure sanity.
 #
-#######
+#
 
 
 MEMBER_REJECTS = []
@@ -47,7 +47,7 @@ def import_payments(interactive=False):
 
         try:
             pp.id = int(float(p[1]))
-            pp.date_paid = datetime.datetime.strptime(p[0],  '%d-%b-%Y')
+            pp.date_paid = datetime.datetime.strptime(p[0], '%d-%b-%Y')
 
             pp.amount = float(p[4])
             if pp.amount <= 0:
