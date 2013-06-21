@@ -71,12 +71,6 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
     )
 
     # HackDo User required attribute
-    is_hackdo_admin = models.BooleanField(
-        _('hackdo admin'), default=False,
-        help_text=_('Designates whether the user \
-                    can log into hackdo admin site.')
-    )
-
     profile_image = models.ImageField(
         upload_to=get_image_path,
         blank=True

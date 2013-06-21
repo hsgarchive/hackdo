@@ -153,8 +153,8 @@ class HackDoUserChangeForm(UserChangeForm):
         fields = (
             'username', 'email', 'is_active',
             'first_name', 'last_name', 'groups',
-            'is_staff', 'is_superuser', 'is_hackdo_admin',
-            'user_permissions', 'last_login', 'date_joined',
+            'is_staff', 'is_superuser', 'user_permissions',
+            'last_login', 'date_joined',
         )
 
 
@@ -171,14 +171,13 @@ class HackDoUserAdmin(UserAdmin):
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'is_hackdo_admin', 'groups',
-                                       'user_permissions')}),
+                                       'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
     form = HackDoUserChangeForm
     list_display = ('username', 'email', 'is_staff', 'is_superuser',
-                    'is_active', 'is_hackdo_admin')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'is_hackdo_admin')
+                    'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
     inlines = [ContractInline, PaymentInline, ]
 
 
