@@ -1,18 +1,26 @@
 branches:
 only:
     - dev
+
 language: python
 python:
     - "2.7"
     - "pypy"
+
 install:
     - pip install -r scripts/requirements.txt --use-mirrors
+
 before_script:
     - mysql -e 'create database hackdo;'
-    - 'flake8 --exclude=migrations --ignore=E501,F403 --statistics .'
+    - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then flake8 --exclude=migrations --ignore=E501,F403 --statistics .; fi"
+    - "if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pep8 --exclude=migrations --ignore=E501,F403 .; fi"
+
 script:
     - python manage.py test hado
+
 notifications:
     email:
     recipients:
         - wgx731@gmail.com
+        on_success: change
+        on_failure: change
