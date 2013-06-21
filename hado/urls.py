@@ -1,5 +1,5 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from hado.views import index, user_profile, arrears, invoice
 from hado.forms import HackDoAuthenticationForm
 

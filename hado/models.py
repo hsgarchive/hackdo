@@ -38,31 +38,36 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
         max_length=40,
         unique=True,
         db_index=True,
+        help_text=_('primary index for user'),
     )
     email = models.EmailField(
         _('email'),
         max_length=255,
         unique=True,
         db_index=True,
+        help_text=_('email linked with user'),
     )
     first_name = models.CharField(
         _('first name'),
         max_length=30,
-        blank=True
+        blank=True,
+        help_text=_('user first name'),
     )
     last_name = models.CharField(
         _('last name'),
         max_length=30,
-        blank=True
+        blank=True,
+        help_text=_('user last name'),
     )
     date_joined = models.DateTimeField(
         _('date joined'),
-        default=timezone.now
+        default=timezone.now,
+        help_text=_('user joined time'),
     )
     is_staff = models.BooleanField(
         _('staff status'), default=False,
         help_text=_('Designates whether the user \
-                    can log into django default admin site.')
+                    can log into django admin site.')
     )
     is_active = models.BooleanField(
         _('active'), default=False,
@@ -72,14 +77,18 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
 
     # HackDo User required attribute
     profile_image = models.ImageField(
+        _('profile image'),
         upload_to=get_image_path,
-        blank=True
+        blank=True,
+        help_text=_('user avatar'),
     )
 
     utype = models.CharField(
+        _('member type'),
         max_length=3,
         choices=USER_TYPES,
         default='MEM',
+        help_text=_('user member type'),
     )
 
     USERNAME_FIELD = 'username'
@@ -89,31 +98,46 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
 
     # Django User required method
     def get_full_name(self):
-        return self.email
+        """
+        Returns the first_name plus the last_name, with a space in between
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()
 
     def get_short_name(self):
+        """
+        Returns the username
+        """
         return self.get_username()
 
     def get_absolute_url(self):
+        """
+        Returns the user default url -- /users/username
+        """
         return "/users/%s/" % urlquote(self.get_username())
 
     def __unicode__(self):
+        """
+        Returns the user full name if any, else returns username
+        """
         if self.first_name and self.last_name:
-            return "%s %s" % (self.first_name, self.last_name)
+            return self.get_full_name()
         return self.username
 
     # HackDo method
     @property
     def most_recent_payment(self):
+        """
+        Returns most recent payment if any
+        """
         p = self.payments_made.all().order_by('-date_paid')
         return p[0] if p else None
 
     def total_paid(self, ptype=None):
-        '''
+        """
         Returns the total amount the User has paid either in total,
         or for a specified Contract type
-        '''
-
+        """
         # Construct the appropriate Queryset
         if ptype is not None:
             payments = self.payments_made.filter(contract__ctype__desc=ptype)
@@ -123,10 +147,10 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
         return payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
     def membership_status(self, pretty=False):
-        '''
+        """
         Returns string (see Contract::CONTRACT_STATUSES)
         indicating latest Membership status of this User
-        '''
+        """
         try:
             if not hasattr(self, '__latest_membership'):
                 lm = self.contracts.filter(ctype__desc='Membership')\
@@ -141,10 +165,10 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
             return None
 
     def member_since(self):
-        '''
+        """
         Returns datetime object representing
         start date of earliest Membership Contract if found, None otherwise
-        '''
+        """
         try:
             if not hasattr(self, '__member_since'):
                 ms = self.contracts.filter(ctype__desc='Membership')\
@@ -165,32 +189,67 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
 
 
 class ContractType(models.Model):
+    """
+    Stores an contract type:
+        1. Membership
+        2. Locker
+        3. Registered Address
+    """
 
     desc = models.CharField(
+        _('description'),
         max_length=128,
         blank=False,
-        null=True
+        null=True,
+        help_text=_('contract type description')
     )
 
     def __unicode__(self):
+        """
+        Returns contract type description
+        """
         return self.desc
 
 
 class Tier(models.Model):
+    """
+    Stores an tier related to :model:`hado.ContractType`
+    1. Trial
+    2. Youth
+    3. Regular
+    4. Hotdesk
+    5. Resident
+    """
 
-    fee = models.FloatField(default=0.0)
-    desc = models.CharField(max_length=255)
+    fee = models.FloatField(
+        _('tier fee'),
+        default=0.0,
+        help_text=_('tier fee'),
+    )
+    desc = models.CharField(
+        _('description'),
+        max_length=255,
+        help_text=_('tier description'),
+    )
     ctype = models.ForeignKey(
-        "ContractType",
+        ContractType,
         blank=False,
-        null=True
+        null=True,
+        help_text=_('linked contract type'),
     )
 
     def __unicode__(self):
+        """
+        Returns tier description
+        """
         return self.desc
 
 
 class Contract(models.Model):
+    """
+    Stores an contract related to :model:`hado.ContractType`, \
+    :model:`hado.HackDoUser` and :model: `hado.Tier`
+    """
 
     CONTRACT_STATUSES = (
         ('ACT', 'Active'),
@@ -199,39 +258,54 @@ class Contract(models.Model):
         ('PEN', 'Pending')
     )
 
-    start = models.DateField()
-    end = models.DateField(blank=True, null=True)
-    valid_till = models.DateField(editable=False)
+    start = models.DateField(
+        help_text=_('contract starting time'),
+    )
+    end = models.DateField(
+        blank=True, null=True,
+        help_text=_('contract ending time'),
+    )
+    valid_till = models.DateField(
+        editable=False,
+        help_text=_('contract valid until time'),
+    )
     ctype = models.ForeignKey(
         ContractType,
         blank=False,
         null=True,
-        verbose_name="Contract type",
-        help_text="Locker and Address Use Contracts must use \
+        verbose_name=_('Contract type'),
+        help_text=_('Locker and Address Use Contracts must use \
         their respective Tiers.\
-        Membership contracts can accept all other Tiers"
+        Membership contracts can accept all other Tiers'),
     )
-    tier = models.ForeignKey("Tier", blank=False, null=True)
+    tier = models.ForeignKey(
+        Tier, blank=False, null=True,
+        help_text=_('Linked tier'),
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=False,
         null=True,
-        related_name="contracts"
+        related_name=_('contracts'),
     )
-    status = models.CharField(max_length=3, choices=CONTRACT_STATUSES)
+    status = models.CharField(
+        max_length=3, choices=CONTRACT_STATUSES,
+        help_text=_('contract status: \
+        1. Active 2. Lapsed \
+        3. Terminated 4.Pending'),
+    )
     desc = models.CharField(
         max_length=1024,
         blank=True,
-        help_text="Enter company name if Contract is for Address Use.\
-        May use for general remarks for other Contract types"
+        help_text=_('Enter company name if Contract is for Address Use.\
+        May use for general remarks for other Contract types')
     )
 
     def __extend_by(self, num_months):
-        '''
+        """
         Extends the validity of this Contract by specified number of months.\
         THIS METHOD DOES NOT save() AUTOMATICALLY
-        '''
-
+        """
         # We subtract one day, such that if we start on the first of a month,
         # eg. datetime.date(2011, 02, 01), extending the validity
         # by 5 months, won't give us an end date of datetime.date(2011, 07, 01)
@@ -250,9 +324,9 @@ class Contract(models.Model):
                                             self.valid_till.month)[1])
 
     def __month_diff(self, end, start):
-        '''
+        """
         Returns the months (inclusive of part thereof) between two dates
-        '''
+        """
 
         r = relativedelta(end + relativedelta(days=+1), start)
         return r.months + \
@@ -260,17 +334,17 @@ class Contract(models.Model):
 
     @property
     def total_paid(self):
-        '''
-        Returns total amount paid due to this Contract
-        '''
+        """
+        Returns total amount paid due to this :model:`hado.Contract`
+        """
         return self.payments.aggregate(Sum('amount'))['amount__sum'] or 0.0
 
     def sync(self):
-        '''
-        Looks at the total amount paid to this Contract and recalculates\
-        its proper expiry (end) date, taking a month's deposit into account
-        '''
-
+        """
+        Looks at the total amount paid to this :model:`hado.Contract` \
+        and recalculates its proper expiry (end) date, taking a month's \
+        deposit into account
+        """
         # Reset the clock
         self.valid_till = self.start
 
@@ -282,10 +356,11 @@ class Contract(models.Model):
         self.save()
 
     def balance(self, in_months=False):
-        '''
-        Looks at how much has been paid for this Contract and determines\
-        if there is any balance owed by (-ve) / owed to (+ve) the Member
-        '''
+        """
+        Looks at how much has been paid for this :model:`hado.Contract` \
+        and determines if there is any balance owed by (-ve) / \
+        owed to (+ve) the Member
+        """
         balance = 0
         duration_in_months = 0
 
@@ -306,8 +381,11 @@ class Contract(models.Model):
             return balance
 
     def update_with_payment(self, p):
-        # Takes a Payment object, calculates how many month's worth it is,
-        # and extends the contract end date accordingly
+        """
+        Takes a :model:`hado.Payment`, \
+        calculates how many month's worth it is, \
+        and extends the contract end date accordingly
+        """
         if isinstance(p, Payment):
             # Get number of multiples of Contract for this Payment
             multiples = int(p.amount / self.tier.fee)
@@ -324,12 +402,13 @@ class Contract(models.Model):
                 return False
 
     def save(self, *args, **kwargs):
-        # Overridden save() forces the date of self.end
-        # to be the last day of that given month.
-        # Eg. if self.end is initially declared as 5 May 2010,
-        # we now force it to become 31 May 2010
-        # before actually save()'ing the object.
-
+        """
+        Overridden save() forces the date of self.end \
+        to be the last day of that given month. \
+        Eg. if self.end is initially declared as 5 May 2010, \
+        we now force it to become 31 May 2010 \
+        before actually save()'ing the object.
+        """
         # But first, is self.end even specified?
         if not self.valid_till:
             self.valid_till = self.start
@@ -368,12 +447,19 @@ class Contract(models.Model):
         super(Contract, self).save(*args, **kwargs)
 
     def clean(self):
-        # Model validation to ensure that
-        # validates that contract and tier are allowed
+        """
+        Model validation to ensure that \
+        validates that :model:`hado.ContractType` \
+        and :model:`hado.Tier` are allowed
+        """
         if self.ctype != self.tier.ctype:
             raise ValidationError(_("Contract type and tier mismatched"))
 
     def __unicode__(self):
+        """
+        Returns :model:`hado.Tier` desc, :model:`hado.ContractType` desc \
+        start time and valid time
+        """
         return "%s %s | %s to %s" % (self.tier,
                                      self.ctype,
                                      self.start.strftime('%b %Y'),
@@ -381,6 +467,11 @@ class Contract(models.Model):
 
 
 class Payment(models.Model):
+    """
+    Stores a payment related to :model:`hado.Contract` \
+    and :model:`hado.HackDoUser`
+    """
+
     PAYMENT_METHODS = (
         ('EFT', 'Electronic Fund Transfer'),
         ('CHK', 'Cheque'),
@@ -388,75 +479,52 @@ class Payment(models.Model):
         ('OTH', 'Others')
     )
 
-    #	PAYMENT_TYPES = (
-    #		('DPT', 'Deposit'),
-    #		('FEE', 'Membership Fees'),
-    #		('DNT', 'Donation')
-    #	)
-
-    #	MONTHS = (
-    #		('1', 'Jan'),
-    #		('2', 'Feb'),
-    #		('3', 'Mar'),
-    #		('4', 'Apr'),
-    #		('5', 'May'),
-    #		('6', 'Jun'),
-    #		('7', 'Jul'),
-    #		('8', 'Aug'),
-    #		('9', 'Sep'),
-    #		('10', 'Oct'),
-    #		('11', 'Nov'),
-    #		('12', 'Dec')
-    #	)
-
-    #	@property
-    #	def year_range(self):
-        #		this_year = datetime.today().year
-        #		years = ( (unicode(this_year), unicode(this_year)) )
-        #
-        #		for i in xrange(0, 10):
-            #			years.insert(0, (unicode(this_year-i), unicode(this_year-i)))
-            #			years.append((unicode(this_year+i), unicode(this_year+i)))
-            #
-            #		return years
-
-    #	YEARS = (
-    #		('2010', '2010'),
-    #	)
-
-    date_paid = models.DateField()
-    amount = models.FloatField(default=0.0)
+    date_paid = models.DateField(
+        _('date of payment'),
+        help_text=_('date of payment'),
+    )
+    amount = models.FloatField(
+        default=0.0,
+        help_text=_('payment amount'),
+    )
     method = models.CharField(
         max_length=3,
         choices=PAYMENT_METHODS,
-        default='EFT'
+        default='EFT',
+        help_text=_('payment method: \
+        1. Electronic Fund Transfer 2. Cheque \
+        3. Cash 4. Others'),
     )
     contract = models.ForeignKey(
         Contract,
         blank=False,
         null=True,
-        related_name="payments"
+        related_name=_('payments'),
     )
     desc = models.CharField(
         max_length=255,
         blank=True,
-        help_text="Eg. Cheque or transaction number,\
-        if applicable"
+        help_text=_('Eg. Cheque or transaction number,\
+        if applicable'),
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=False,
         null=True,
-        related_name="payments_made"
+        related_name=_('payments_made'),
     )
     verified = models.BooleanField(
         default=False,
         blank=False,
-        help_text="Has this Payment been \
-        verified/approved by an Admin?"
+        help_text=_('Has this Payment been \
+        verified/approved by an Admin?')
     )
 
     def __unicode__(self):
+        """
+        Returns :model:`hado.HackDoUser`, :model:`hado.Tier` desc, \
+        :model:`hado.ContractType` desc, amount and date of payment \
+        """
         return u"%s | %s %s | %s, %s" % (self.user,
                                          self.contract.tier,
                                          self.contract.ctype,
@@ -465,13 +533,18 @@ class Payment(models.Model):
 
 
 class Locker(models.Model):
+    """
+    Stores a locker related to :model:`hado.HackDoUser`
+    """
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=False,
         null=True,
-        related_name="locker"
+        related_name=_('locker')
     )
-    num = models.IntegerField()
+    num = models.IntegerField(
+        help_text=_('locker number')
+    )
 
 
 # Attaching a post_save signal handler to the Payment model
