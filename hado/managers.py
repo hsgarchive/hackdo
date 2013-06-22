@@ -13,7 +13,7 @@ class HackDoUserManager(BaseUserManager):
             raise ValueError('The given username must be set')
         email = self.normalize_email(email)
         user = self.model(username=username, email=email,
-                          is_staff=False, his_active=False, is_superuser=False,
+                          is_staff=False, is_active=False, is_superuser=False,
                           last_login=now, date_joined=now, **extra_fields)
 
         user.set_password(password)

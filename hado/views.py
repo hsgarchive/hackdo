@@ -18,11 +18,62 @@ User = get_user_model()
 
 @login_required
 def index(request):
+    """
+    Root route, redirect to user profile page
+    """
     return HttpResponseRedirect(request.user.get_absolute_url())
 
 
 @login_required
 def user_profile(request, username):
+    """
+    User profile page, display :model:`hado.HackDoUser`
+
+    if user is verified - display related :model:`hado.Contract`
+
+    else - display related :model:`hado.MemberRequest`
+
+    **Context**
+
+    ``RequestContext``
+
+    ``u``
+
+    An instance of :model:`hado.HackDoUser`
+
+    *user not verified:*
+
+    ``member_req``
+
+    Instance of :model:`hado.MemberRequest` related to user
+
+    *user verified:*
+
+    ``contracts``
+
+    Instances of :model:`hado.Contract` related to user
+
+    ``paid_to_date``
+
+    User contract end date
+
+    ``account_balance``
+
+    User account balance
+
+    ``payment_history``
+
+    Instances of :model:`hado.Payment` related to user
+
+    ``pform``
+
+    New payment form
+
+    **Template:**
+
+    :template:`user/profile.html`
+    """
+    template = 'user/profile.html'
 
     if not request.user.is_superuser and request.user.username != username:
         return HttpResponseRedirect(request.user.get_absolute_url())
@@ -57,7 +108,7 @@ def user_profile(request, username):
         # Create a new form
         pform = PaymentForm(u.username)
 
-    return render(request, 'user/profile.html',
+    return render(request, template,
                   {'u': u,
                    'contracts': contracts,
                    'paid_to_date': paid_to_date,
@@ -68,18 +119,35 @@ def user_profile(request, username):
 
 @login_required
 def arrears(request):
-    '''Calculate arrears for all members'''
+    """
+    Calculate arrears for all members
+
+    **Context**
+
+    ``RequestContext``
+
+    ``contracts``
+
+    Instances of :model:`hado.Contract` related to user
+
+    **Template:**
+
+    :template:`reports/arrears.html`
+    """
+    template = 'reports/arrears.html'
 
     # Find all current, ie. non-terminated Contracts, sorted by member
     contracts = Contract.objects.exclude(Q(status='PEN'))\
         .select_related('user', 'ctype', 'tier') \
         .order_by('user__first_name')
 
-    return render(request, 'reports/arrears.html', {'contracts': contracts})
+    return render(request, template, {'contracts': contracts})
 
 
 def invoice(request):
-    '''Returns a JSON list of members, their monthly fee, and past arrears'''
+    """
+    Returns a JSON list of members, their monthly fee, and past arrears
+    """
 
     # Find all current, ie. non-terminated Contracts, sorted by member
     contracts = Contract.objects.exclude(Q(status='PEN') | Q(status='TER')) \
@@ -89,7 +157,7 @@ def invoice(request):
 
     users = []
 
-    cc = itertools.groupby(contracts, key=lambda x: x.user.get_full_name())
+    cc = itertools.groupby(contracts, key=lambda x: unicode(x.user))
     for c in cc:
         ud = {}  # User detail dictionary
         ud['name'] = c[0]
