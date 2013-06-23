@@ -1,86 +1,113 @@
 [
- {
-  "pk": 1,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Membership"
-  }
- },
- {
-  "pk": 2,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Locker"
-  }
- },
- {
-  "pk": 3,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Registered Address"
-  }
- },
- {
-  "pk": 1,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 32.0,
-   "desc": "Trial",
-   "ctype": 1
-  }
- },
- {
-  "pk": 2,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 64.0,
-   "desc": "Youth",
-   "ctype": 1
-  }
- },
- {
-  "pk": 3,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 128.0,
-   "desc": "Regular",
-   "ctype": 1
-  }
- },
- {
-  "pk": 4,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 256.0,
-   "desc": "Hotdesk",
-   "ctype": 1
-  }
- },
- {
-  "pk": 5,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 512.0,
-   "desc": "Resident",
-   "ctype": 1
-  }
- },
- {
-  "pk": 6,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 10.0,
-   "desc": "Locker Use",
-   "ctype": 2
-  }
- },
- {
-  "pk": 7,
-  "model": "hado.tier",
-  "fields": {
-   "fee": 10.0,
-   "desc": "Address Use",
-   "ctype": 3
-  }
- }
+{
+    "pk": 1,
+        "model": "hado.contracttype",
+        "fields": {
+            "desc": "Membership"
+        }
+},
+{
+    "pk": 2,
+    "model": "hado.contracttype",
+    "fields": {
+        "desc": "Locker"
+    }
+},
+{
+    "pk": 3,
+    "model": "hado.contracttype",
+    "fields": {
+        "desc": "Registered Address"
+    }
+},
+{
+    "pk": 1,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 32.0,
+        "desc": "Trial",
+        "ctype": 1
+    }
+},
+{
+    "pk": 2,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 64.0,
+        "desc": "Youth",
+        "ctype": 1
+    }
+},
+{
+    "pk": 3,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 128.0,
+        "desc": "Regular",
+        "ctype": 1
+    }
+},
+{
+    "pk": 4,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 256.0,
+        "desc": "Hotdesk",
+        "ctype": 1
+    }
+},
+{
+    "pk": 5,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 512.0,
+        "desc": "Resident",
+        "ctype": 1
+    }
+},
+{
+    "pk": 6,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 10.0,
+        "desc": "Locker Use",
+        "ctype": 2
+    }
+},
+{
+    "pk": 7,
+    "model": "hado.tier",
+    "fields": {
+        "fee": 10.0,
+        "desc": "Address Use",
+        "ctype": 3
+    }
+},
+{
+    "pk": 1,
+    "model": "sites.site",
+    "fields":
+    {
+        "domain": "hackerspace.sg",
+        "name": "hackspace hackdo"
+    }
+},
+{
+    "pk": 2,
+    "model": "sites.site",
+    "fields":
+    {
+        "domain": "heroku.com",
+        "name": "hackdo staging"
+    }
+},
+{
+    "pk": 3,
+    "model": "sites.site",
+    "fields":
+    {
+        "domain": "127.0.0.1:8000",
+        "name": "localhost"
+    }
+}
 ]
