@@ -89,6 +89,7 @@ LOGGING = {
 }
 
 AUTH_USER_MODEL = 'hado.HackDoUser'
+LOGIN_REDIRECT_URL = '/'
 
 import os
 # ROOT_PATH, DATABASES will be override in local_settings.py
