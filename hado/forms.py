@@ -76,12 +76,6 @@ class PaymentFormAdmin(forms.ModelForm):
                 self._errors['contract'] = self.error_class(
                     [_('Payment User does not match the Contract User.')])
 
-            # if (cd.get('amount') % cd.get('contract').tier.fee) != 0:
-                # 	self._errors['amount'] = self.error_class(
-                # 		[_('Payment amount ($%s) is not a clean multiple of '
-                # 		   'Contract Fee ($%s)' % (cd.get('amount'),
-                # 		                           cd.get('contract').tier.fee))])
-
         return cd
 
 

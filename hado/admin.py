@@ -179,6 +179,7 @@ class HackDoUserAdmin(UserAdmin):
                     'is_active')
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     inlines = [ContractInline, PaymentInline, ]
+    readonly_fields = ['last_login','date_joined']
 
 
 hdadmin.register(HackDoUser, HackDoUserAdmin)

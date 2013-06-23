@@ -91,7 +91,6 @@ LOGGING = {
 AUTH_USER_MODEL = 'hado.HackDoUser'
 
 import os
-
 # ROOT_PATH, DATABASES will be override in local_settings.py
 ROOT_PATH = os.path.dirname(__file__)
 

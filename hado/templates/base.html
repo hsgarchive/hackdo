@@ -1,79 +1,61 @@
-{% load i18n %}
+{% load i18n staticfiles %}
 
 <!DOCTYPE html>
-<html lang="">
+<html lang="en-SG">
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}{% endblock %} - HackDo</title>
 
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-
-        <!-- For the admin widgets -->
-        <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
-        <script type="text/javascript" src="/amedia/jsi18n/"></script>
-        <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-        <script type="text/javascript" src="/static/admin/js/core.js"></script>
-
-        {% block js %}{% endblock %}
-
-
-        <link href="{{ STATIC_URL }}css/style.css" rel="stylesheet" type="text/css" />
+        <link href="{% static "css/bootstrap.css" %}" rel="stylesheet" type="text/css">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+        <link href="{% static "css/style.css" %}" rel="stylesheet" type="text/css">
+        <link href="{% static "admin/css/widgets.css" %}" rel="stylesheet" type="text/css">
         <!--[if IE]>
-        <link rel="stylesheet" type="text/css" media="screen, projection" href="{{ MEDIA_URL }}ie.css">
+            <link rel="stylesheet" type="text/css" media="screen, projection" href="{% static "css/ie.css" %}">
         <![endif]-->
-        <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css"/>
-        <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css"/>
-
         {% block css %}{% endblock %}
+
     </head>
     <body>
-        <div id="header">
-            {% block header %}
-            <div id="branding">
-                <h1 id="site-name"><a href="{% url "index" %}"><img src="{{ STATIC_URL }}img/hackerspacesg-small.png"></a></h1>
-            </div>
-            <div id="user-tools">
-
+        <div id="wrap">
+            <div id="header">
+                {% block header %}{% endblock %}
                 {% if user.is_authenticated %}
-                Welcome, <a href="{{ user.get_absolute_url }}">{{ user }}</a>!
-                {% if u.is_superuser %}
-                | <a href="/admin/">Admin</a></li> |
-            {% endif %}
-            <a href="{% url "django.contrib.auth.views.logout" %}">Logout</a>
-            {% else %}
-            <a href="{% url "django.contrib.auth.views.login" %}">Login</a>
-            {% endif %}
-            {% comment %}
-            <ul>
-                {% if user.is_authenticated %}
-                <li>Welcome, {{ user }}!</li> |
-                <li><a href="{% url "django.contrib.auth.views.logout" %}">Logout</a></li>
-                {% else %}
-                <li><a href="{% url "django.contrib.auth.views.login" %}">Login</a></li>
+                <div class="navbar navbar-inverse">
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <a class="brand" href="#"><img src="{% static "img/hackerspacesg-small.png" %}"></a>
+                            <div class="nav-collapse">
+                                <ul class="nav pull-right">
+                                    <li><a href="{{ user.get_absolute_url }}"><i class="icon-user"></i> {{user.username}}</a></li>
+                                    {% if u.is_superuser %}
+                                    <li><a href="/admin/">Admin</a></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+                                </ul>
+                            </div><!-- /.nav-collapse -->
+                        </div>
+                    </div><!-- /navbar-inner -->
+                </div>
                 {% endif %}
-            </ul>
-            {% endcomment %}
+            </div>
+            <div id="content" class="container">
+                {% block content %}{% endblock %}
+            </div>
+            <div id="push"></div>
+            <footer id="footer">
+            <div class="container">
+                <p>made for <a href="http://hackerspace.sg/"><span class="label label-info">hackerspacesg</span></a> | <i class="icon-book"></i> mit licensed | © 2013 | <i class="icon-star"></i> <a href="https://github.com/hackerspacesg/hackdo">contribute</a></p>
+            </div>
+            </footer>
         </div>
-
-        {% endblock %}
-    </div>
-    {% if messages %}
-    <ul class="messagelist">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <div id="content">
-        {% block content %}{% endblock %}
-    </div>
-
-    <footer id="footer">
-        {% block footer %}
-        <p>made for <a href="http://hackerspace.sg">hackerspacesg</a> | mit licensed | &copy; 2011</p>
-        <p><a href="https://github.com/hackerspacesg/hackdo">contribute</a></p>
-        {% endblock %}
-    </footer>
-</body>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/0.0.11/js/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="{% static "js/application.js" %}"></script>
+        {% block footer_js %}{% endblock %}
+    </body>
 </html>

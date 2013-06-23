@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block header %}{% endblock header %}
+
+{% block content %}
+<div class="row">
+    <div class="span12 pagination-centered">
+        <img src="{% static "img/hackerspacesg-long.png" %}" title="HackerspaceSG" alt="HackerspaceSG">
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="span8 offset2">
+        <legend>Welcome to HackDo - Sign In</legend>
+        <form method="post" action="{% url 'login' %}" class="form-search">
+            {% if form.errors %}
+            <div class="alert alert-error fade in">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Error</strong>
+                <p>Your username and/or password did not match.</p>
+            </div>
+            {% endif %}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <input type="text" placeholder="username" id="id_username" name="username">
+            <input type="password" placeholder="password" id="id_password" name="password" class="span3">
+            <input class="btn btn-primary" type="submit" value="login">
+            <div class="form-actions">
+                <p>
+                <a href="{% url 'django.contrib.auth.views.password_reset' %}">Forgot your password?</a> | <a href="./register.html">No account yet?</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
