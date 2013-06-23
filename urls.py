@@ -8,7 +8,7 @@ from hado.admin import hdadmin
 urlpatterns = patterns(
     '',
     (r'^amedia/jsi18n', 'django.views.i18n.javascript_catalog'),
-    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    (r'^admin/', include(hdadmin.urls)),
+    (r'^hdadmin/doc/', include('django.contrib.admindocs.urls')),
+    (r'^hdadmin/', include(hdadmin.urls)),
     (r'', include('hado.urls')),
 )
