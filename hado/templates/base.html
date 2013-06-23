@@ -1,7 +1,7 @@
 {% load i18n staticfiles %}
 
 <!DOCTYPE html>
-<html lang="en-SG">
+<html lang="">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
@@ -12,17 +12,11 @@
         <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
         <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/0.0.11/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
         <link href="{% static "css/style.css" %}" rel="stylesheet" type="text/css">
-        <link href="{% static "admin/css/widgets.css" %}" rel="stylesheet" type="text/css">
-        <!--[if IE]>
-            <link rel="stylesheet" type="text/css" media="screen, projection" href="{% static "css/ie.css" %}">
-        <![endif]-->
         {% block css %}{% endblock %}
-
     </head>
     <body>
         <div id="wrap">
             <div id="header">
-                {% block header %}{% endblock %}
                 {% if user.is_authenticated %}
                 <div class="navbar navbar-inverse">
                     <div class="navbar-inner">
@@ -30,17 +24,24 @@
                             <a class="brand" href="#"><img src="{% static "img/hackerspacesg-small.png" %}"></a>
                             <div class="nav-collapse">
                                 <ul class="nav pull-right">
-                                    <li><a href="{{ user.get_absolute_url }}"><i class="icon-user"></i> {{user.username}}</a></li>
+                                    <li>
+                                    <a href="{{ user.get_absolute_url }}"><i class="icon-user"></i> {{user.username}}</a>
+                                    </li>
                                     {% if u.is_superuser %}
-                                    <li><a href="/admin/">Admin</a></li>
+                                    <li>
+                                    <a href="/hadoadmin/">Admin</a>
+                                    </li>
                                     {% endif %}
-                                    <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+                                    <li>
+                                    <a href="{% url 'logout' %}">Logout</a>
+                                    </li>
                                 </ul>
                             </div><!-- /.nav-collapse -->
                         </div>
                     </div><!-- /navbar-inner -->
                 </div>
                 {% endif %}
+                {% block header %}{% endblock %}
             </div>
             <div id="content" class="container">
                 {% block content %}{% endblock %}

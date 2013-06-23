@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
-{% load i18n staticfiles %}
-{% block header %}{% endblock header %}
+{% load i18n %}
+{% block title %}{% trans "Sign In" %}{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="span12 pagination-centered">
-        <img src="{% static "img/hackerspacesg-long.png" %}" title="HackerspaceSG" alt="HackerspaceSG">
-    </div>
-</div>
-<hr/>
+{% include "tools/top_icon.html" %}
 <div class="row">
     <div class="span8 offset2 well">
         <legend>{% trans "Welcome to HackDo - Sign In" %}</legend>
