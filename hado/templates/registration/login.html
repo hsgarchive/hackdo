@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
-
+{% load i18n staticfiles %}
 {% block header %}{% endblock header %}
-
 {% block content %}
 <div class="row">
     <div class="span12 pagination-centered">
@@ -11,16 +9,10 @@
 </div>
 <hr/>
 <div class="row">
-    <div class="span8 offset2">
-        <legend>Welcome to HackDo - Sign In</legend>
+    <div class="span8 offset2 well">
+        <legend>{% trans "Welcome to HackDo - Sign In" %}</legend>
+        {% include "tools/form_error.html" %}
         <form method="post" action="{% url 'login' %}" class="form-search">
-            {% if form.errors %}
-            <div class="alert alert-error fade in">
-                <button type="button" class="close" data-dismiss="alert">×</button>
-                <strong>Error</strong>
-                <p>Your username and/or password did not match.</p>
-            </div>
-            {% endif %}
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
             <input type="text" placeholder="username" id="id_username" name="username">
@@ -28,7 +20,9 @@
             <input class="btn btn-primary" type="submit" value="login">
             <div class="form-actions">
                 <p>
-                <a href="{% url 'django.contrib.auth.views.password_reset' %}">Forgot your password?</a> | <a href="./register.html">No account yet?</a>
+                <a href="{% url 'password_reset' %}">{% trans "Forgot your password ?" %}</a>
+                |
+                <a href="./register.html">{% trans "No account yet ?" %}</a>
                 </p>
             </div>
         </form>

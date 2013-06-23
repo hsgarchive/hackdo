@@ -17,10 +17,10 @@ urlpatterns = patterns(
         name='password_reset_confirm'),
     url(r'^accounts/reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
     # user profile
-    url(r'users/(?P<username>[a-zA-Z0-9]+)',
+    url(r'^users/(?P<username>[a-zA-Z0-9]+)',
         'hado.views.user_profile', name='user_profile'),
     # arrears
-    url(r'arrears/?$', 'hado.views.arrears', name='arrears'),
+    url(r'^arrears/?$', 'hado.views.arrears', name='arrears'),
     # invoice
-    url(r'invoice/?$', 'hado.views.invoice', name='invoice'),
+    url(r'^invoice/?$', 'hado.views.invoice', name='invoice'),
 )
