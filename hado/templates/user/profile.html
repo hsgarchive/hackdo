@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load humanize%}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
 {% block content %}
 <article id="user_profile">
 <section id="account_summary" class="hero-unit">
@@ -37,15 +40,35 @@
 <hr/>
 <section id="payment_submission" class="row well">
 <div class="span12">
+{% if contract_list %}
     <header><h4>Submit a new Payment</h4></header>
-    <form method="post" action="{% url "user_profile" u.username %}">
+    <form method="post" action="{% url "user_profile" u.username %}" class="form-horizontal">
         {% csrf_token %}
         {{ pform.media }}
-        <ul>
-            {{ pform.as_ul }}
-        </ul>
-        <input type='submit' value="Notify admins of new payment">
+        {% for field in pform %}
+        <div class="control-group {% if field.errors %}error{% endif %}">
+            <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
+            <div class="controls">
+            {% if field.name == 'date_paid'%}
+            <div class="datepicker input-append">
+                <input name="{{field.name}}" data-format="yyyy-MM-dd" type="text"></input>
+                <span class="add-on">
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
+            <span class="help-inline">{{ field.errors }}</span>
+            {% else %}
+                {{ field }}
+                <span class="help-inline">{{ field.errors }}</span>
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <input class="btn btn-primary" type="submit" value="Notify admins of new payment">
     </form>
+{% else %}
+    <header><h4>You need a contract before you can make payment.</h4></header>
+{% endif %}
 </div>
 </section>
 <hr/>

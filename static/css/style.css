@@ -21,29 +21,30 @@ body {
     background-color: #f5f5f5;
 }
 
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-    #footer {
-        margin-left: -20px;
-        margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+#header {
+    min-height: 50px;
 }
 
+#content {
+    margin-top: 10px;
+}
+
+/* hotfix for datetimepick ui on customized theme */
+.bootstrap-datetimepicker-widget {
+    background-color: #ffffff;
+}
 .legend_block {
-	background-color: #cdede7;
-	border: 1px solid #ccc;
-	height: 10px;
-	width: 10px;
+    background-color: #cdede7;
+    border: 1px solid #ccc;
+    height: 10px;
+    width: 10px;
 }
 
 .legend_text {
-	font-style: italic;
+    font-style: italic;
 }
 
 .legend_block, .legend_text {
-	display: inline-block;
-	vertical-align: top;
+    display: inline-block;
+    vertical-align: top;
 }
-

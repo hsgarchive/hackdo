@@ -89,8 +89,6 @@ class PaymentForm(PaymentFormAdmin):
     def __init__(self, by_user=None, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
 
-        self.fields['date_paid'].widget = widgets.AdminDateWidget()
-
         if by_user is not None:
             self.fields['contract'] = forms.ModelChoiceField(
                 queryset=Contract.objects
