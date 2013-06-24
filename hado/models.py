@@ -43,7 +43,6 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         _('email'),
         max_length=255,
-        unique=True,
         db_index=True,
         help_text=_('email linked with user'),
     )
@@ -243,6 +242,36 @@ class Tier(models.Model):
         Returns tier description
         """
         return self.desc
+
+
+class MembershipReview(models.Model):
+    """
+    Stores an membership review request for model:`hado.HackDoUser`
+    """
+    applicant = models.OneToOneField(
+        HackDoUser,
+        primary_key=True,
+        help_text=_('Membership applicant'),
+    )
+
+    referrer = models.ForeignKey(
+        HackDoUser,
+        related_name=_('referrer'),
+        help_text=_('Membership referrer'),
+    )
+
+    reviewed = models.BooleanField(
+        default=False,
+        blank=False,
+        help_text=_('Referrer reviewed?')
+    )
+
+    def __unicode__(self):
+        """
+        Returns applicant and referrer
+        """
+        return '%s requests hackspaceSG membership with %s as referrer.' % (
+            self.applicant.email, self.reviewer.email)
 
 
 class Contract(models.Model):
