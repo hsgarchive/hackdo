@@ -1,5 +1,6 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django.conf.urls import patterns, url
+from django.conf import settings
 from hado.forms import HackDoAuthenticationForm
 
 urlpatterns = patterns(
@@ -10,7 +11,7 @@ urlpatterns = patterns(
     url(r'^accounts/login/$', 'django.contrib.auth.views.login',
         {'authentication_form': HackDoAuthenticationForm}, name='login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
-    url(r'^accounts/password_reset/$', 'django.contrib.auth.views.password_reset', name='password_reset'),
+    url(r'^accounts/password_reset/$', 'django.contrib.auth.views.password_reset',{'from_email':settings.DEFAULT_FROM_EMAIL},name='password_reset'),
     url(r'^accounts/password_reset/done/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
     url(r'^accounts/reset/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         'django.contrib.auth.views.password_reset_confirm',

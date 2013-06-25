@@ -110,9 +110,17 @@ LOGGING = {
 AUTH_USER_MODEL = 'hado.HackDoUser'
 LOGIN_REDIRECT_URL = '/'
 
-import path
+# Email Settings
+DEFAULT_FROM_EMAIL = 'no-reply@hackspace.sg'
+SERVER_EMAIL = 'admin@hackspace.sg'
+EMAIL_SUBJECT_PREFIX = '[Hackspace HackDo]'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+
+import os
 # ROOT_PATH, DATABASES will be override in local_settings.py
-ROOT_PATH = path.path(__file__)
+ROOT_PATH = os.path.dirname(__file__)
 
 DATABASES = {
     'default': {
