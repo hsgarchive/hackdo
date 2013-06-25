@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load humanize%}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
+{% block content %}
+<article id="pending_user">
+<section id="membershipreviews" class="row">
+<div class="span12">
+    <header><h4>Membership Reviews Status</h4></header>
+    <table id="membershipreview_table" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Applicant</th>
+                <th>Referrer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reviews %}
+            <tr class="
+                {% if r.reviewed %}
+                success
+                {% else %}
+                warning
+                {% endif %}
+                ">
+                <td>{{ r.applicant }}</td>
+                <td>{{ r.referrer }}</td>
+            </tr>
+            {% empty %}
+            <tr class="placeholder">
+                <td colspan="5">No membership reviews found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="well">
+        <p><span class="legend_block success"></span> <span class="legend_text">verified membership review</span></p>
+        <p><span class="legend_block warning"></span> <span class="legend_text">pending membership review</span></p>
+    </div>
+</div>
+</section>
+</article>
+{% endblock content %}

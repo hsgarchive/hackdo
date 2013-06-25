@@ -20,9 +20,38 @@ User = get_user_model()
 @login_required
 def index(request):
     """
-    Root route, redirect to user profile page
+    Root route:
+
+    if user is verified - redirect to :view:`hado.user_profile`
+
+    else - redirect to :view:`hado.pending_user`
     """
-    return HttpResponseRedirect(request.user.get_absolute_url())
+    if request.user.is_active:
+        return HttpResponseRedirect(request.user.get_absolute_url())
+    return HttpResponseRedirect(reverse('pending_user'))
+
+
+@login_required
+def pending_user(request):
+    """
+    display :model:`hado.MembershipReview` status for current pending user
+
+    **Context**
+
+    ``RequestContext``
+
+    ``reviews``
+
+    The :model:`hado.MembershipReview` related to current pending user
+
+    **Template:**
+
+    :template:`user/pending_user.html`
+    """
+    template = 'user/pending_user.html'
+    reviews = MembershipReview.objects.filter(applicant=request.user).all()
+    return render(request, template,
+                  {'reviews': reviews, })
 
 
 def register(request):
@@ -132,7 +161,7 @@ def user_profile(request, username):
     if not request.user.is_superuser and request.user.username != username:
         return HttpResponseRedirect(request.user.get_absolute_url())
 
-    u = User.objects.get(username=username)
+    u = request.user
     contracts = u.contracts.all().order_by("ctype")
 
     paid_to_date = u.total_paid()
