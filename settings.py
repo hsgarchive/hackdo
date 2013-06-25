@@ -53,10 +53,11 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'hado',
     'south',
     'django_coverage',
     'django_extensions',
+
+    'hado',
 )
 
 # A sample logging configuration. The only tangible logging

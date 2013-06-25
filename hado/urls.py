@@ -26,4 +26,6 @@ urlpatterns = patterns(
     url(r'^arrears/?$', 'hado.views.arrears', name='arrears'),
     # invoice
     url(r'^invoice/?$', 'hado.views.invoice', name='invoice'),
+    # approve membership review ajax
+    url(r'^review_membership/(?P<review_id>\d+)/$', 'hado.views.review_membership', name='review_ajax'),
 )

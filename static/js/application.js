@@ -1,7 +1,6 @@
-//To start alert and datepicker
 $(document).ready(function(){
-    $(".alert").alert();
+    //To start datepicker
     $('.datepicker').datetimepicker({
-        pickTime: false,
+        pickTime: false
     });
 });
