@@ -1,5 +1,6 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -7,8 +8,8 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 
 # Models
-from hado.models import Contract
-from hado.forms import PaymentForm
+from hado.models import Contract, MembershipReview
+from hado.forms import PaymentForm, NewAccountForm
 
 import itertools
 import json
@@ -22,6 +23,59 @@ def index(request):
     Root route, redirect to user profile page
     """
     return HttpResponseRedirect(request.user.get_absolute_url())
+
+
+def register(request):
+    """
+    New account page, create new :model:`hado.HackDoUser`
+    with two :model:`hado.MembershipReview`
+
+    **Context**
+
+    ``RequestContext``
+
+    ``form``
+
+    The new account form
+
+    **Template:**
+
+    :template:`registration/register.html`
+    """
+    template = 'registration/register.html'
+    if request.method == 'POST':
+        form = NewAccountForm(request.POST)
+        if form.is_valid():
+            try:
+                cd = form.cleaned_data
+                new_user = User.objects.create_user(
+                    username=cd['username'],
+                    email=cd['email'],
+                    password=cd['password'],
+                )
+                if cd['first_name']:
+                    new_user.first_name = cd['first_name']
+                if cd['last_name']:
+                    new_user.last_name = cd['last_name']
+                new_user.save()
+                m1 = MembershipReview(
+                    applicant=new_user,
+                    referrer=form.refer_one_user,
+                )
+                m2 = MembershipReview(
+                    applicant=new_user,
+                    referrer=form.refer_two_user,
+                )
+                m1.save()
+                m2.save()
+            except Exception as e:
+                #TODO: logger
+                print e
+            else:
+                return HttpResponseRedirect(reverse('login'))
+    else:
+        form = NewAccountForm()
+    return render(request, template, {'form': form})
 
 
 @login_required

@@ -16,6 +16,7 @@ urlpatterns = patterns(
         'django.contrib.auth.views.password_reset_confirm',
         name='password_reset_confirm'),
     url(r'^accounts/reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
+    url(r'^accounts/register/$', 'hado.views.register', name='register'),
     # user profile
     url(r'^users/(?P<username>[a-zA-Z0-9]+)',
         'hado.views.user_profile', name='user_profile'),

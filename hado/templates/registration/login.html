@@ -16,7 +16,7 @@
                 <p>
                 <a href="{% url 'password_reset' %}">{% trans "Forgot your password ?" %}</a>
                 |
-                <a href="./register.html">{% trans "No account yet ?" %}</a>
+                <a href="{% url 'register' %}">{% trans "No account yet ?" %}</a>
                 </p>
                 <input class="btn btn-primary" type="submit" value="login">
             </div>

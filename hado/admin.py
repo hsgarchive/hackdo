@@ -7,7 +7,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 
-from hado.models import Payment, Contract, Tier, HackDoUser, ContractType
+from hado.models import Payment, Contract, Tier,\
+    HackDoUser, ContractType, MembershipReview
 from hado.forms import PaymentFormAdmin
 from hado.admin_site import HackdoAdmin
 
@@ -179,11 +180,12 @@ class HackDoUserAdmin(UserAdmin):
                     'is_active')
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     inlines = [ContractInline, PaymentInline, ]
-    readonly_fields = ['last_login','date_joined']
+    readonly_fields = ['last_login', 'date_joined']
 
 
 hdadmin.register(HackDoUser, HackDoUserAdmin)
-hdadmin.register(ContractType)
 hdadmin.register(Contract, ContractAdmin)
-hdadmin.register(Tier)
 hdadmin.register(Payment, PaymentAdmin)
+hdadmin.register(ContractType)
+hdadmin.register(MembershipReview)
+hdadmin.register(Tier)

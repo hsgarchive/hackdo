@@ -248,9 +248,9 @@ class MembershipReview(models.Model):
     """
     Stores an membership review request for model:`hado.HackDoUser`
     """
-    applicant = models.OneToOneField(
+    applicant = models.ForeignKey(
         HackDoUser,
-        primary_key=True,
+        related_name=_('applicant'),
         help_text=_('Membership applicant'),
     )
 
@@ -271,7 +271,7 @@ class MembershipReview(models.Model):
         Returns applicant and referrer
         """
         return '%s requests hackspaceSG membership with %s as referrer.' % (
-            self.applicant.email, self.reviewer.email)
+            self.applicant.username, self.referrer.username,)
 
 
 class Contract(models.Model):

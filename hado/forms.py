@@ -1,12 +1,13 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin import widgets
 from django.forms.models import modelformset_factory
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
 from hado.models import Payment, Contract
+
+UserModel = get_user_model()
 
 
 class HackDoAuthenticationForm(forms.Form):
@@ -32,7 +33,6 @@ class HackDoAuthenticationForm(forms.Form):
         super(HackDoAuthenticationForm, self).__init__(*args, **kwargs)
 
         # Set the label for the "username" field.
-        UserModel = get_user_model()
         self.username_field = UserModel._meta.get_field(
             UserModel.USERNAME_FIELD)
         if self.fields['username'].label is None:
@@ -98,3 +98,99 @@ class PaymentForm(PaymentFormAdmin):
                 empty_label=None)
 
 PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
+
+
+class NewAccountForm(forms.Form):
+
+    username = forms.CharField(
+        required=True,
+        label=_('Username'),
+        max_length=40,
+        help_text=_('unique identifier'),
+    )
+    email = forms.EmailField(
+        required=True,
+        label=_('Email'),
+        max_length=255,
+        help_text=_('password reset email'),
+    )
+    first_name = forms.CharField(
+        required=False,
+        label=_('First Name'),
+        max_length=30,
+    )
+    last_name = forms.CharField(
+        required=False,
+        label=_('Last Name'),
+        max_length=30,
+    )
+    password = forms.CharField(
+        required=True,
+        label=_('Passowrd'),
+        widget=forms.PasswordInput,
+        min_length=7,
+        max_length=128,
+    )
+    password_confirm = forms.CharField(
+        required=True,
+        label=_('Passowrd Confirm'),
+        widget=forms.PasswordInput,
+        min_length=7,
+        max_length=128,
+        help_text=_('minimum is 7 characters'),
+    )
+    refer_one = forms.CharField(
+        required=True,
+        label=_('Referrer One Username'),
+        max_length=40,
+    )
+    refer_two = forms.CharField(
+        required=True,
+        label=_('Referrer Two Username'),
+        max_length=40,
+    )
+
+    def clean_username(self):
+        data = self.cleaned_data['username']
+        username_used = UserModel.objects.filter(username=data).exists()
+        if username_used:
+            raise forms.ValidationError(_('Username is already taken.'))
+        return data
+
+    def clean_refer_one(self):
+        data = self.cleaned_data['refer_one']
+        qs = UserModel.objects.filter(username=data, is_active=True)
+        if not qs.exists():
+            raise forms.ValidationError(_('Referrer One is invalid.'))
+        self.refer_one_user = qs.get()
+        return data
+
+    def clean_refer_two(self):
+        data = self.cleaned_data['refer_two']
+        qs = UserModel.objects.filter(username=data, is_active=True)
+        if not qs.exists():
+            raise forms.ValidationError(_('Referrer Two is invalid.'))
+        self.refer_two_user = qs.get()
+        return data
+
+    def clean(self):
+        password_error = _('Password doesn\'t match the confirmation.')
+        referrer_error = _('Referrer must be different.')
+        cleaned_data = super(NewAccountForm, self).clean()
+        p_data = cleaned_data.get('password')
+        pc_data = cleaned_data.get('password_confirm')
+        if p_data != pc_data:
+            self._errors['password_confirm'] = self.error_class(
+                [password_error])
+            del cleaned_data['password']
+            del cleaned_data['password_confirm']
+        r1_data = cleaned_data.get('refer_one')
+        r2_data = cleaned_data.get('refer_two')
+        if (r1_data and r2_data) and (r1_data == r2_data):
+            self._errors['refer_one'] = self.error_class(
+                [referrer_error])
+            self._errors['refer_two'] = self.error_class(
+                [referrer_error])
+            del cleaned_data['refer_one']
+            del cleaned_data['refer_two']
+        return cleaned_data
