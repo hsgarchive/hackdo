@@ -321,6 +321,8 @@ def register(request):
                 #TODO: logger
                 print e
             else:
+                messages.success(
+                    request, 'New User %s created.' % (new_user.username))
                 return HttpResponseRedirect(reverse('login'))
     else:
         form = NewAccountForm()
