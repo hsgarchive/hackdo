@@ -16,6 +16,9 @@ from hado.forms import PaymentForm, NewAccountForm
 import itertools
 import json
 
+import logging
+logger = logging.getLogger("hado.views")
+
 User = get_user_model()
 
 
@@ -117,6 +120,7 @@ def user_profile(request, username):
         return HttpResponseRedirect(reverse('pending_user'))
 
     if u.username != username:
+        logger.info("user %s tried to access users/%s" % (u, username))
         return HttpResponseRedirect(u.get_absolute_url())
 
     contracts = u.contracts.all().order_by("ctype")
@@ -199,14 +203,14 @@ def review_membership(request, review_id):
     except MembershipReview.DoesNotExist:
         success = False
         errors['message'] = "Can't find membership review"
-        #TODO logger
+        logger.info("Can't find membership review with id %s"
+                    % (review_id))
         return _generate_ajax_response(request, success, errors)
     review.reviewed = True
     try:
         review.save()
     except Exception as e:
-        #TODO logger
-        print e
+        logger.error("Error: %s" % (e))
         success = False
         errors['message'] = "Error saving membership review"
         return _generate_ajax_response(request, success, errors)
@@ -318,8 +322,7 @@ def register(request):
                 m1.save()
                 m2.save()
             except Exception as e:
-                #TODO: logger
-                print e
+                logger.error("Error: %s" % (e))
             else:
                 messages.success(
                     request, 'New User %s created.' % (new_user.username))
