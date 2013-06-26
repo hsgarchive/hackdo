@@ -55,7 +55,10 @@ def pending_user(request):
     :template:`user/pending_user.html`
     """
     template = 'user/pending_user.html'
-    reviews = MembershipReview.objects.filter(applicant=request.user).all()
+    u = request.user
+    if u.is_active:
+        return HttpResponseRedirect(u.get_absolute_url())
+    reviews = MembershipReview.objects.filter(applicant=u).all()
     return render(request, template,
                   {'reviews': reviews, })
 
