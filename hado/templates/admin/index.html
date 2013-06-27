@@ -12,168 +12,109 @@
 <h1 id="site-name">{% trans 'HackDo' %}</h1>
 {% endblock %}
 
-{% block coltype %}{% endblock %}
 {% block content %}
-<div id="admin">
+<div id="changelist">
+    <div id="admin">
+        <section id="stats">
+            <header><h1>Stats</h1></header>
+            <ul>
+                <li>
+                    <header><h2>Members</h2></header>
+                    <ul>
+                        {% for status,count in members.items %}
+                        {% if status != 'total' %}
+                        <li>{{ status|capfirst }} : {{ count }}</li>
+                        {% endif %}
+                        {% endfor %}
+                        <li>Total : {{ members.total }}</li>
+                    </ul>
+                </li>
+                <li>
+                    <header><h2>Income this month</h2></header>
+                    <ul>
+                        {% for t,a in income.items %}
+                        {% if t != 'summary' %}
+                        <li>{{ t }} : {{ a }}</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li>
+                    <header><h2>Income summary</h2></header>
+                    <ul>
+                        <li>Supposed : {{ income.summary.supposed }}</li>
+                        <li>Actual : {{ income.summary.actual }}</li>
+                        <li>Shortfall : {{ income.summary.shortfall }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
 
-    <section id="stats">
-        <header><h1>Stats</h1></header>
-        <ul>
-            <li>
-                <header><h2>Members</h2></header>
-                <ul>
-                    {% for status,count in members.items %}
-                    {% if status != 'total' %}
-                    <li>{{ status|capfirst }} : {{ count }}</li>
-                    {% endif %}
-                    {% endfor %}
-                    <li>Total : {{ members.total }}</li>
-                </ul>
-            </li>
-            <li>
-                <header><h2>Income this month</h2></header>
-                <ul>
-                    {% for t,a in income.items %}
-                    {% if t != 'summary' %}
-                    <li>{{ t }} : {{ a }}</li>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-            </li>
-            <li>
-                <header><h2>Income summary</h2></header>
-                <ul>
-                    <li>Supposed : {{ income.summary.supposed }}</li>
-                    <li>Actual : {{ income.summary.actual }}</li>
-                    <li>Shortfall : {{ income.summary.shortfall }}</li>
-                </ul>
-            </li>
-        </ul>
-    </section>
+        <hr>
 
-    <hr>
+        <section id="records">
+            <header><h1>Admin</h1></header>
+            <ul class="choices">
+                <li><a href="{% url "admin:hado_hackdouser_changelist" %}">Members</a></li>
+                <li><a href="{% url "admin:hado_payment_add" %}">Payment</a></li>
+                <li><a href="/hdadmin/hado/membershipreview/">Membership Review</a></li>
+            </ul>
+        </section>
 
-    <section id="records">
-        <header><h1>Admin</h1></header>
-        <ul class="choices">
-            <li><a href="{% url "admin:hado_hackdouser_changelist" %}">Members</a></li>
-            <li><a href="{% url "admin:hado_payment_add" %}">Payment</a></li>
-        </ul>
-    </section>
+        <hr>
 
-    <hr>
+        <section id="reports">
+            <header><h1>Reports</h1></header>
 
-    <section id="reports">
-        <header><h1>Reports</h1></header>
+            <ul class="choices">
+                <li><a href="">Monthly Revenue</a></li>
+                <li><a href="">Monthly Expenditure</a></li>
+                <li><a href="">Lapsed Members</a></li>
+                <li><a href="">Current Members</a></li>
+            </ul>
+        </section>
 
-        <ul class="choices">
-            <li><a href="">Monthly Revenue</a></li>
-            <li><a href="">Monthly Expenditure</a></li>
-            <li><a href="">Lapsed Members</a></li>
-            <li><a href="">Current Members</a></li>
-        </ul>
-    </section>
+        <hr>
 
-    <hr>
-
-    <section id="payment_verification">
-        <header><h1>Payments to be verified</h1></header>
-        <form method="post" action="" class="clearfix">
-            {% csrf_token %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Date paid</th>
-                        <th>Amount</th>
-                        <th>Contract</th>
-                        <th>Method</th>
-                        <th>Description</th>
-                        <th>Verified</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{ pformset.management_form }}
-                    {% for p in pformset.forms %}
-                    <tr>
-                        {{ p.id }}
-                        <td>{{ p.user }}</td>
-                        <td>{{ p.date_paid }}</td>
-                        <td>{{ p.amount }}</td>
-                        <td>{{ p.contract }}</td>
-                        <td>{{ p.method }}</td>
-                        <td>{{ p.desc }}</td>
-                        <td>{{ p.verified }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <input type="submit" value="Update">
-        </form>
-    </section>
+        <section id="payment_verification">
+            <header><h1>Payments to be verified</h1></header>
+            <form method="post" action="" class="clearfix">
+                {% csrf_token %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Date paid</th>
+                            <th>Amount</th>
+                            <th>Contract</th>
+                            <th>Method</th>
+                            <th>Description</th>
+                            <th>Verified</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ pformset.management_form }}
+                        {% for p in pformset.forms %}
+                        <tr>
+                            {{ p.id }}
+                            <td>{{ p.user }}</td>
+                            <td>{{ p.date_paid }}</td>
+                            <td>{{ p.amount }}</td>
+                            <td>{{ p.contract }}</td>
+                            <td>{{ p.method }}</td>
+                            <td>{{ p.desc }}</td>
+                            <td>{{ p.verified }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <input type="submit" value="Update">
+            </form>
+        </section>
+    </div>
 
     {% comment %}
-    <h1>Contracts</h1>
-
-    <ul class="contracts choices">
-        <li><a href="/admin/hado/contract/add/">{{ _("New Membership") }}</a></li> |
-        <li><a href="">{{ _("New Locker Use") }}</a></li> |
-        <li><a href="">{{ _("New Address Use") }}</a></li>
-    </ul>
-
-    <h1>Contract Form</h1>
-    {{ cform }}
-
-    <h1>Payments</h1>
-
-    <ul class="payments choices">
-        <li><a href="">{{ _("New Membership Renewal") }}</a></li> |
-        <li><a href="">{{ _("New Public Donation") }}</a></li> |
-        <li><a href="">{{ _("New Individual Donation") }}</a></li> |
-        <li><a href="">{{ _("New Corporate Sponsorship") }}</a></li> |
-    </ul>
-</div>
-{% endcomment %}
-
-{% comment %}
-<div id="event-log">
-    <h2>{% trans 'Recent Actions' %}</h2>
-    {% load log %}
-    {% get_admin_log 10 as admin_log %}
-    {% if not admin_log %}
-    <p>{% trans 'None available' %}</p>
-    {% else %}
-    <ul class="actionlist">
-        {% for entry in admin_log %}
-        <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-            <a href="{{ entry.user.get_admin_url}}">{{ entry.user.get_full_name }}</a>: {{ entry.change_message }} <span class="mini quiet">{{ entry.action_time}}</span>
-
-            <br/>
-            {% trans 'Item' %}:
-            {% if entry.is_deletion %}
-            {{ entry.object_repr }}
-            {% else %}
-            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-            {% endif %}
-            {% if entry.content_type %}
-            <span class="mini quiet">({% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %})</span>
-            {% else %}
-            <span class="mini quiet">{% trans 'Unknown content' %}</span>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-</div>
-{% endcomment %}
-
-{% endblock %}
-
-
-{% block sidebar %}{% comment %}
-<div id="content-related">
-    <div class="module" id="recent-actions-module">
+    <div id="changelist-filter">
         <h2>{% trans 'Recent Actions' %}</h2>
         <h3>{% trans 'My Actions' %}</h3>
         {% load log %}
@@ -200,5 +141,6 @@
         </ul>
         {% endif %}
     </div>
-</div>{% endcomment %}
+    {% endcomment %}
+</div>
 {% endblock %}

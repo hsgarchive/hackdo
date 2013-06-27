@@ -159,18 +159,28 @@ class NewAccountForm(forms.Form):
 
     def clean_refer_one(self):
         data = self.cleaned_data['refer_one']
-        qs = UserModel.objects.filter(username=data, is_active=True)
-        if not qs.exists():
+        qs = UserModel.objects.filter(username=data)
+        try:
+            u = qs.get()
+        except UserModel.DoesNotExist:
             raise forms.ValidationError(_('Referrer One is invalid.'))
-        self.refer_one_user = qs.get()
+        else:
+            if not u.is_active:
+                raise forms.ValidationError(_('Referrer One is inactive.'))
+            self.refer_one_user = u
         return data
 
     def clean_refer_two(self):
         data = self.cleaned_data['refer_two']
-        qs = UserModel.objects.filter(username=data, is_active=True)
-        if not qs.exists():
+        qs = UserModel.objects.filter(username=data)
+        try:
+            u = qs.get()
+        except UserModel.DoesNotExist:
             raise forms.ValidationError(_('Referrer Two is invalid.'))
-        self.refer_two_user = qs.get()
+        else:
+            if not u.is_active:
+                raise forms.ValidationError(_('Referrer Two is inactive.'))
+            self.refer_two_user = u
         return data
 
     def clean(self):
