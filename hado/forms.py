@@ -179,7 +179,7 @@ class NewAccountForm(forms.Form):
         cleaned_data = super(NewAccountForm, self).clean()
         p_data = cleaned_data.get('password')
         pc_data = cleaned_data.get('password_confirm')
-        if p_data != pc_data:
+        if (p_data and pc_data) and (p_data != pc_data):
             self._errors['password_confirm'] = self.error_class(
                 [password_error])
             del cleaned_data['password']

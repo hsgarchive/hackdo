@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     var csrftoken = $.cookie('csrftoken');
     /*
      * Builds AJAX URL
@@ -8,9 +9,11 @@ $(document).ready(function(){
 
         return url.substring( 0, url.indexOf( 'users' ) ) + 'review_membership/' + review_id + '/';
     };
+
     function csrfSafeMethod(method) {
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     }
+
     $('.review').each(function() {
         var thisCheck = $(this);
         var container = thisCheck.parent().parent().parent();
@@ -46,4 +49,5 @@ $(document).ready(function(){
             }
         });
     });
+
 });

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n staticfiles %}
 {% block title %}{% trans "New Account" %}{% endblock %}
 {% block header %}
 {% include "tools/top_icon.html" %}
@@ -14,7 +14,13 @@
             <div class="control-group {% if field.errors %}error{% endif %}">
                 <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
                 <div class="controls">
-                    {{ field }}
+                    {% if field.name == 'refer_one' %}
+                        <input id="id_refer_one" class="typeahead" maxlength="40" name="refer_one" type="text" data-provide="typeahead" data-source={% autoescape off %}{{user_list}}{% endautoescape %} autocomplete="off"/>
+                    {% elif field.name == 'refer_two' %}
+                        <input id="id_refer_two" class="typeahead" maxlength="40" name="refer_two" type="text" data-provide="typeahead" data-source={% autoescape off %}{{user_list}}{% endautoescape %} autocomplete="off"/>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
                     <span class="help-inline">{{ field.errors }}</span>
                 </div>
             </div>
@@ -30,3 +36,25 @@
     </div>
 </div>
 {% endblock content %}
+{% block footer_js %}
+<script type="text/javascript">
+$(document).ready(function(){
+    var name_list = $('#id_refer_one').data('source');
+    $('#id_username').blur(function() {
+        var input = $(this);
+        var user_typed = input.val();
+        var span = input.parent().find('.help-inline');
+        var control_group = input.parent().parent();
+        if (user_typed !== "" && $.inArray(user_typed, name_list)>-1) {
+            control_group.addClass("error");
+            span.html('<ul class="errorlist"><li>Username is already taken.</li></ul>');
+        }
+        else {
+            control_group.removeClass("error");
+            span.empty();
+        }
+    });
+});
+</script>
+{% endblock footer_js %}
+

@@ -299,6 +299,8 @@ def register(request):
     :template:`registration/register.html`
     """
     template = 'registration/register.html'
+    names = User.objects.values_list('username', flat=True)
+    user_list = "'[\"%s\"]'" % ('","'.join([n.encode('utf-8') for n in names]))
     if request.method == 'POST':
         form = NewAccountForm(request.POST)
         if form.is_valid():
@@ -332,4 +334,7 @@ def register(request):
                 return HttpResponseRedirect(reverse('login'))
     else:
         form = NewAccountForm()
-    return render(request, template, {'form': form})
+    return render(request, template, {
+        'form': form,
+        'user_list': user_list,
+    })
