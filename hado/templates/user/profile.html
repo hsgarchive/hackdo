@@ -4,7 +4,7 @@
 {% include "tools/nav_bar.html" %}
 {% endblock header %}
 {% block content %}
-<article id="user_profile">
+<article id="user_home">
 <section id="account_summary" class="hero-unit">
 <header><h4>Account summary</h4></header>
 <ul id="account_details">
@@ -85,7 +85,7 @@
 <div class="span12">
     <header><h4>Payment Form</h4></header>
 {% if contract_list %}
-    <form method="post" action="{% url "user_profile" u.username %}" class="form-horizontal well">
+    <form method="post" action="{% url "user_home" u.username %}" class="form-horizontal well">
         {% csrf_token %}
         {{ pform.media }}
         {% for field in pform %}

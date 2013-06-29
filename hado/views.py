@@ -28,7 +28,7 @@ def index(request):
     """
     Root route:
 
-    if user is verified - redirect to :view:`hado.user_profile`
+    if user is verified - redirect to :view:`hado.user_home`
 
     else - redirect to :view:`hado.pending_user`
     """
@@ -65,7 +65,7 @@ def pending_user(request):
 
 @login_required
 @ensure_csrf_cookie
-def user_profile(request, username):
+def user_home(request, username):
     """
     User profile page, display :model:`hado.HackDoUser`
 
