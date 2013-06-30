@@ -68,7 +68,7 @@ def import_payments(interactive=False):
             except IndexError:
                 pp.desc = ''
 
-            pp.verified = True
+            pp.verified = 'VFD'
 
             # Summary
             print "Payment summary\n"

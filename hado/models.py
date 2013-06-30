@@ -538,6 +538,12 @@ class Payment(models.Model):
         ('OTH', 'Others')
     )
 
+    PAYMENT_STATUSES = (
+        ('VFD', 'Verified'),
+        ('RJD', 'Rejected'),
+        ('PEN', 'Pending')
+    )
+
     date_paid = models.DateField(
         _('date of payment'),
         help_text=_('date of payment'),
@@ -572,11 +578,12 @@ class Payment(models.Model):
         null=True,
         related_name=_('payments_made'),
     )
-    verified = models.BooleanField(
-        default=False,
-        blank=False,
-        help_text=_('Has this Payment been \
-        verified/approved by an Admin?')
+    verified = models.CharField(
+        max_length=3,
+        choices=PAYMENT_STATUSES,
+        default='PEN',
+        help_text=_('payment status: \
+        1. Verified 2. Rejected 3. Pending'),
     )
 
     def __unicode__(self):

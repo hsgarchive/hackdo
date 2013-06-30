@@ -132,8 +132,10 @@
         <tbody>
             {% for p in payment_history %}
             <tr class="
-                {% if p.verified %}
+                {% if p.verified == 'VFD' %}
                 success
+                {% elif p.verified == 'RJD' %}
+                error
                 {% else %}
                 warning
                 {% endif %}
@@ -154,6 +156,7 @@
     <div class="well">
         <p><span class="legend_block success"></span> <span class="legend_text">verified payment</span></p>
         <p><span class="legend_block warning"></span> <span class="legend_text">pending payment</span></p>
+        <p><span class="legend_block error"></span> <span class="legend_text">rejected payment</span></p>
     </div>
 </div>
 </section>

@@ -58,7 +58,7 @@ class HackdoAdmin(AdminSite):
         # Incoming Payments pending verification
         if request.method == 'POST':
             pformset = PaymentFormAdminFormset(
-                request.POST, queryset=Payment.objects.filter(verified=False))
+                request.POST, queryset=Payment.objects.filter(verified='PEN'))
 
             if pformset.is_valid():
                 pformset.save()
@@ -70,7 +70,7 @@ class HackdoAdmin(AdminSite):
 
         # Create a new formset anyway
         pformset = PaymentFormAdminFormset(
-            queryset=Payment.objects.filter(verified=False))
+            queryset=Payment.objects.filter(verified='PEN'))
 
         return render(request, 'admin/index.html',
                       {
