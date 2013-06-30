@@ -1,37 +1,14 @@
-# Django settings for hackdo project.
-from local import *
-
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-	# ('Your Name', 'your_email@domain.com'),
+    ('wgx731', 'wgx731@gmail.com'),
 )
 
 MANAGERS = ADMINS
 
-# DATABASES = {
-# 	'default': {
-# 		'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-# 		'NAME': '',                      # Or path to database file if using sqlite3.
-# 		'USER': '',                      # Not used with sqlite3.
-# 		'PASSWORD': '',                  # Not used with sqlite3.
-# 		'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-# 		'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-# 	}
-# }
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
 TIME_ZONE = 'Asia/Singapore'
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
@@ -44,6 +21,121 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'fv0$p-bwy^8ic!4aj%cat+c5$z_ok6ii8f&iae69r7byi!qh5h'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    #'django.template.loaders.eggs.Loader',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
+
+ROOT_URLCONF = 'urls'
+
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+    'south',
+    'django_coverage',
+    'django_extensions',
+
+    'hado',
+)
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/hado.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'NOTSET',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+AUTH_USER_MODEL = 'hado.HackDoUser'
+LOGIN_REDIRECT_URL = '/'
+
+# Email Settings
+DEFAULT_FROM_EMAIL = 'no-reply@hackspace.sg'
+SERVER_EMAIL = 'admin@hackspace.sg'
+EMAIL_SUBJECT_PREFIX = '[Hackspace HackDo]'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+
+import os
+# ROOT_PATH, DATABASES will be override in local_settings.py
+ROOT_PATH = os.path.dirname(__file__)
+
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES = {'default': dj_database_url.config()}
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Django settings for hackdo project.
+try:
+    LOCAL_SETTINGS
+except NameError:
+    try:
+        from local_settings import *
+    except ImportError:
+        pass
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -62,95 +154,15 @@ STATIC_ROOT = '%s/static/' % ROOT_PATH
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
 # A list of locations of additional static files
 STATICFILES_DIRS = (
-	('js', '%s/static/js' % ROOT_PATH),
-	('css', '%s/static/css' % ROOT_PATH),
-	('misc', '%s/static/misc' % ROOT_PATH),
-	('img', '%s/static/img' % ROOT_PATH)
+    ('js', '%s/static/js' % ROOT_PATH),
+    ('css', '%s/static/css' % ROOT_PATH),
+    ('misc', '%s/static/misc' % ROOT_PATH),
+    ('img', '%s/static/img' % ROOT_PATH)
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'fv0$p-bwy^8ic!4aj%cat+c5$z_ok6ii8f&iae69r7byi!qh5h'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-	'django.template.loaders.filesystem.Loader',
-	'django.template.loaders.app_directories.Loader',
-#	 'django.template.loaders.eggs.Loader',
-)
-
-MIDDLEWARE_CLASSES = (
-	'django.middleware.common.CommonMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.contrib.messages.middleware.MessageMiddleware',
-)
-
-ROOT_URLCONF = 'hackdo.urls'
 
 TEMPLATE_DIRS = (
-	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-	# Always use forward slashes, even on Windows.
-	# Don't forget to use absolute paths, not relative paths.
-	"%s/templates" % ROOT_PATH,
-	"%s/hado/templates" % ROOT_PATH,
+    "%s/templates" % ROOT_PATH,
+    "%s/hado/templates" % ROOT_PATH,
 )
-
-INSTALLED_APPS = (
-	'django.contrib.auth',
-	'django.contrib.contenttypes',
-	'django.contrib.sessions',
-	'django.contrib.sites',
-	'django.contrib.messages',
-	'django.contrib.staticfiles',
-	'django.contrib.humanize',
-	# Uncomment the next line to enable the admin:
-	'django.contrib.admin',
-	'hado',
-	'south',
-	'django_coverage'
-)
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request':{
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
-
-
-# Authentication stuff
-LOGIN_URL='/login/'
-LOGOUT_URL='/logout/'
-
-
-# Config for custom extended User model
-AUTHENTICATION_BACKENDS = (
-	'hado.auth_backends.UserModelBackend',
-)
-
-CUSTOM_USER_MODEL = 'hado.User'
-

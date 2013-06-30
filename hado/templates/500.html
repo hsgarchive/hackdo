@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "500" %}{% endblock %}
+{% block header %}
+{% include "tools/top_icon.html" %}
+{% endblock header %}
+{% block content %}
+    <div class="hero-unit">
+        <h1>{% trans "Sorry, something bad happened." %}</h1>
+        <h2>{% trans "Please help to inform the site admin." %}</h2>
+    </div>
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load humanize staticfiles i18n %}
+{% block title %}{% trans "Account Settings" %}{% endblock %}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
+{% block content %}
+<article id="user_settings">
+    <section id="change_password" class="row">
+        <div class="span12 well">
+            <header><h4>Change Password</h4></header>
+            {% if pc_errors %}
+            <div class="alert alert-error fade in">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>FORM ERROR</strong>
+                {{ pc_errors }}
+            </div>
+            {% endif %}
+            <form method="post" class="form-horizontal">
+                {% csrf_token %}
+                {% for field in pcform %}
+                <div class="control-group {% if field.errors %}error{% endif %}">
+                    <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
+                    <div class="controls">
+                        {{ field }}
+                        <span class="help-inline">{{ field.errors }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="control-group">
+                    <!-- Button -->
+                    <div class="controls">
+                        <input type="submit" class="btn btn-warning" value="Change"/>
+                        <input type="reset" class="btn" value="Reset"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</article>
+{% endblock content %}
