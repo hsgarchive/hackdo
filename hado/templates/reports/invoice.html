@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load humanize staticfiles %}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
+{% block css %}
+<style type="text/css">
+@page {
+    size: 'A4';
+    margin: 1cm;
+    @frame footer {
+        -pdf-frame-content: footerContent;
+        bottom: 1cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+        height: 1cm;
+    }
+}
+</style>
+{% endblock css %}
+{% block content %}
+<article id="user_invoice">
+    <section id="invoice" class="row">
+        <header><h4>Current Month Payment Invoice</h4></header>
+        <table id="invoice_table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount (SGD)</th>
+                    <th>Contract</th>
+                    <th>Method</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr class="
+                    {% if p.verified == 'VFD' %}
+                    success
+                    {% elif p.verified == 'RJD' %}
+                    error
+                    {% else %}
+                    warning
+                    {% endif %}
+                    ">
+                    <td>{{ p.date_paid }}</td>
+                    <td>{{ p.amount }}</td>
+                    <td>{{ p.contract }}</td>
+                    <td>{{ p.get_method_display }}</td>
+                    <td>{{ p.desc }}</td>
+                </tr>
+                {% empty %}
+                <tr class="payment placeholder">
+                    <td colspan="5">No payments found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="well">
+            <p><span class="legend_block success"></span> <span class="legend_text">verified payment</span></p>
+            <p><span class="legend_block warning"></span> <span class="legend_text">pending payment</span></p>
+            <p><span class="legend_block error"></span> <span class="legend_text">rejected payment</span></p>
+        </div>
+    </section>
+</article>
+{% endblock content %}

@@ -8,13 +8,21 @@ from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.admin.views.decorators import staff_member_required
+from django.template.loader import get_template
+from django.template import Context
 
 # Models
-from hado.models import Contract, MembershipReview
+from hado.models import Contract, MembershipReview, Payment
 from hado.forms import PaymentForm, NewAccountForm, HackDoPasswordChangeForm
 
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import itertools
 import json
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+import cgi
 
 import logging
 logger = logging.getLogger("hado.views")
@@ -209,6 +217,71 @@ def user_settings(request, username=''):
 
 
 @login_required
+def invoice(request):
+    """
+    Return user current month verified payments invoice (type[json,html,pdf])
+
+    **Context**
+
+    ``RequestContext``
+
+    ``payments``
+
+    Instances of user current month verified :model:`hado.Payment`
+
+    **Template:**
+
+    :template:`reports/invoice.html`
+    """
+    template = 'reports/invoice.html'
+
+    output = request.GET.get('type', 'html')
+    now = datetime.now()
+    first_day = datetime(now.year, now.month, 1)
+    last_day = now+relativedelta(days=31)
+    payments = Payment.objects.filter(
+        verified='VFD',
+        date_paid__lte=last_day,
+        date_paid__gte=first_day,
+    )
+    context_dic = {'payments': payments}
+    if output == 'pdf':
+        return _render_to_pdf(template, context_dic)
+    elif output == 'json':
+        payments_json = []
+        for p in payments:
+            payment_json = {}
+            payment_json['date_paid'] = unicode(p.date_paid)
+            payment_json['amount'] = p.amount
+            payment_json['method'] = p.method
+            payment_json['contract'] = unicode(p.contract)
+            payment_json['description'] = p.desc
+            payment_json['user'] = unicode(p.user)
+            payments_json.append(payment_json)
+        return HttpResponse(
+            json.dumps(payments_json, indent=4, sort_keys=True),
+            mimetype='application/json',
+            content_type='application/json')
+    else:
+        return render(request, template, context_dic)
+
+
+def _render_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    context = Context(context_dict)
+    html = template.render(context)
+    result = StringIO.StringIO()
+    pdf = pisa.pisaDocument(
+        StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(
+            result.getvalue(), mimetype='application/pdf')
+    return HttpResponse('We had some errors<pre>%s</pre>'
+                        % cgi.escape(html))
+
+
+#TODO: Finish arrears
+@login_required
 def arrears(request):
     """
     Calculate arrears for all members
@@ -233,6 +306,46 @@ def arrears(request):
         .order_by('user__first_name')
 
     return render(request, template, {'contracts': contracts})
+
+
+@staff_member_required
+def contracts_list(request):
+    """
+    Returns a JSON list of members, their monthly fee, and past arrears
+    """
+    # Find all current, ie. non-terminated Contracts, sorted by member
+    contracts = Contract.objects.exclude(Q(status='PEN') | Q(status='TER')) \
+        .select_related('user', 'ctype', 'tier') \
+        .order_by('-start') \
+        .order_by('user__first_name')
+
+    users = []
+
+    cc = itertools.groupby(contracts, key=lambda x: unicode(x.user))
+    for c in cc:
+        ud = {}  # User detail dictionary
+        ud['name'] = c[0]
+        ud['contracts'] = []
+        for k in c[1]:  # c[1] is the iterator of Contracts for this User
+            ud['contracts'].append({
+                'contract': k.tier.desc,
+                'fee': k.tier.fee,
+                'balance': k.balance(),
+                'start': unicode(k.start),
+                'end': unicode(k.end) if k.end else "N/A"
+            })
+            ud['id'] = k.user.id
+            ud['email'] = k.user.email  # Use the last instance of k
+            ud['membership_status'] = k.user.membership_status(pretty=True)
+            ud['monthly'] = k.user._User__latest_membership.tier.fee \
+                if hasattr(k.user, '_User__latest_membership') \
+                else "N/A"
+            users.append(ud)
+
+    return HttpResponse(
+        json.dumps(users, indent=4, sort_keys=True),
+        mimetype='application/json',
+        content_type='application/json')
 
 
 # Ajax Views
@@ -282,45 +395,6 @@ def _generate_ajax_response(request, success, errors,
 
 
 # Public Views
-def invoice(request):
-    """
-    Returns a JSON list of members, their monthly fee, and past arrears
-    """
-    # Find all current, ie. non-terminated Contracts, sorted by member
-    contracts = Contract.objects.exclude(Q(status='PEN') | Q(status='TER')) \
-        .select_related('user', 'ctype', 'tier') \
-        .order_by('-start') \
-        .order_by('user__first_name')
-
-    users = []
-
-    cc = itertools.groupby(contracts, key=lambda x: unicode(x.user))
-    for c in cc:
-        ud = {}  # User detail dictionary
-        ud['name'] = c[0]
-        ud['contracts'] = []
-        for k in c[1]:  # c[1] is the iterator of Contracts for this User
-            ud['contracts'].append({
-                'contract': k.tier.desc,
-                'fee': k.tier.fee,
-                'balance': k.balance(),
-                'start': unicode(k.start),
-                'end': unicode(k.end) if k.end else "N/A"
-            })
-            ud['id'] = k.user.id
-            ud['email'] = k.user.email  # Use the last instance of k
-            ud['membership_status'] = k.user.membership_status(pretty=True)
-            ud['monthly'] = k.user._User__latest_membership.tier.fee \
-                if hasattr(k.user, '_User__latest_membership') \
-                else "N/A"
-            users.append(ud)
-
-    return HttpResponse(
-        json.dumps(users, indent=4, sort_keys=True),
-        mimetype='application/json',
-        content_type='application/json')
-
-
 def register(request):
     """
     New account page, create new :model:`hado.HackDoUser`

@@ -537,7 +537,6 @@ class Payment(models.Model):
         ('CSH', 'Cash'),
         ('OTH', 'Others')
     )
-
     PAYMENT_STATUSES = (
         ('VFD', 'Verified'),
         ('RJD', 'Rejected'),

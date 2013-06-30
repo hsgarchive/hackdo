@@ -26,10 +26,12 @@ urlpatterns = patterns(
     # user home
     url(r'^users/(?P<username>[a-zA-Z0-9]+)',
         'hado.views.user_home', name='user_home'),
+    # list all contracts
+    url(r'^contracts_list/$', 'hado.views.contracts_list', name='contracts_list'),
     # arrears
-    url(r'^arrears/?$', 'hado.views.arrears', name='arrears'),
-    # invoice
-    url(r'^invoice/?$', 'hado.views.invoice', name='invoice'),
+    url(r'^arrears/$', 'hado.views.arrears', name='arrears'),
+    # user current month invoice
+    url(r'^invoice/$', 'hado.views.invoice', name='invoice'),
     # approve membership review ajax
     url(r'^review_membership/(?P<review_id>\d+)/$', 'hado.views.review_membership', name='review_ajax'),
 )
