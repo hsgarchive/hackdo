@@ -1,5 +1,10 @@
 $(document).ready(function(){
 
+    //To start datepicker
+    $('.datepicker').datetimepicker({
+        pickTime: false
+    });
+
     var csrftoken = $.cookie('csrftoken');
     /*
      * Builds AJAX URL
