@@ -97,7 +97,7 @@
     "model": "sites.site",
     "fields":
     {
-        "domain": "hackdo.heroku.com",
+        "domain": "hackdo.herokuapp.com",
         "name": "hackdo heroku"
     }
 },
