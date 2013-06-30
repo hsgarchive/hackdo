@@ -40,7 +40,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'hackdo.urls'
+ROOT_URLCONF = 'urls'
 
 
 INSTALLED_APPS = (
@@ -122,17 +122,11 @@ import os
 # ROOT_PATH, DATABASES will be override in local_settings.py
 ROOT_PATH = os.path.dirname(__file__)
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hackdo',
-        'TEST_NAME': 'hackdo_test',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES = {'default': dj_database_url.config()}
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Django settings for hackdo project.
 try:
