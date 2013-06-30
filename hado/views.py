@@ -238,7 +238,7 @@ def invoice(request):
     output = request.GET.get('type', 'html')
     now = datetime.now()
     first_day = datetime(now.year, now.month, 1)
-    last_day = now+relativedelta(days=31)
+    last_day = now + relativedelta(days=31)
     payments = Payment.objects.filter(
         verified='VFD',
         date_paid__lte=last_day,

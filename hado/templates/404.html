@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "404" %}{% endblock %}
+{% block header %}
+{% include "tools/top_icon.html" %}
+{% endblock header %}
+{% block content %}
+    <div class="hero-unit">
+        <h1>{% trans "Sorry, 404." %}</h1>
+        <h2>{% trans "The page you look for is invalid. :P" %}</h2>
+    </div>
+{% endblock content %}
