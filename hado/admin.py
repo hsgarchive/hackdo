@@ -148,6 +148,19 @@ class HackDoUserChangeForm(UserChangeForm):
             'invalid': _("This value may contain only letters, numbers and "
                          "@/./+/-/_ characters.")})
 
+    def clean(self):
+        cleaned_data = super(HackDoUserChangeForm, self).clean()
+        change_is_active = cleaned_data.get("is_active")
+        if self.instance.is_active is False and change_is_active is True:
+            has_pending_reviews = MembershipReview.objects.filter(
+                applicant=self.instance, reviewed=False).exists()
+            if has_pending_reviews:
+                msg = _("There still have pending membership review request\
+                        for this user.")
+                self._errors["is_active"] = self.error_class([msg])
+                del cleaned_data["is_active"]
+        return cleaned_data
+
     class Meta:
         model = HackDoUser
         fields = (
