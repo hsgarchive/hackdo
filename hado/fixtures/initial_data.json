@@ -88,7 +88,7 @@
     "model": "sites.site",
     "fields":
     {
-        "domain": "hackerspace.sg",
+        "domain": "hackdo.hackerspace.sg",
         "name": "hackspace hackdo"
     }
 },
@@ -97,12 +97,21 @@
     "model": "sites.site",
     "fields":
     {
-        "domain": "heroku.com",
-        "name": "hackdo staging"
+        "domain": "hackdo.heroku.com",
+        "name": "hackdo heroku"
     }
 },
 {
     "pk": 3,
+    "model": "sites.site",
+    "fields":
+    {
+        "domain": "hackdo-7928.apse1.actionbox.io:3000",
+        "name": "hackdo nitrous"
+    }
+},
+{
+    "pk": 4,
     "model": "sites.site",
     "fields":
     {
