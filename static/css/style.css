@@ -45,12 +45,16 @@ body {
 }
 
 /* legend */
-.success {
-    background-color: #cdede7;
+.table tbody tr.success > td, span.success {
+    background-color: #dff0d8;
 }
 
-.warning {
-    background-color: #f2ebcd;
+.table tbody tr.warning > td, span.warning {
+    background-color: #fcf8e3;
+}
+
+.table tbody tr.error > td, span.error {
+    background-color: #f2dede;
 }
 
 .legend_block {

@@ -130,6 +130,7 @@ class NewAccountForm(forms.Form):
         widget=forms.PasswordInput,
         min_length=7,
         max_length=128,
+        help_text=_('minimum is 7 characters'),
     )
     password_confirm = forms.CharField(
         required=True,
@@ -137,7 +138,6 @@ class NewAccountForm(forms.Form):
         widget=forms.PasswordInput,
         min_length=7,
         max_length=128,
-        help_text=_('minimum is 7 characters'),
     )
     refer_one = forms.CharField(
         required=True,

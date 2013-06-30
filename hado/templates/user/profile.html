@@ -92,18 +92,17 @@
         <div class="control-group {% if field.errors %}error{% endif %}">
             <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
             <div class="controls">
-            {% if field.name == 'date_paid'%}
-            <div class="datepicker input-append">
-                <input name="{{field.name}}" data-format="yyyy-MM-dd" type="text"></input>
-                <span class="add-on">
-                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                </span>
-            </div>
-            <span class="help-inline">{{ field.errors }}</span>
-            {% else %}
+                {% if field.name == 'date_paid'%}
+                <div class="datepicker input-append">
+                    <input name="{{field.name}}" data-format="yyyy-MM-dd" type="text"></input>
+                    <span class="add-on">
+                        <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    </span>
+                </div>
+                {% else %}
                 {{ field }}
+                {% endif %}
                 <span class="help-inline">{{ field.errors }}</span>
-            {% endif %}
             </div>
         </div>
         {% endfor %}

@@ -149,10 +149,10 @@ class HackDoUserChangeForm(UserChangeForm):
                          "@/./+/-/_ characters.")})
 
     class Meta:
-        # TODO: Find a better way to add all required fields into the form
         model = HackDoUser
         fields = (
             'username', 'email', 'is_active',
+            'profile_image', 'is_gravatar_enabled',
             'first_name', 'last_name', 'groups',
             'is_staff', 'is_superuser', 'user_permissions',
             'last_login', 'date_joined',
@@ -170,7 +170,10 @@ class HackDoUserAdmin(UserAdmin):
     add_form = HackDoUserCreationForm
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Personal info'), {'fields': (
+            'first_name', 'last_name', 'email',
+            'profile_image', 'is_gravatar_enabled',
+        )}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),

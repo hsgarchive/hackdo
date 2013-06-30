@@ -20,7 +20,10 @@ urlpatterns = patterns(
     url(r'^accounts/register/$', 'hado.views.register', name='register'),
     # pending user
     url(r'^pending_user/$', 'hado.views.pending_user', name='pending_user'),
-    # user profile
+    # user settings
+    url(r'^users/(?P<username>[a-zA-Z0-9]+)/settings',
+        'hado.views.user_settings', name='user_settings'),
+    # user home
     url(r'^users/(?P<username>[a-zA-Z0-9]+)',
         'hado.views.user_home', name='user_home'),
     # arrears

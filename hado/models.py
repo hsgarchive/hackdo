@@ -8,17 +8,23 @@ from django.db.models import Sum
 from django.db.models.signals import post_init, post_save
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.contrib.sites.models import Site
 
 from hado.managers import HackDoUserManager
 
 from dateutil.relativedelta import relativedelta
+import urllib
+import hashlib
 import datetime
 import calendar
 import os
 
 
 def get_image_path(instance, filename):
-    return os.path.join('users', instance.id, filename)
+    now = datetime.datetime.now()
+    newfilename = hashlib.md5(now.strftime("%I%M%S") + filename).hexdigest()\
+        + os.path.splitext(filename)[1]
+    return 'user_avatars/%s/%s' % (instance.username, newfilename)
 
 
 class HackDoUser(AbstractBaseUser, PermissionsMixin):
@@ -79,7 +85,13 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
         _('profile image'),
         upload_to=get_image_path,
         blank=True,
-        help_text=_('user avatar'),
+        help_text=_('user profile image'),
+    )
+
+    is_gravatar_enabled = models.BooleanField(
+        _('gravatar_enabled'), default=True,
+        help_text=_('Desingates where the user \
+                    uses gravatar as profile image.')
     )
 
     utype = models.CharField(
@@ -124,6 +136,24 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     # HackDo method
+    @property
+    def user_avatar_url(self, size=20):
+        """
+        Returns user avatar url
+        """
+        default = "http://%s/static/img/default_avatar.png" % (
+            Site.objects.get_current().domain
+        )
+        if self.is_gravatar_enabled:
+            return "http://www.gravatar.com/avatar/%s?%s" % (
+                hashlib.md5(self.email.lower()).hexdigest(),
+                urllib.urlencode({'d': 'mm', 's': str(size)})
+            )
+        else:
+            if self.profile_image:
+                return self.profile_image.url
+            return default
+
     @property
     def most_recent_payment(self):
         """

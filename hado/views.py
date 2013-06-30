@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 # Models
@@ -166,6 +167,46 @@ def user_home(request, username):
                    'account_balance': account_balance,
                    'payment_history': payment_history,
                    'pform': pform})
+
+
+@login_required
+def user_settings(request, username=''):
+    """
+    User change email, password and TODO: avatar link.
+
+    **Context**
+
+    ``RequestContext``
+
+    ``pcform``
+
+    password change form
+
+    ``pc_errors``
+
+    password change form errors
+
+    **Template:**
+
+    :template:`user/settings.html`
+    """
+    #TODO: Allow user to have avatar just for hackdo
+    template = 'user/settings.html'
+    user = request.user
+    pc_errors = []
+    if request.method == 'POST':
+        pcform = PasswordChangeForm(user=user, data=request.POST)
+        pc_errors = pcform.errors
+        if pcform.is_valid():
+            pcform.save()
+            messages.success(
+                request, "User %s's password successfully changed."
+                % (user.username))
+            return HttpResponseRedirect(reverse('logout'))
+    pcform = PasswordChangeForm(user=user)
+    return render(request, template,
+                  {'pcform': pcform,
+                   'pc_errors': pc_errors, })
 
 
 @login_required
