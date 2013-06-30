@@ -1,5 +1,6 @@
 # -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import modelformset_factory
 from django.contrib.auth import get_user_model
@@ -8,6 +9,21 @@ from django.contrib.auth import authenticate
 from hado.models import Payment, Contract
 
 UserModel = get_user_model()
+
+
+class HackDoPasswordChangeForm(PasswordChangeForm):
+    new_password1 = forms.CharField(
+        label=_("New password"),
+        widget=forms.PasswordInput,
+        min_length=7,
+        max_length=128,
+    )
+    new_password2 = forms.CharField(
+        label=_("New password confirmation"),
+        widget=forms.PasswordInput,
+        min_length=7,
+        max_length=128,
+    )
 
 
 class HackDoAuthenticationForm(forms.Form):

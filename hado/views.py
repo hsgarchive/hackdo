@@ -7,12 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 # Models
 from hado.models import Contract, MembershipReview
-from hado.forms import PaymentForm, NewAccountForm
+from hado.forms import PaymentForm, NewAccountForm, HackDoPasswordChangeForm
 
 import itertools
 import json
@@ -190,12 +189,12 @@ def user_settings(request, username=''):
 
     :template:`user/settings.html`
     """
-    #TODO: Allow user to have avatar just for hackdo
+    #TODO:Allow user to have avatar just for hackdo, allow user to change email
     template = 'user/settings.html'
     user = request.user
     pc_errors = []
     if request.method == 'POST':
-        pcform = PasswordChangeForm(user=user, data=request.POST)
+        pcform = HackDoPasswordChangeForm(user=user, data=request.POST)
         pc_errors = pcform.errors
         if pcform.is_valid():
             pcform.save()
@@ -203,7 +202,7 @@ def user_settings(request, username=''):
                 request, "User %s's password successfully changed."
                 % (user.username))
             return HttpResponseRedirect(reverse('logout'))
-    pcform = PasswordChangeForm(user=user)
+    pcform = HackDoPasswordChangeForm(user=user)
     return render(request, template,
                   {'pcform': pcform,
                    'pc_errors': pc_errors, })
