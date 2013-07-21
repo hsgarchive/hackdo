@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'south',
     'django_coverage',
     'django_extensions',
+    'lettuce.django',
 
     'hado',
 )

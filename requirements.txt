@@ -1,4 +1,3 @@
-pip>=1.3.1,<1.4
 django>=1.5,<1.6
 # For database
 # Need to apt-get install libmysqlclient-dev, a dependency of MySQL-python
@@ -12,9 +11,10 @@ xhtml2pdf>=0.0.5,<0.1
 ipdb>=0.7,<1.0
 django-extensions>=1.1.1,<1.2
 # For test
-coverage>=3.5,<4.0
 django_coverage>=1.2.2,<1.3
-behave>=1.2.2,<1.3
+lettuce>=0.2.18,<0.3
+splinter>=0.5.4,<0.6
+zope.testbrowser>=4.0.2,<4.1
 # For code style
 flake8>=2.0,<3.0
 autopep8>=0.9.1,<1.0
