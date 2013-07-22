@@ -1,4 +1,4 @@
-# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
+# -*- coding: utf-8; -*-
 from django.conf.urls import patterns, url
 from django.conf import settings
 from hado.forms import HackDoAuthenticationForm

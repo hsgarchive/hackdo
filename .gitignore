@@ -99,3 +99,4 @@ local_settings.py
 ###################################################
 hado/media
 !.travis.yml
+coverage_report/

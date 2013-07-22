@@ -1,4 +1,4 @@
-# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
+# -*- coding: utf-8; -*-
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.utils.http import urlquote
@@ -26,17 +26,37 @@ def get_image_path(instance, filename):
         + os.path.splitext(filename)[1]
     return 'user_avatars/%s/%s' % (instance.username, newfilename)
 
+USER_TYPES = (
+    ('MEM', 'Member'),
+    ('SPO', 'Sponsor'),
+    ('DON', 'Donation'),
+)
+
+CONTRACT_STATUSES = (
+    ('ACT', 'Active'),
+    ('LAP', 'Lapsed'),
+    ('TER', 'Terminated'),
+    ('PEN', 'Pending')
+)
+
+PAYMENT_METHODS = (
+    ('EFT', 'Electronic Fund Transfer'),
+    ('CHK', 'Cheque'),
+    ('CSH', 'Cash'),
+    ('OTH', 'Others')
+)
+
+PAYMENT_STATUSES = (
+    ('VFD', 'Verified'),
+    ('RJD', 'Rejected'),
+    ('PEN', 'Pending')
+)
+
 
 class HackDoUser(AbstractBaseUser, PermissionsMixin):
     """
     Custom User model, extending Django's AbstractBaseUser
     """
-
-    USER_TYPES = (
-        ('MEM', 'Member'),
-        ('SPO', 'Sponsor'),
-        ('DON', 'Donation'),
-    )
 
     # Django User required attribute
     username = models.CharField(
@@ -90,7 +110,7 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
 
     is_gravatar_enabled = models.BooleanField(
         _('gravatar_enabled'), default=True,
-        help_text=_('Desingates where the user \
+        help_text=_('Desingates whether the user \
                     uses gravatar as profile image.')
     )
 
@@ -310,13 +330,6 @@ class Contract(models.Model):
     :model:`hado.HackDoUser` and :model: `hado.Tier`
     """
 
-    CONTRACT_STATUSES = (
-        ('ACT', 'Active'),
-        ('LAP', 'Lapsed'),
-        ('TER', 'Terminated'),
-        ('PEN', 'Pending')
-    )
-
     start = models.DateField(
         help_text=_('contract starting time'),
     )
@@ -530,19 +543,6 @@ class Payment(models.Model):
     Stores a payment related to :model:`hado.Contract` \
     and :model:`hado.HackDoUser`
     """
-
-    PAYMENT_METHODS = (
-        ('EFT', 'Electronic Fund Transfer'),
-        ('CHK', 'Cheque'),
-        ('CSH', 'Cash'),
-        ('OTH', 'Others')
-    )
-    PAYMENT_STATUSES = (
-        ('VFD', 'Verified'),
-        ('RJD', 'Rejected'),
-        ('PEN', 'Pending')
-    )
-
     date_paid = models.DateField(
         _('date of payment'),
         help_text=_('date of payment'),

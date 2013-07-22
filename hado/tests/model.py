@@ -1,30 +1,29 @@
-# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
+# -*- coding: utf-8; -*-
+from dateutil.relativedelta import relativedelta
+import datetime
+import urllib
+import hashlib
 
 from django.test import TestCase
-from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
 
-from dateutil.relativedelta import relativedelta
-
-from hado.models import Tier, ContractType, Contract, Sum, Payment
-User = get_user_model()
-
-import datetime
+from hado.tests.factories import UserFactory, ContractFactory,\
+    PaymentFactory
+from hado.models import ContractType, Tier, Contract, Sum,\
+    get_image_path
 
 
 class UserTest(TestCase):
 
     '''Test various User functions'''
 
-    fixtures = ['contracttype', 'tier']
-
     def setUp(self):
-        pass
+        self.test_user = UserFactory(username="testuser")
+
+    def test_get_image_path(self):
+        image_url = get_image_path(self.test_user, 'test_image')
+        self.assertTrue(
+            'user_avatars/%s' % self.test_user.username in image_url)
 
     def testUserName(self):
         '''
@@ -32,39 +31,59 @@ class UserTest(TestCase):
         if first_name and last_name are set,
         and username is returned otherwise
         '''
-
-        # Create a new User
-        u = User(username="testuser")
-        u.set_password('testtest')
-        u.save()
-
+        username = 'testuser'
+        fname = 'Test'
+        lname = 'User'
+        full_name = '%s %s' % (fname, lname)
+        # Test get_username method
+        self.assertEqual(unicode(self.test_user.get_username()), username)
+        # Test get_short_name method
+        self.assertEqual(unicode(self.test_user.get_short_name()), username)
         # Check that username is returned
-        self.assertEqual(unicode(u), "testuser")
+        self.assertEqual(unicode(self.test_user), username)
 
         # Set first and last names
-        u.first_name = 'Test'
-        u.last_name = 'User'
-        u.save()
+        self.test_user.first_name = fname
+        self.test_user.last_name = lname
+        self.test_user.save()
 
+        # Test get_full_name method
+        self.assertEqual(self.test_user.get_full_name(), full_name)
         # Check that fullname is returned
-        self.assertEqual(unicode(u), "Test User")
+        self.assertEqual(unicode(self.test_user), full_name)
+
+    def testUserAvatar(self):
+        '''
+        Test user should have correct gravatar/self defined avatar
+        '''
+        self.assertEqual(
+            self.test_user.user_avatar_url,
+            "http://www.gravatar.com/avatar/%s?%s" % (
+            hashlib.md5(self.test_user.email.lower()).hexdigest(),
+            urllib.urlencode({'d': 'mm', 's': str(20)})))
+        self.test_user.is_gravatar_enabled = False
+        self.test_user.save()
+        self.assertEqual(
+            self.test_user.user_avatar_url,
+            "http://%s/static/img/default_avatar.png" % (
+            Site.objects.get_current().domain))
 
     def testMemberSince(self):
         '''
-        Test that User::member_since
+        Test User::member_since
         returns the date the User joined as a member
         '''
 
         # Create a new User
-        u = User(username="testuser")
-        u.set_password('testtest')
-        u.save()
+        self.u = UserFactory()
+        self.u.save()
 
         date_start = datetime.date(2010, 0o4, 0o1)
+        date_month_end = datetime.date(2010, 0o4, 30)
         date_end = datetime.date(2010, 0o5, 31)
 
         # Attribute some membership Contracts
-        u.contracts.create(
+        self.u.contracts.create(
             start=date_start,
             end=date_end,
             ctype=ContractType.objects.get(desc='Membership'),
@@ -73,9 +92,10 @@ class UserTest(TestCase):
         )
 
         # Ensure we only have the one Contract created so far
-        self.assertEqual(u.contracts.all().count(), 1)
+        self.assertEqual(self.u.contracts.count(), 1)
+        self.assertEqual(self.u.contracts.all()[0].valid_till, date_month_end)
 
-        u.contracts.create(
+        self.u.contracts.create(
             start=datetime.date(2010, 0o6, 0o1),
             ctype=ContractType.objects.get(desc='Membership'),
             tier=Tier.objects.get(desc='Youth'),
@@ -83,9 +103,45 @@ class UserTest(TestCase):
         )
 
         # Now we have two
-        self.assertEqual(u.contracts.all().count(), 2)
+        self.assertEqual(self.u.contracts.count(), 2)
+        self.assertEqual(date_start, self.u.member_since())
 
-        self.assertEqual(date_start, u.member_since())
+    def test_most_recent_payment(self):
+        '''
+        Test User::most_recent_payment
+        returns the latest payment by user
+        '''
+
+        # Create user
+        self.u = UserFactory()
+        self.u.save()
+
+        # No payment found now
+        self.assertEquals(self.u.most_recent_payment, None)
+
+        # Contract
+        self.c = ContractFactory(
+            start=datetime.date(2010, 0o4, 0o1),
+            ctype=ContractType.objects.get(desc='Membership'),
+            tier=Tier.objects.get(desc='Regular'),
+            user=self.u, status='ACT')
+        # Add some Payments
+        # Initial deposit, plus first month (Apr)
+        old_date = datetime.date(2010, 0o4, 14)
+        new_date = datetime.date(2010, 0o5, 14)
+        self.c.payments.create(
+            date_paid=new_date,
+            amount=256,
+            user=self.u
+        )
+        self.c.payments.create(
+            date_paid=old_date,
+            amount=256,
+            user=self.u
+        )
+
+        # Get latest payment
+        self.assertEquals(self.u.most_recent_payment.date_paid, new_date)
 
 
 class ContractTest(TestCase):
@@ -97,17 +153,19 @@ class ContractTest(TestCase):
         # Set up some trial data
 
         # User
-        self.u = User(username='testuser',
-                      first_name="Test", last_name="User",
-                      email="testuser@testtest.com")
+        self.u = UserFactory(
+            username='testuser',
+            first_name="Test", last_name="User",
+            email="testuser@testtest.com")
         self.u.set_password('testtest')
         self.u.save()
 
         # Contract
-        self.c = Contract(start=datetime.date(2010, 0o4, 0o1),
-                          ctype=ContractType.objects.get(desc='Membership'),
-                          tier=Tier.objects.get(desc='Regular'),
-                          user=self.u, status='ACT')
+        self.c = ContractFactory(
+            start=datetime.date(2010, 0o4, 0o1),
+            ctype=ContractType.objects.get(desc='Membership'),
+            tier=Tier.objects.get(desc='Regular'),
+            user=self.u, status='ACT')
         # Add some Payments
         # Initial deposit, plus first month (Apr)
         self.c.payments.create(
@@ -195,7 +253,7 @@ class ContractTest(TestCase):
         # Let's make a Payment
         QUANTUM = 3
         amt = QUANTUM * self.c.tier.fee
-        p = Payment(
+        p = PaymentFactory(
             date_paid=datetime.datetime(2010, 11, 16),
             amount=amt, contract=self.c, user=self.u)
         p.save()

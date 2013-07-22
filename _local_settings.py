@@ -35,7 +35,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # For testing
 import sys
-if 'test' in sys.argv or 'harvest' in sys.argv:
+if any([
+        'test' in sys.argv,
+        'harvest' in sys.argv,
+        'test_coverage' in sys.argv]):
     import subprocess
     current_branch = subprocess.check_output(
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
@@ -51,3 +54,8 @@ SITE_ID = 4
 # Debug
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+# django_coverage settings
+COVERAGE_USE_CACHE = True
+COVERAGE_CUSTOM_REPORTS = False
+COVERAGE_REPORT_HTML_OUTPUT_DIR = "%s/coverage_report/" % ROOT_PATH

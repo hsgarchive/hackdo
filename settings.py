@@ -126,6 +126,7 @@ ROOT_PATH = os.path.dirname(__file__)
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES = {'default': dj_database_url.config()}
+
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -140,7 +141,7 @@ except NameError:
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = "%s/media/" % ROOT_PATH
+MEDIA_ROOT = "%s/hado/media/" % ROOT_PATH
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -167,3 +168,13 @@ TEMPLATE_DIRS = (
     "%s/templates" % ROOT_PATH,
     "%s/hado/templates" % ROOT_PATH,
 )
+
+# django_coverage settings
+COVERAGE_MODULE_EXCLUDES = [
+    'tests$', 'settings$', 'urls$', 'locale$',
+    'common.views.test', '__init__', 'django',
+    'migrations', 'fixtures', 'templates', 'wsgi$', ]
+COVERAGE_CODE_EXCLUDES = [
+    'def get_absolute_url\(self\):',
+    'from .* import .*', 'import .*', ]
+COVERAGE_USE_STDOUT = True
