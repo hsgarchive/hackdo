@@ -140,7 +140,7 @@ except NameError:
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = "%s/media/" % ROOT_PATH
+MEDIA_ROOT = "%s/hado/media/" % ROOT_PATH
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -174,6 +174,6 @@ COVERAGE_MODULE_EXCLUDES = [
     'common.views.test', '__init__', 'django',
     'migrations', 'fixtures', 'templates', 'wsgi$', ]
 COVERAGE_CODE_EXCLUDES = [
-    'def __unicode__\(self\):',
     'def get_absolute_url\(self\):',
     'from .* import .*', 'import .*', ]
+COVERAGE_USE_STDOUT = True

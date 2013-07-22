@@ -1,4 +1,4 @@
-# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
+# -*- coding: utf-8; -*-
 import re
 
 from django.utils.translation import ugettext_lazy as _

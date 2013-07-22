@@ -1,4 +1,4 @@
-# -*- coding: utf-8; indent-tabs-mode: t; python-indent: 4; tab-width: 4 -*-
+# -*- coding: utf-8; -*-
 from django.http import HttpResponseRedirect, HttpResponse,\
     HttpResponseNotAllowed
 from django.core.urlresolvers import reverse
