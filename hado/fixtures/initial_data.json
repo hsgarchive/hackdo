@@ -106,7 +106,7 @@
     "model": "sites.site",
     "fields":
     {
-        "domain": "localhost:8924",
+        "domain": "127.0.0.1:8924",
         "name": "testserver"
     }
 },

@@ -59,14 +59,14 @@ class UserTest(TestCase):
         self.assertEqual(
             self.test_user.user_avatar_url,
             "http://www.gravatar.com/avatar/%s?%s" % (
-            hashlib.md5(self.test_user.email.lower()).hexdigest(),
-            urllib.urlencode({'d': 'mm', 's': str(20)})))
+                hashlib.md5(self.test_user.email.lower()).hexdigest(),
+                urllib.urlencode({'d': 'mm', 's': str(20)})))
         self.test_user.is_gravatar_enabled = False
         self.test_user.save()
         self.assertEqual(
             self.test_user.user_avatar_url,
             "http://%s/static/img/default_avatar.png" % (
-            Site.objects.get_current().domain))
+                Site.objects.get_current().domain))
 
     def testMemberSince(self):
         '''

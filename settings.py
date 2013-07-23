@@ -11,6 +11,11 @@ TIME_ZONE = 'Asia/Singapore'
 
 LANGUAGE_CODE = 'en-us'
 
+# sites:
+# 1. hackdo.hackerspace.sg (main)
+# 2. hackdo.herokuapp.com (heroku)
+# 3. 127.0.0.1:8924 (test)
+# 4. 127.0.0.1:8000 (local)
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -41,7 +46,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -81,6 +85,7 @@ LOGGING = {
     },
     'handlers': {
         'default': {
+            'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/hado.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
@@ -125,6 +130,18 @@ ROOT_PATH = os.path.dirname(__file__)
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES = {'default': dj_database_url.config()}
+
+import subprocess
+try:
+    current_branch = subprocess.check_output(
+        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+except Exception:
+    IS_MASTER_BRANCH = True
+else:
+    if current_branch == 'master':
+        IS_MASTER_BRANCH = True
+    else:
+        IS_MASTER_BRANCH = False
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -182,11 +199,8 @@ COVERAGE_USE_STDOUT = True
 import sys
 if any(['test' in sys.argv,
         'test_coverage' in sys.argv]):
-    import subprocess
-    current_branch = subprocess.check_output(
-        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
-    if current_branch != 'master':
+    if not IS_MASTER_BRANCH:
         DATABASES['default'] = {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'hackdo',
+            'NAME': ':memory:',
         }

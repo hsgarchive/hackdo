@@ -11,7 +11,7 @@ import random
 import datetime
 
 User = get_user_model()
-#NOTE: ContractType and Tier has fixture as they are fixed data
+# NOTE: ContractType and Tier has fixture as they are fixed data
 
 
 class UserFactory(factory.Factory):
@@ -94,11 +94,11 @@ class ContractFactory(factory.Factory):
     FACTORY_FOR = models.Contract
 
     start = random_date()
-    end = datetime.datetime(start.year, start.month+1, start.day)
+    end = datetime.datetime(start.year, start.month + 1, start.day)
     user = factory.SubFactory(UserFactory)
     status = random.choice(CONTRACT_STATUSES)
     desc = factory.LazyAttribute(lambda a: random_string(1024))
-    #NOTE: ctype and tier need to be created with your own needs
+    # NOTE: ctype and tier need to be created with your own needs
 
 
 class PaymentFactory(factory.Factory):

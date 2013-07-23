@@ -33,25 +33,10 @@ DATABASES = {'default': dj_database_url.parse(
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# For testing
-import sys
-if any([
-        'test' in sys.argv,
-        'harvest' in sys.argv,
-        'test_coverage' in sys.argv]):
-    import subprocess
-    current_branch = subprocess.check_output(
-        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
-    if current_branch != 'master':
-        DATABASES['default'] = {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-        }
-
-# Site ID, details check fixtures/initial_data.json
+# use localhost
 SITE_ID = 4
 
-# Debug
+# Enable Debug mode
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

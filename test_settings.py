@@ -1,5 +1,4 @@
 from settings import *
-
 # Lettuce set the DEBUG=False (by default)
 # to debug use the --debug-mode or -d option while harvest instead.
 
@@ -17,13 +16,15 @@ LETTUCE_SERVER_PORT = 8924
 LETTUCE_APPS = (
     'hado',
 )
-PREFERRED_WEBDRIVER = 'chrome'
+
+# test browser (firefox, chrome, PhantomJS)
+# NOTE:
+# to use chrome you need install chrome driver
+# to use PhantomJS you need install PhantomJS driver
+PREFERRED_WEBDRIVER = 'firefox'
 
 # databse settings
-import subprocess
-current_branch = subprocess.check_output(
-    ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
-if current_branch != 'master':
+if not IS_MASTER_BRANCH:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'test_hackdo',
