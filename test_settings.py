@@ -17,7 +17,7 @@ LETTUCE_SERVER_PORT = 8924
 LETTUCE_APPS = (
     'hado',
 )
-PREFERRED_WEBDRIVER = 'zope.testbrowser'
+PREFERRED_WEBDRIVER = 'chrome'
 
 # databse settings
 import subprocess

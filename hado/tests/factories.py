@@ -23,58 +23,60 @@ class UserFactory(factory.Factory):
     is_staff = False
     is_active = True
 
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        password = kwargs.pop('password', 'password')
+        user = super(UserFactory, cls)._prepare(create, **kwargs)
+        if password:
+            user.set_password(password)
+            if create:
+                user.save()
+        return user
 
-class PendingUserFactory(factory.Factory):
-    FACTORY_FOR = User
 
+class SuperUserFactory(UserFactory):
     username = 'alice'
     first_name = 'World'
     last_name = 'Alice'
     email = factory.LazyAttribute(lambda a:
                                   '{0}.{1}@test.sg'.format(
-                                  a.first_name, a.last_name).lower())
+                                      a.first_name, a.last_name).lower())
     is_superuser = True
     is_staff = True
     is_active = True
 
 
-class NormalUserFactory(factory.Factory):
-    FACTORY_FOR = User
-
+class StaffUserFactory(UserFactory):
     username = 'bob'
     first_name = 'World'
     last_name = 'Bob'
     email = factory.LazyAttribute(lambda a:
                                   '{0}.{1}@example.sg'.format(
-                                  a.first_name, a.last_name).lower())
+                                      a.first_name, a.last_name).lower())
     is_superuser = False
     is_staff = False
     is_active = True
 
 
-class StaffUserFactory(factory.Factory):
-    FACTORY_FOR = User
-
+class NormalUserFactory(UserFactory):
     username = 'charlie'
     first_name = 'World'
     last_name = 'Charlie'
     email = factory.LazyAttribute(lambda a:
                                   '{0}.{1}@hackspace.sg'.format(
-                                  a.first_name, a.last_name).lower())
+                                      a.first_name, a.last_name).lower())
     is_superuser = False
     is_staff = True
     is_active = True
 
 
-class SuperUserFactory(factory.Factory):
-    FACTORY_FOR = User
-
+class PendingUserFactory(UserFactory):
     username = 'dave'
     first_name = 'World'
     last_name = 'Dave'
     email = factory.LazyAttribute(lambda a:
                                   '{0}.{1}@hackspace.sg'.format(
-                                  a.first_name, a.last_name).lower())
+                                      a.first_name, a.last_name).lower())
     is_superuser = True
     is_staff = True
     is_active = True

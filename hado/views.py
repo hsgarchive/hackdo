@@ -40,7 +40,9 @@ def index(request):
 
     else - redirect to :view:`hado.pending_user`
     """
-    if request.user.is_active:
+    if request.user.is_superuser:
+        return HttpResponseRedirect(reverse('admin:index'))
+    elif request.user.is_active:
         return HttpResponseRedirect(request.user.get_absolute_url())
     return HttpResponseRedirect(reverse('pending_user'))
 

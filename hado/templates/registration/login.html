@@ -14,7 +14,7 @@
             <input type="hidden" name="next" value="{{ next }}"/>
             <input type="text" placeholder="username" id="id_username" name="username"/>
             <input type="password" placeholder="password" id="id_password" name="password"/>
-            <input class="btn btn-primary" type="submit" value="login" name="loginbtn"/>
+            <input class="btn btn-primary" type="submit" value="login" id="login-btn"/>
             <div class="form-actions">
                 <p>
                 <a href="{% url 'password_reset' %}">{% trans "Forgot your password ?" %}</a>

@@ -1,5 +1,6 @@
 from lettuce import before, after, world
-from splinter.browser import Browser
+from selenium import webdriver
+
 from django.db import transaction
 from django.core.management import call_command
 from django.conf import settings
@@ -12,8 +13,14 @@ logger = logging.getLogger("hado.lettuce")
 
 
 def start_browser():
-    driver = getattr(settings, 'PREFERRED_WEBDRIVER', 'zope.testbrowser')
-    world.browser = Browser(driver)
+    driver = getattr(settings, 'PREFERRED_WEBDRIVER', 'firefox')
+    if driver == 'firefox':
+        world.browser = webdriver.Firefox()
+    elif driver == 'chrome':
+        world.browser = webdriver.Chrome()
+    else:
+        raise NotImplementedError('driver not implement yet. :(')
+    world.browser.maximize_window()
 
 
 def clear_outbox():
