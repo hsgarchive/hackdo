@@ -2,12 +2,12 @@ Feature: User Login Feature
     Existing user should be able to login and they should be redirected to correct page after login
 
     Background:
-        Given the following users
-            | username | first_name | last_name | email                 | password | type       |
-            | alice    | world      | alice     | alice@hackspace.sg    | password | superuser  |
-            | bob      | world      | bob       | bob@hackspace.sg      | password | staff      |
-            | charlie  | world      | charlie   | charlie@hackspace.sg  | password | normal     |
-            | dave     | world      | dave      | dave@hackspace.sg     | password | pending    |
+        Given the following users:
+        | type       |
+        | superuser  |
+        | staff      |
+        | normal     |
+        | pending    |
         And I am logged out
 
     Scenario: Login Page UI - login page should be displayed correct
@@ -19,7 +19,7 @@ Feature: User Login Feature
         When I visit "accounts/login" page
         And I click "login" button
         Then I should see form error with "username" in error message
-        Then I should see form error with "password" in error message
+        And I should see form error with "password" in error message
         When I fill "username" with "alice"
         And I fill "password" with "wrong-password"
         And I click "login" button

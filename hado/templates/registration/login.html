@@ -11,10 +11,10 @@
         {% include "tools/form_error.html" %}
         <form method="post" action="{% url 'login' %}" class="form-search">
             {% csrf_token %}
-            <input type="hidden" name="next" value="{{ next }}">
-            <input type="text" placeholder="username" id="id_username" name="username">
-            <input type="password" placeholder="password" id="id_password" name="password">
-            <input class="btn btn-primary" type="submit" value="login">
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <input type="text" placeholder="username" id="id_username" name="username"/>
+            <input type="password" placeholder="password" id="id_password" name="password"/>
+            <input class="btn btn-primary" type="submit" value="login" name="loginbtn"/>
             <div class="form-actions">
                 <p>
                 <a href="{% url 'password_reset' %}">{% trans "Forgot your password ?" %}</a>

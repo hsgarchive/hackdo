@@ -17,6 +17,8 @@ django_coverage>=1.2.2,<1.3
 lettuce>=0.2.18,<0.3
 splinter>=0.5.4,<0.6
 zope.testbrowser>=4.0.2,<4.1
+lxml>=3.2.1
+cssselect>=0.8
 # For code style
 flake8>=2.0,<3.0
 autopep8>=0.9.1,<1.0

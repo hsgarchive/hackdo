@@ -1,7 +1,6 @@
 from lettuce import before, after, world
 from splinter.browser import Browser
 from django.db import transaction
-from django.test.utils import setup_test_environment, teardown_test_environment
 from django.core.management import call_command
 from django.conf import settings
 from lettuce.django import mail
@@ -39,13 +38,11 @@ def override_email_backend(httpd, server):
 @before.harvest
 def initial_setup(server):
     call_command('syncdb', interactive=False, verbosity=0)
-    setup_test_environment()
 
 
 @after.harvest
 def cleanup(server):
     call_command('flush', interactive=False, verbosity=0)
-    teardown_test_environment()
 
 
 @before.each_scenario

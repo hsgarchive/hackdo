@@ -106,8 +106,8 @@
     "model": "sites.site",
     "fields":
     {
-        "domain": "hackdo-7928.apse1.actionbox.io:3000",
-        "name": "hackdo nitrous"
+        "domain": "localhost:8924",
+        "name": "testserver"
     }
 },
 {

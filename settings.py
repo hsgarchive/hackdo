@@ -81,7 +81,6 @@ LOGGING = {
     },
     'handlers': {
         'default': {
-            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/hado.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
@@ -178,3 +177,16 @@ COVERAGE_CODE_EXCLUDES = [
     'def get_absolute_url\(self\):',
     'from .* import .*', 'import .*', ]
 COVERAGE_USE_STDOUT = True
+
+# if not on master, change database to sqlite3 for testing
+import sys
+if any(['test' in sys.argv,
+        'test_coverage' in sys.argv]):
+    import subprocess
+    current_branch = subprocess.check_output(
+        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+    if current_branch != 'master':
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'hackdo',
+        }
