@@ -54,7 +54,7 @@ class StaffUserFactory(UserFactory):
                                   '{0}.{1}@example.sg'.format(
                                       a.first_name, a.last_name).lower())
     is_superuser = False
-    is_staff = False
+    is_staff = True
     is_active = True
 
 
@@ -66,7 +66,7 @@ class NormalUserFactory(UserFactory):
                                   '{0}.{1}@hackspace.sg'.format(
                                       a.first_name, a.last_name).lower())
     is_superuser = False
-    is_staff = True
+    is_staff = False
     is_active = True
 
 
@@ -77,9 +77,9 @@ class PendingUserFactory(UserFactory):
     email = factory.LazyAttribute(lambda a:
                                   '{0}.{1}@hackspace.sg'.format(
                                       a.first_name, a.last_name).lower())
-    is_superuser = True
-    is_staff = True
-    is_active = True
+    is_superuser = False
+    is_staff = False
+    is_active = False
 
 
 class MembershipReviewFactory(factory.Factory):

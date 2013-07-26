@@ -60,8 +60,33 @@ def see_elm(step, element_type, value):
 @step('I should not see element with "([^"]*)" of "([^"]*)" in page')
 def not_see_elm(step, element_type, value):
     elm = get_elm(element_type, value)
-    assert_is_not_none(elm)
-    assert_false(elm.is_displayed())
+    if elm:
+        assert_false(elm.is_displayed())
+
+
+@step('I should see element with "([^"]*)" of "([^"]*)" in navbar')
+def see_elm_in_navbar(step, element_type, value):
+    navbar = get_elm("class_name", "navbar")
+    assert_is_not_none(navbar)
+    navbar_dropdown = get_elm("class_name", "dropdown-toggle", parent=navbar)
+    assert_is_not_none(navbar_dropdown)
+    navbar_dropdown.click()
+    elm = get_elm(element_type, value, parent=navbar)
+    assert_true(elm.is_displayed())
+    navbar_dropdown.click()
+
+
+@step('I should not see element with "([^"]*)" of "([^"]*)" in navbar')
+def not_see_elm_in_navbar(step, element_type, value):
+    navbar = get_elm("class_name", "navbar")
+    assert_is_not_none(navbar)
+    navbar_dropdown = get_elm("class_name", "dropdown-toggle", parent=navbar)
+    assert_is_not_none(navbar_dropdown)
+    navbar_dropdown.click()
+    elm = get_elm(element_type, value, parent=navbar)
+    if elm:
+        assert_false(elm.is_displayed())
+    navbar_dropdown.click()
 
 
 @step('I click on "([^"]*)"')
@@ -103,22 +128,25 @@ def i_see_form_error(step, message):
     assert_in(message, form_error.text)
 
 
-def get_elm(element_type, value):
+def get_elm(element_type, value, parent=None, wait_time=0):
+    world.browser.implicitly_wait(wait_time)
+    if not parent:
+        parent = world.browser
     try:
         if element_type == 'id':
-            elm = world.browser.find_element_by_id(value)
+            elm = parent.find_element_by_id(value)
         elif element_type == 'xpath':
-            elm = world.browser.find_element_by_xpath(value)
+            elm = parent.find_element_by_xpath(value)
         elif element_type == 'link_text':
-            elm = world.browser.find_element_by_link_text(value)
+            elm = parent.find_element_by_link_text(value)
         elif element_type == 'name':
-            elm = world.browser.find_element_by_name(value)
+            elm = parent.find_element_by_name(value)
         elif element_type == 'tag_name':
-            elm = world.browser.find_element_by_tag_name(value)
+            elm = parent.find_element_by_tag_name(value)
         elif element_type == 'class_name':
-            elm = world.browser.find_element_by_class_name(value)
+            elm = parent.find_element_by_class_name(value)
         elif element_type == 'css_selector':
-            elm = world.browser.find_element_by_css_selector(value)
+            elm = parent.find_element_by_css_selector(value)
         else:
             raise NameError('wrong element type given.')
     except NoSuchElementException:
@@ -155,6 +183,7 @@ def big_logo(step):
 
 @step('I should see hackdo footer')
 def footer(step):
+    step.given('I should see element with "id" of "push" in page')
     step.given('I should see element with "id" of "footer" in page')
     footer = world.browser.find_element_by_id('footer')
     assert_equals(

@@ -12,7 +12,7 @@ $(document).ready(function(){
     var _buildURL = function(review_id) {
         var url = window.location.pathname;
 
-        return url.substring( 0, url.indexOf( 'users' ) ) + 'review_membership/' + review_id + '/';
+        return url.substring( 0, url.indexOf( 'users' ) ) + 'review-membership/' + review_id + '/';
     };
 
     function csrfSafeMethod(method) {

@@ -74,6 +74,7 @@ class HackdoAdmin(AdminSite):
 
         return render(request, 'admin/index.html',
                       {
+                          'title': 'HackDo',
                           'members': members,
                           'income': income,
                           'pformset': pformset

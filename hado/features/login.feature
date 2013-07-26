@@ -50,7 +50,7 @@ Feature: User Login Feature
         And I press "login"
         Then I should be on "users/bob/" page
         And I should see user profile page displayed
-        And I should see "Admin" within navbar
+        And I should see element with "link_text" of "Admin" in navbar
 
     Scenario: Normal User Login - normal user should be redirect to user profile page
         Given the following users:
@@ -62,7 +62,7 @@ Feature: User Login Feature
         And I press "login"
         Then I should be on "users/charlie/" page
         And I should see user profile page displayed
-        And I should not see "Admin" within navbar
+        And I should not see element with "link_text" of "Admin" in navbar
 
     Scenario: Pending User Login - pending user should be redirect to pending user page
         Given the following users:
@@ -74,3 +74,4 @@ Feature: User Login Feature
         And I press "login"
         Then I should be on "pending-user/" page
         And I should see pending user page displayed
+        And I should not see element with "link_text" of "Admin" in navbar
