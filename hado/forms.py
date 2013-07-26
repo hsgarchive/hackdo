@@ -118,6 +118,12 @@ PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
 
 class NewAccountForm(forms.Form):
 
+    CONTRACT_TYPE_CHOICES = (
+        ('TMEM', 'Trial Member'),
+        ('YMEM', 'Youth Member'),
+        ('RMEM', 'Regular Member'),
+    )
+
     username = forms.CharField(
         required=True,
         label=_('Username'),
@@ -164,6 +170,11 @@ class NewAccountForm(forms.Form):
         required=True,
         label=_('Referrer Two Username'),
         max_length=40,
+    )
+    contract_type = forms.ChoiceField(
+        required=True,
+        label=_('Contract Type'),
+        choices=CONTRACT_TYPE_CHOICES,
     )
 
     def clean_username(self):

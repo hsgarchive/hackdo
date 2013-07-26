@@ -45,3 +45,20 @@ def pending_user_page_displayed(step):
     step.then('I should see element with "id" of "pending_user" in page')
     step.then('I should see element with "id" of "membershipreviews" in page')
     step.then('I should see element with "id" of "membershipreview_table" in page')
+
+
+@step('I should see hackdo registration page displayed')
+def registration_page_displayed(step):
+    step.then('I should see "New Account - HackDo" as site title')
+    step.then('I should see big hackspace logo')
+    step.then('I should see hackdo footer')
+    step.then('I should see element with "name" of "username" in page')
+    step.then('I should see element with "name" of "email" in page')
+    step.then('I should see element with "name" of "first_name" in page')
+    step.then('I should see element with "name" of "last_name" in page')
+    step.then('I should see element with "name" of "password" in page')
+    step.then('I should see element with "name" of "password_confirm" in page')
+    step.then('I should see element with "name" of "refer_one" in page')
+    step.then('I should see element with "name" of "refer_two" in page')
+    step.then('I should see element with "name" of "contract_type" in page')
+    step.then('I should see element with "id" of "register-btn" in page')
