@@ -2,6 +2,7 @@ HackDo
 ----------------------------------
 
 [![Build Status](https://travis-ci.org/wgx731/hackdo.png?branch=dev)](https://travis-ci.org/wgx731/hackdo)
+[![Build Status](https://drone.io/github.com/wgx731/hackdo/status.png)](https://drone.io/github.com/wgx731/hackdo/latest)
 
 HackDo is meant to be a membership (and others) management system for Hackerspaces.
 
