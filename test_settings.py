@@ -21,7 +21,7 @@ LETTUCE_APPS = (
 # NOTE:
 # to use chrome you need install chrome driver
 # to use PhantomJS you need install PhantomJS driver
-PREFERRED_WEBDRIVER = 'chrome'
+PREFERRED_WEBDRIVER = 'firefox'
 
 # databse settings
 if not IS_MASTER_BRANCH:

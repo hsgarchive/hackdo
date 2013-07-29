@@ -1,24 +1,19 @@
-branches:
-only:
-    - dev
-
 language: python
+
 python:
     - "2.7"
 
+before_install:
+    - "export DISPLAY=:99.0"
+    - "sh -e /etc/init.d/xvfb start"
+
 install:
-    - pip install -r scripts/requirements.txt --use-mirrors
+    - pip install -r requirements.txt --use-mirrors
 
 before_script:
-    - mysql -e 'create database hackdo;'
-    - "if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then flake8 --exclude=migrations --ignore=E501,F403 --statistics .; fi"
+    - mysql -u root < scripts/hackdo.sql
+    - "flake8 --exclude=migrations --ignore=E501,F403 --statistics .;"
 
 script:
     - python manage.py test hado
-
-notifications:
-    email:
-    recipients:
-        - wgx731@gmail.com
-    on_success: change
-    on_failure: change
+    - python manage.py harvest --settings=test_settings --verbosity=2
