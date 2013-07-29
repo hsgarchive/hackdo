@@ -55,29 +55,15 @@
             <header><h1>Admin</h1></header>
             <ul class="choices">
                 <li><a href="{% url "admin:hado_hackdouser_changelist" %}">Members</a></li>
-                <li><a href="{% url "admin:hado_payment_add" %}">Payment</a></li>
-                <li><a href="/hdadmin/hado/membershipreview/">Membership Review</a></li>
+                <li><a href="{% url "admin:hado_membershipreview_changelist" %}">Membership Review</a></li>
+                <li><a href="{% url "admin:hado_contract_changelist" %}">Contracts</a></li>
+                <li><a href="{% url "admin:hado_payment_changelist" %}">Payment</a></li>
             </ul>
         </section>
-
         <hr>
-
-        <section id="reports">
-            <header><h1>Reports</h1></header>
-
-            <ul class="choices">
-                <li><a href="">Monthly Revenue</a></li>
-                <li><a href="">Monthly Expenditure</a></li>
-                <li><a href="">Lapsed Members</a></li>
-                <li><a href="">Current Members</a></li>
-            </ul>
-        </section>
-
-        <hr>
-
         <section id="payment_verification">
             <header><h1>Payments to be verified</h1></header>
-            <form method="post" action="" class="clearfix">
+            <form method="post" action="{% url "payment_verify" %}" class="clearfix">
                 {% csrf_token %}
                 <table>
                     <thead>
@@ -113,6 +99,49 @@
     </div>
 
     {% comment %}
+    <section id="user_active">
+        <header><h1>Make User Active</h1></header>
+        <form method="post" action="{% url "user_active" %}" class="clearfix">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Refer One Status</th>
+                        <th>Refer Two Status</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ uformset.management_form }}
+                    {% for u in uformset.forms %}
+                    <tr>
+                        {{ u.id }}
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.refer_one }}</td>
+                        <td>{{ u.refer_two }}</td>
+                        <td>{{ u.is_active }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="submit" value="Make Active">
+        </form>
+    </section>
+    {% endcomment %}
+</div>
+    {% comment %}
+    <section id="reports">
+        <header><h1>Reports</h1></header>
+
+        <ul class="choices">
+            <li><a href="">Monthly Revenue</a></li>
+            <li><a href="">Monthly Expenditure</a></li>
+            <li><a href="">Lapsed Members</a></li>
+            <li><a href="">Current Members</a></li>
+        </ul>
+    </section>
+    <hr>
     <div id="changelist-filter">
         <h2>{% trans 'Recent Actions' %}</h2>
         <h3>{% trans 'My Actions' %}</h3>

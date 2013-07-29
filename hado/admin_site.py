@@ -6,9 +6,15 @@ from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 
 from hado.models import Contract, Payment, ContractType, Sum
 from hado.forms import PaymentFormAdminFormset
+
+import logging
+logger = logging.getLogger("hado.admin")
+
 
 User = get_user_model()
 
@@ -55,31 +61,40 @@ class HackdoAdmin(AdminSite):
         income['summary']['shortfall'] = \
             income['summary']['supposed'] - income['summary']['actual']
 
-        # Incoming Payments pending verification
-        if request.method == 'POST':
-            pformset = PaymentFormAdminFormset(
-                request.POST, queryset=Payment.objects.filter(verified='PEN'))
-
-            if pformset.is_valid():
-                pformset.save()
-
-                # On success, add a note
-                messages.success(request, "Payments verified")
-            else:
-                print pformset.errors
-
-        # Create a new formset anyway
+        # Create new formsets
         pformset = PaymentFormAdminFormset(
             queryset=Payment.objects.filter(verified='PEN'))
+
+        #uformset = UserFormAdminFormset(
+            #queryset=User.objects.filter(verified='PEN'))
 
         return render(request, 'admin/index.html',
                       {
                           'title': 'HackDo',
                           'members': members,
                           'income': income,
-                          'pformset': pformset
+                          'pformset': pformset,
+                          #'uformset': uformset
                       })
 
-    def lapsed_contracts(self, request):
-        '''Shows details about lapsed contracts'''
-        pass
+    def payment_verify(self, request):
+        if request.method != 'POST':
+            return HttpResponseNotAllowed(permitted_methods=('POST',))
+        # Incoming Payments pending verification
+        pformset = PaymentFormAdminFormset(
+            request.POST, queryset=Payment.objects.filter(verified='PEN'))
+        if len(pformset.forms) > 0:
+            if pformset.is_valid():
+                pformset.save()
+                messages.success(request, "Payments verified")
+                #TODO: send out email to user
+            else:
+                messages.error(request, "Error process request.")
+                logger.error(pformset.errors)
+        return HttpResponseRedirect(reverse('admin:index'))
+
+    def user_active(self, request):
+        if request.method != 'POST':
+            return HttpResponseNotAllowed(permitted_methods=('POST',))
+        #TODO: finish user formset
+        return HttpResponseRedirect(reverse('admin:index'))

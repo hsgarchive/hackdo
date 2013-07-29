@@ -1,4 +1,4 @@
-from django.conf.urls import include, patterns
+from django.conf.urls import include, patterns, url
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponseRedirect
@@ -15,6 +15,12 @@ urlpatterns = patterns(
     (r'^hdadmin/doc/', include('django.contrib.admindocs.urls')),
     (r'^hdadmin/hado/$',
         lambda x: HttpResponseRedirect(reverse('admin:index'))),
+    url(r'^hdadmin/payment-verify/$',
+        hdadmin.payment_verify,
+        name='payment_verify'),
+    url(r'^hdadmin/user-active/$',
+        hdadmin.user_active,
+        name='user_active'),
     (r'^hdadmin/', include(hdadmin.urls)),
     (r'', include('hado.urls')),
     (r'^static/(?P<path>.*)$',
