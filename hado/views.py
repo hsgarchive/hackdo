@@ -13,7 +13,8 @@ from django.template.loader import get_template
 from django.template import Context
 
 # Models
-from hado.models import Contract, MembershipReview, Payment
+from hado.models import Contract, MembershipReview, Payment, ContractType, \
+    Tier
 from hado.forms import PaymentForm, NewAccountForm, HackDoPasswordChangeForm
 
 from datetime import datetime
@@ -442,6 +443,35 @@ def register(request):
                 )
                 m1.save()
                 m2.save()
+                c_type = cd['contract_type']
+                date_start = datetime.now()
+                date_end = date_start + relativedelta(days=31)
+                if c_type == 'TMEM':
+                    new_user.contracts.create(
+                        start=date_start,
+                        end=date_end,
+                        ctype=ContractType.objects.get(desc='Membership'),
+                        tier=Tier.objects.get(desc='Trial'),
+                        status=u'PEN')
+                elif c_type == 'YMEM':
+                    new_user.contracts.create(
+                        start=date_start,
+                        end=date_end,
+                        ctype=ContractType.objects.get(desc='Membership'),
+                        tier=Tier.objects.get(desc='Youth'),
+                        status=u'PEN')
+                elif c_type == 'RMEM':
+                    new_user.contracts.create(
+                        start=date_start,
+                        end=date_end,
+                        ctype=ContractType.objects.get(desc='Membership'),
+                        tier=Tier.objects.get(desc='Regular'),
+                        status=u'PEN')
+                else:
+                    return render(request, template, {
+                        'form': form,
+                        'user_list': user_list,
+                    })
             except Exception as e:
                 logger.error("Error: %s" % (e))
             else:

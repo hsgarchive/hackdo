@@ -3,7 +3,9 @@ from lettuce.django import django_url
 from selenium.common.exceptions import NoSuchElementException
 from nose.tools import assert_equals, assert_false, \
     assert_true, assert_in, assert_is_not_none, assert_is_none
+from django.contrib.auth import get_user_model
 
+from hado.models import Contract, MembershipReview
 from hado.tests.factories import SuperUserFactory, StaffUserFactory, \
     NormalUserFactory, PendingUserFactory, UserFactory
 
@@ -11,6 +13,8 @@ from datetime import date
 import time
 import logging
 logger = logging.getLogger("hado.test")
+
+User = get_user_model()
 
 
 @step('I reload page')
@@ -89,9 +93,27 @@ def not_see_elm_in_navbar(step, element_type, value):
     navbar_dropdown.click()
 
 
+@step('I check "([^"]*)"')
+def i_check(step, name):
+    checkbox = world.browser.find_element_by_name(name).click()
+    assert_is_not_none(checkbox)
+    if not checkbox.is_selected():
+        checkbox.click()
+
+
+@step('I uncheck "([^"]*)"')
+def i_uncheck(step, name):
+    checkbox = world.browser.find_element_by_name(name).click()
+    assert_is_not_none(checkbox)
+    if checkbox.is_selected():
+        checkbox.click()
+
+
 @step('I click on "([^"]*)"')
 def i_click_on_link(step, link_text):
-    world.browser.find_element_by_link_text(link_text).click()
+    link = world.browser.find_element_by_link_text(link_text)
+    assert_is_not_none(link)
+    link.click()
 
 
 @step('I press "([^"]*)"')
@@ -121,11 +143,36 @@ def i_fill(step, name, text):
     input_field.send_keys(text)
 
 
+@step('I select "([^"]*)" with "([^"]*)"')
+def i_select(step, name, option_text):
+    try:
+        select_field = world.browser.find_element_by_name(name)
+    except NoSuchElementException:
+        select_field = None
+    assert_is_not_none(select_field)
+    for option in select_field.find_elements_by_tag_name('option'):
+        if option.text == option_text:
+            option.click()
+
+
+@step('I should see "([^"]*)" in success alert message')
+def i_see_alert__message(step, message):
+    alert = world.browser.find_element_by_css_selector('.alert-success')
+    assert_is_not_none(alert)
+    assert_in(message, alert.text)
+
+
 @step('I should see "([^"]*)" in form error message')
-def i_see_form_error(step, message):
+def i_see_form_error_message(step, message):
     form_error = world.browser.find_element_by_css_selector('.alert-error')
     assert_is_not_none(form_error)
     assert_in(message, form_error.text)
+
+
+@step('I should see error in page')
+def i_see_error_in_page(step):
+    errors = world.browser.find_elements_by_css_selector('.error')
+    assert_true(len(errors) > 0)
 
 
 def get_elm(element_type, value, parent=None, wait_time=0):
@@ -158,8 +205,8 @@ def get_elm(element_type, value, parent=None, wait_time=0):
 @step('Given the following users')
 def create_users(step):
     for data in step.hashes:
-        usertype = data['type']
-        password = data['password']
+        usertype = data.get('type', 'normal')
+        password = data.get('password', 'password')
         if usertype == 'super':
             SuperUserFactory(password=password)
         elif usertype == 'staff':
@@ -170,6 +217,22 @@ def create_users(step):
             PendingUserFactory(password=password)
         else:
             UserFactory(password=password)
+
+
+@step('user "([^"]*)" should have (\d+) "([^"]*)" contracts')
+def assert_contracts(step, user_email, number, c_status):
+    u = User.objects.get(email=user_email)
+    assert_equals(
+        Contract.objects.filter(user=u, status=c_status).count(),
+        int(number))
+
+
+@step('user "([^"]*)" should have (\d+) unreviewed membershipreview requests')
+def assert_membershipreviews(step, user_email, number):
+    u = User.objects.get(email=user_email)
+    assert_equals(
+        MembershipReview.objects.filter(applicant=u, reviewed=False).count(),
+        int(number))
 
 
 @step('I should see big hackspace logo')

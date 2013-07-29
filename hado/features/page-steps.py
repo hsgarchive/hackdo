@@ -62,3 +62,16 @@ def registration_page_displayed(step):
     step.then('I should see element with "name" of "refer_two" in page')
     step.then('I should see element with "name" of "contract_type" in page')
     step.then('I should see element with "id" of "register-btn" in page')
+
+
+@step('I fill up registration form')
+def fill_up_registration_form(step):
+    step.given('I fill "username" with "wgx731"')
+    step.given('I fill "email" with "wgx731@gmail.com"')
+    step.given('I fill "first_name" with "GaoXiang"')
+    step.given('I fill "last_name" with "Wang"')
+    step.given('I fill "password" with "1111111"')
+    step.given('I fill "password_confirm" with "1111111"')
+    step.given('I fill "refer_one" with "alice"')
+    step.given('I fill "refer_two" with "bob"')
+    step.given('I select "contract_type" with "Regular Member"')
