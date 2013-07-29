@@ -8,14 +8,15 @@ before_install:
     - "sh -e /etc/init.d/xvfb start"
 
 install:
-    - pip install -r requirements.txt --use-mirrors
+    - "pip install -r requirements.txt --use-mirrors"
+    - "sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm"
 
 before_script:
-    - mkdir logs
-    - touch logs/hado.log
-    - mysql -u root < scripts/hackdo.sql
-    - "flake8 --exclude=migrations --ignore=E501,F403 --statistics .;"
+    - "mkdir logs"
+    - "touch logs/hado.log"
+    - "mysql -u root < scripts/hackdo.sql"
+    - "flake8 --exclude=migrations --ignore=E501,F403 --statistics ."
 
 script:
-    - python manage.py test hado
-    - python manage.py harvest --settings=test_settings --verbosity=2
+    - "python manage.py test_coverage hado"
+    - "python manage.py harvest --settings=test_settings --verbosity=2"
