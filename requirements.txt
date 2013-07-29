@@ -15,6 +15,7 @@ django-extensions>=1.1.1,<1.2
 nose>=1.3.0
 factory-boy>=2.1.1,<2.2
 django_coverage>=1.2.2,<1.3
+coverage>=3.6,<3.7
 lettuce>=0.2.18,<0.3
 selenium>=2.33.0,<3.0
 # For code style
