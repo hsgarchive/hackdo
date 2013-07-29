@@ -11,6 +11,8 @@ install:
     - pip install -r requirements.txt --use-mirrors
 
 before_script:
+    - mkdir logs
+    - touch logs/hado.log
     - mysql -u root < scripts/hackdo.sql
     - "flake8 --exclude=migrations --ignore=E501,F403 --statistics .;"
 
