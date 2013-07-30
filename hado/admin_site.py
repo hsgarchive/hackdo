@@ -86,7 +86,7 @@ class HackdoAdmin(AdminSite):
         if len(pformset.forms) > 0:
             if pformset.is_valid():
                 pformset.save()
-                messages.success(request, "Payments status changed.")
+                messages.success(request, "Payments updated.")
                 #TODO: send out email to user
             else:
                 messages.error(
@@ -104,7 +104,7 @@ class HackdoAdmin(AdminSite):
         if len(uformset.forms) > 0:
             if uformset.is_valid():
                 uformset.save()
-                messages.success(request, "User status changed.")
+                messages.success(request, "Users updated.")
                 #TODO: send out email to user
             else:
                 messages.error(

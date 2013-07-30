@@ -69,26 +69,26 @@
                 <thead>
                     <tr>
                         <th>User</th>
-                        <th>Date paid</th>
-                        <th>Amount</th>
-                        <th>Contract</th>
-                        <th>Method</th>
                         <th>Description</th>
                         <th>Verified</th>
+                        <th>Edit Details</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{ pformset.management_form }}
                     {% for p in pformset.forms %}
                     <tr>
-                        {{ p.id }}
+                        {{ p.id.as_hidden }}
+                        {{ p.method.as_hidden }}
+                        {{ p.date_paid.as_hidden }}
+                        {{ p.amount.as_hidden }}
+                        {{ p.contract.as_hidden }}
                         <td>{{ p.user }}</td>
-                        <td>{{ p.date_paid }}</td>
-                        <td>{{ p.amount }}</td>
-                        <td>{{ p.contract }}</td>
-                        <td>{{ p.method }}</td>
                         <td>{{ p.desc }}</td>
                         <td>{{ p.verified }}</td>
+                        <td>
+                            <a href="{% url "admin:hado_payment_change" p.id.value %}">Edit</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -105,12 +105,9 @@
                     <tr>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>User Type</th>
-                        <th>Gravatar enabled?</th>
                         <th>Active?</th>
-                        <th>Request Link</th>
+                        <th>All Membership Reviews</th>
+                        <th>Edit Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,15 +118,15 @@
                         {{ u.password.as_hidden }}
                         {{ u.last_login.as_hidden }}
                         {{ u.date_joined.as_hidden }}
+                        {{ u.utype.as_hidden }}
                         <td>{{ u.username }}</td>
                         <td>{{ u.email }}</td>
-                        <td>{{ u.first_name }}</td>
-                        <td>{{ u.last_name }}</td>
-                        <td>{{ u.utype }}</td>
-                        <td>{{ u.is_gravatar_enabled }}</td>
                         <td>{{ u.is_active }}</td>
                         <td>
                             <a target="_blank" href="{% url "admin:hado_membershipreview_changelist" %}?q={{u.username.value}}">{{u.username.value}}'s requests</a>
+                        </td>
+                        <td>
+                            <a href="{% url "admin:hado_hackdouser_change" u.id.value %}">Edit</a>
                         </td>
                     </tr>
                     {% endfor %}
