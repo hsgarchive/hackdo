@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 
 from hado.models import Contract, Payment, ContractType, Sum
-from hado.forms import PaymentFormAdminFormset
+from hado.forms import PaymentFormAdminFormset, UserFormAdminFormset
 
 import logging
 logger = logging.getLogger("hado.admin")
@@ -65,8 +65,8 @@ class HackdoAdmin(AdminSite):
         pformset = PaymentFormAdminFormset(
             queryset=Payment.objects.filter(verified='PEN'))
 
-        #uformset = UserFormAdminFormset(
-            #queryset=User.objects.filter(verified='PEN'))
+        uformset = UserFormAdminFormset(
+            queryset=User.objects.filter(is_active=False))
 
         return render(request, 'admin/index.html',
                       {
@@ -74,7 +74,7 @@ class HackdoAdmin(AdminSite):
                           'members': members,
                           'income': income,
                           'pformset': pformset,
-                          #'uformset': uformset
+                          'uformset': uformset
                       })
 
     def payment_verify(self, request):
@@ -86,15 +86,29 @@ class HackdoAdmin(AdminSite):
         if len(pformset.forms) > 0:
             if pformset.is_valid():
                 pformset.save()
-                messages.success(request, "Payments verified")
+                messages.success(request, "Payments status changed.")
                 #TODO: send out email to user
             else:
-                messages.error(request, "Error process request.")
+                messages.error(
+                    request,
+                    "Error process request. %s" % pformset.errors)
                 logger.error(pformset.errors)
         return HttpResponseRedirect(reverse('admin:index'))
 
     def user_active(self, request):
         if request.method != 'POST':
             return HttpResponseNotAllowed(permitted_methods=('POST',))
-        #TODO: finish user formset
+        # Incoming User active request
+        uformset = UserFormAdminFormset(
+            request.POST, queryset=User.objects.filter(is_active=False))
+        if len(uformset.forms) > 0:
+            if uformset.is_valid():
+                uformset.save()
+                messages.success(request, "User status changed.")
+                #TODO: send out email to user
+            else:
+                messages.error(
+                    request,
+                    "Error process request. %s" % uformset.errors)
+                logger.error(uformset.errors)
         return HttpResponseRedirect(reverse('admin:index'))

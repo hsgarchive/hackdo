@@ -5,10 +5,95 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.models import modelformset_factory
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from hado.models import Payment, Contract
+from hado.models import Payment, Contract, MembershipReview
 
-UserModel = get_user_model()
+User = get_user_model()
+
+
+class HackDoUserCreationForm(forms.ModelForm):
+    error_messages = {
+        'duplicate_username': _("A user with that username already exists."),
+        'password_mismatch': _("The two password fields didn't match."),
+    }
+    username = forms.RegexField(label=_("Username"), max_length=40,
+                                regex=r'^[\w.@+-]+$',
+                                help_text=_("Required. 40 characters or fewer "
+                                            "Letters, digits and "
+                                            "@/./+/-/_ only."),
+                                error_messages={
+                                    'invalid': _("This value may contain only "
+                                                 "letters, numbers and "
+                                                 "@/./+/-/_ characters.")})
+    password1 = forms.CharField(label=_("Password"),
+                                widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_("Password confirmation"),
+                                widget=forms.PasswordInput,
+                                help_text=_("Enter the same password as above,"
+                                            " for verification."))
+
+    def clean_username(self):
+        # Since HackDoUser.username is unique, this check is redundant,
+        # but it sets a nicer error message than the ORM. See #13147.
+        username = self.cleaned_data["username"]
+        try:
+            User._default_manager.get(username=username)
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError(self.error_messages['duplicate_username'])
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'])
+        return password2
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+    class Meta:
+        model = User
+        fields = ('username', 'email',)
+
+
+class HackDoUserChangeForm(UserChangeForm):
+    username = forms.RegexField(
+        label=_("Username"), max_length=40, regex=r"^[\w.@+-]+$",
+        help_text=_("Required. 40 characters or fewer. Letters, digits and "
+                    "@/./+/-/_ only."),
+        error_messages={
+            'invalid': _("This value may contain only letters, numbers and "
+                         "@/./+/-/_ characters.")})
+
+    def clean(self):
+        cleaned_data = super(UserChangeForm, self).clean()
+        change_is_active = cleaned_data.get("is_active")
+        if self.instance.is_active is False and change_is_active is True:
+            has_pending_reviews = MembershipReview.objects.filter(
+                applicant=self.instance, reviewed=False).exists()
+            if has_pending_reviews:
+                msg = _("There still have pending membership review request\
+                        for this user.")
+                self._errors["is_active"] = self.error_class([msg])
+                del cleaned_data["is_active"]
+        return cleaned_data
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email', 'is_active', 'password', 'utype',
+            'profile_image', 'is_gravatar_enabled',
+            'first_name', 'last_name', 'groups',
+            'is_staff', 'is_superuser', 'user_permissions',
+            'last_login', 'date_joined',
+        )
 
 
 class HackDoPasswordChangeForm(PasswordChangeForm):
@@ -49,8 +134,8 @@ class HackDoAuthenticationForm(forms.Form):
         super(HackDoAuthenticationForm, self).__init__(*args, **kwargs)
 
         # Set the label for the "username" field.
-        self.username_field = UserModel._meta.get_field(
-            UserModel.USERNAME_FIELD)
+        self.username_field = User._meta.get_field(
+            User.USERNAME_FIELD)
         if self.fields['username'].label is None:
             self.fields['username'].label = self.username_field.verbose_name
 
@@ -112,8 +197,6 @@ class PaymentForm(PaymentFormAdmin):
                 .exclude(status='TER')
                 .order_by('-start'),
                 empty_label=None)
-
-PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
 
 
 class NewAccountForm(forms.Form):
@@ -179,17 +262,17 @@ class NewAccountForm(forms.Form):
 
     def clean_username(self):
         data = self.cleaned_data['username']
-        username_used = UserModel.objects.filter(username=data).exists()
+        username_used = User.objects.filter(username=data).exists()
         if username_used:
             raise forms.ValidationError(_('Username is already taken.'))
         return data
 
     def clean_refer_one(self):
         data = self.cleaned_data['refer_one']
-        qs = UserModel.objects.filter(username=data)
+        qs = User.objects.filter(username=data)
         try:
             u = qs.get()
-        except UserModel.DoesNotExist:
+        except User.DoesNotExist:
             raise forms.ValidationError(_('Referrer One is invalid.'))
         else:
             if not u.is_active:
@@ -199,10 +282,10 @@ class NewAccountForm(forms.Form):
 
     def clean_refer_two(self):
         data = self.cleaned_data['refer_two']
-        qs = UserModel.objects.filter(username=data)
+        qs = User.objects.filter(username=data)
         try:
             u = qs.get()
-        except UserModel.DoesNotExist:
+        except User.DoesNotExist:
             raise forms.ValidationError(_('Referrer Two is invalid.'))
         else:
             if not u.is_active:
@@ -231,3 +314,7 @@ class NewAccountForm(forms.Form):
             del cleaned_data['refer_one']
             del cleaned_data['refer_two']
         return cleaned_data
+
+PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
+UserFormAdminFormset = modelformset_factory(
+    User, form=HackDoUserChangeForm, extra=0)

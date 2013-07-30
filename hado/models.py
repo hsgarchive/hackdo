@@ -481,8 +481,6 @@ class Contract(models.Model):
         we now force it to become 31 May 2010 \
         before actually save()'ing the object.
         """
-        if self.status == 'PEN':
-            return super(Contract, self).save(*args, **kwargs)
         # But first, is self.end even specified?
         if not self.valid_till:
             self.valid_till = self.start
@@ -514,6 +512,9 @@ class Contract(models.Model):
         else:
             kwargs['force_insert'] = True
             kwargs['force_update'] = False
+
+        if self.status == 'PEN':
+            return super(Contract, self).save(*args, **kwargs)
 
         if self.valid_till > today:
             self.status = u'ACT'

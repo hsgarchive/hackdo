@@ -22,15 +22,15 @@
 }
 
 
-#payment_verification table {
+.formset table {
     width: 100%;
 }
 
-#payment_verification table tr:hover {
+.formset table tr:hover {
     background-color: #ffebeb;
 }
 
-#payment_verification form input[type=submit] {
+.formset form input[type=submit] {
     float: right;
     margin: 10px 0px;
 }
