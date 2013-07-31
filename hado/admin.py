@@ -134,8 +134,8 @@ def import_bank_log_csv(request):
             exclude_first_line = request.POST.get('exclude_first_line', False)
             try:
                 _handle_csv_file(f, exclude_first_line)
-            except Exception:
-                error = "There are errors in your bank log file."
+            except Exception as e:
+                error = "There are errors in your bank log file. %s" % e
                 messages.error(request, error)
             else:
                 status = "The bank log file has been saved correctly."

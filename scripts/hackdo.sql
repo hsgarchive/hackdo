@@ -1,7 +1,7 @@
 -- MySQL script to create the user and database needed to deploy the application
 
 DROP DATABASE IF EXISTS hackdo;
-DROP DATABASE IF EXISTS hackdo_test;
+DROP DATABASE IF EXISTS test_hackdo;
 CREATE DATABASE hackdo COLLATE utf8_general_ci;
 CREATE DATABASE test_hackdo COLLATE utf8_general_ci;
 

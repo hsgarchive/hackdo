@@ -337,7 +337,7 @@ class BankLog(models.Model):
         help_text=_('transaction log date'),
     )
     desc = models.CharField(
-        max_length=1024,
+        max_length=255,
         help_text=_('transaction log description'),
     )
     currency = models.CharField(
@@ -348,6 +348,7 @@ class BankLog(models.Model):
         help_text=_('locker number')
     )
     t_type = models.CharField(
+        _('transaction type'),
         max_length=3,
         choices=TRANSACTION_TYPE,
         help_text=_('transaction type: \
@@ -360,6 +361,9 @@ class BankLog(models.Model):
         """
         return 'Bank log on %s for %s.' % (
             self.date, self.desc,)
+
+    class Meta:
+        unique_together = ("date", "desc")
 
 
 class Contract(models.Model):
