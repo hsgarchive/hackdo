@@ -5,7 +5,7 @@ from django.utils.http import urlquote
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db.models import Sum
-from django.db.models.signals import post_init, post_save
+from django.db.models.signals import post_init, post_save, pre_save
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -13,6 +13,7 @@ from django.contrib.sites.models import Site
 from hado.managers import HackDoUserManager
 
 from dateutil.relativedelta import relativedelta
+from utils import send_email
 import urllib
 import hashlib
 import datetime
@@ -26,32 +27,30 @@ def get_image_path(instance, filename):
         + os.path.splitext(filename)[1]
     return 'user_avatars/%s/%s' % (instance.username, newfilename)
 
+DISPATCH_UID_PREFIX = settings.DISPATCH_UID_PREFIX
+EMAIL_SUBJECT_PREFIX = settings.EMAIL_SUBJECT_PREFIX
 USER_TYPES = (
     ('MEM', 'Member'),
     ('SPO', 'Sponsor'),
     ('DON', 'Donation'),
 )
-
 CONTRACT_STATUSES = (
     ('ACT', 'Active'),
     ('LAP', 'Lapsed'),
     ('TER', 'Terminated'),
     ('PEN', 'Pending')
 )
-
 PAYMENT_METHODS = (
     ('EFT', 'Electronic Fund Transfer'),
     ('CHK', 'Cheque'),
     ('CSH', 'Cash'),
     ('OTH', 'Others')
 )
-
 PAYMENT_STATUSES = (
     ('VFD', 'Verified'),
     ('RJD', 'Rejected'),
     ('PEN', 'Pending')
 )
-
 TRANSACTION_TYPE = (
     ('DPT', 'Deposit'),
     ('WTD', 'Withdrawal'),
@@ -670,7 +669,46 @@ def update_contract_with_payments(sender, **kwargs):
     c = payment.contract
     c.update_with_payment(payment)
 
-post_save.connect(update_contract_with_payments, sender=Payment)
+post_save.connect(
+    update_contract_with_payments,
+    sender=Payment,
+    dispatch_uid="%s.update_contract_with_payments"
+    % DISPATCH_UID_PREFIX)
+
+
+# Attaching a pre_save signal handler to the Payment model
+# to send out notification email when payment status changed
+def send_payment_status_change_notification(sender, **kwargs):
+    new = kwargs['instance']
+    if not new.id:
+        return
+    old = Payment.objects.get(id=new.id)
+    if old.verified == "PEN" and (new.verified in ["VFD", "RJD"]):
+        if new.verified == "VFD":
+            status = "Verified"
+        elif new.verified == "RJD":
+            status = "Rejected"
+        else:
+            status = "Pending"
+        fields = {
+            "prefix": EMAIL_SUBJECT_PREFIX,
+            "user": old.user,
+            "date": old.date_paid,
+            "amount": old.amount,
+            "status": status,
+        }
+        send_email(
+            'email/payments/payment-notification-subject.txt',
+            'email/payments/payment-notification.txt',
+            'email/payments/payment-notification.html',
+            fields,
+            [old.user.email])
+
+pre_save.connect(
+    send_payment_status_change_notification,
+    sender=Payment,
+    dispatch_uid="%s.send_payment_status_change_notification"
+    % DISPATCH_UID_PREFIX)
 
 
 def lapsed_check(sender, **kwargs):
@@ -695,4 +733,8 @@ def lapsed_check(sender, **kwargs):
             contract.status = u'ACT'
             contract.save()
 
-post_init.connect(lapsed_check, sender=Contract)
+post_init.connect(
+    lapsed_check,
+    sender=Contract,
+    dispatch_uid="%s.lapsed_check"
+    % DISPATCH_UID_PREFIX)

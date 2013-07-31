@@ -1,0 +1,13 @@
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans %}
+<h3>Dear {{user}},<h3>
+
+<p>You payment made on {{date}} with amount {{amount}} has been {{status}}. Please log in to hackdo system to check it.</p>
+
+<p>This is a system auto-generated email, please don't reply.</p>
+
+<h5>Best Regards,</h5>
+<h5>The HackDo Team</h5>
+{% endblocktrans %}
+{% endautoescape %}

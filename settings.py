@@ -123,6 +123,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
 
+# Task Dispatch UID PREFIX
+DISPATCH_UID_PREFIX = 'hado.tasks'
+
 import os
 # ROOT_PATH, DATABASES will be override in local_settings.py
 ROOT_PATH = os.path.dirname(__file__)

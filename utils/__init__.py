@@ -1,6 +1,9 @@
 # Various utility functions
 from django.http import HttpResponse
 from django.template import RequestContext, loader
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
 
 import random
 import string
@@ -25,3 +28,17 @@ def random_date(year_start=1950, year_end=2300):
         random.choice(range(year_start, year_end)),
         random.choice(range(1, 11)),
         random.choice(range(1, 28)))
+
+
+def send_email(subject_template, plain_template, html_template,
+               fields, to_emails,
+               from_email=settings.DEFAULT_FROM_EMAIL):
+    subject = render_to_string(subject_template, fields)
+    subject = ''.join(subject.splitlines())
+    msg = EmailMultiAlternatives(subject,
+                                 render_to_string(plain_template, fields),
+                                 from_email,
+                                 to_emails)
+    msg.attach_alternative(render_to_string(html_template, fields),
+                           "text/html")
+    msg.send()
