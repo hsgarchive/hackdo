@@ -315,6 +315,22 @@ class NewAccountForm(forms.Form):
             del cleaned_data['refer_two']
         return cleaned_data
 
+
+class BankLogUploadForm(forms.Form):
+    csv_file = forms.FileField(label="CSV File: ", required=True)
+    exclude_first_line = forms.BooleanField(initial=True, required=False)
+
+    def clean(self):
+        cleaned_data = super(BankLogUploadForm, self).clean()
+        data = cleaned_data.get('csv_file')
+        if data and (not data.name.endswith('.csv')):
+            msg = u'You can only upload csv files.'
+            self._errors['csv_file'] = self.error_class([msg])
+            del cleaned_data['csv_file']
+
+        return cleaned_data
+
+
 PaymentFormAdminFormset = modelformset_factory(Payment, extra=0)
 UserFormAdminFormset = modelformset_factory(
     User, form=HackDoUserChangeForm, extra=0)

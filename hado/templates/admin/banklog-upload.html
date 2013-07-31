@@ -1,0 +1,33 @@
+{% extends "admin/change_form.html" %}
+
+<!-- LOADING -->
+{% load i18n %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="/hdadmin/">Home</a>
+    › <a href="/hdadmin/hado/">Hado</a>
+    › <a href="/hdadmin/hado/banklog/">Bank logs</a>
+    › Import BankLog CSV
+</div>
+{% endblock %}
+
+
+{% block content %}
+<form method='POST' accept=".csv" enctype="multipart/form-data">{% csrf_token %}
+    <fieldset class="module aligned">
+        {% for field in form %}
+        <div class="form-row">
+            {{ field.label_tag }}
+            <p>{{ field.errors }}</p>
+            <p>{{ field }}</p>
+        </div>
+        {% endfor %}
+    </fieldset>
+
+    <div class="submit-row">
+        <input type="submit" value="Upload" class="default" name="_save">
+    </div>
+</form>
+{% endblock %}

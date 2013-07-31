@@ -52,6 +52,11 @@ PAYMENT_STATUSES = (
     ('PEN', 'Pending')
 )
 
+TRANSACTION_TYPE = (
+    ('DPT', 'Deposit'),
+    ('WTD', 'Withdrawal'),
+)
+
 
 class HackDoUser(AbstractBaseUser, PermissionsMixin):
     """
@@ -324,6 +329,39 @@ class MembershipReview(models.Model):
             self.applicant.username, self.referrer.username,)
 
 
+class BankLog(models.Model):
+    """
+    Stores a bank transaction log related to :model:`hado.Contract`
+    """
+    date = models.DateField(
+        help_text=_('transaction log date'),
+    )
+    desc = models.CharField(
+        max_length=1024,
+        help_text=_('transaction log description'),
+    )
+    currency = models.CharField(
+        max_length=5,
+        help_text=_('currency code'),
+    )
+    amount = models.FloatField(
+        help_text=_('locker number')
+    )
+    t_type = models.CharField(
+        max_length=3,
+        choices=TRANSACTION_TYPE,
+        help_text=_('transaction type: \
+        1. Deposit 2. Withdrawal'),
+    )
+
+    def __unicode__(self):
+        """
+        Returns date and description
+        """
+        return 'Bank log on %s for %s.' % (
+            self.date, self.desc,)
+
+
 class Contract(models.Model):
     """
     Stores an contract related to :model:`hado.ContractType`, \
@@ -586,6 +624,12 @@ class Payment(models.Model):
         default='PEN',
         help_text=_('payment status: \
         1. Verified 2. Rejected 3. Pending'),
+    )
+    bank_log = models.OneToOneField(
+        BankLog,
+        blank=True,
+        null=True,
+        help_text=_('linked bank log')
     )
 
     def __unicode__(self):

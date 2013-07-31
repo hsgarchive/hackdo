@@ -55,8 +55,8 @@
         <header><h1>Admin</h1></header>
         <ul class="choices">
             <li><a href="{% url "admin:hado_hackdouser_changelist" %}">Members</a></li>
-            <li><a href="{% url "admin:hado_membershipreview_changelist" %}">Membership Review</a></li>
             <li><a href="{% url "admin:hado_contract_changelist" %}">Contracts</a></li>
+            <li><a href="{% url "admin:hado_banklog_changelist" %}">BankLog</a></li>
             <li><a href="{% url "admin:hado_payment_changelist" %}">Payment</a></li>
         </ul>
         </section>
@@ -70,7 +70,10 @@
                     <tr>
                         <th>User</th>
                         <th>Description</th>
+                        <th>Amount</th>
                         <th>Verified</th>
+                        <th>Linked BankLog</th>
+                        <th>All BankLog</th>
                         <th>Edit Details</th>
                     </tr>
                 </thead>
@@ -81,11 +84,17 @@
                         {{ p.id.as_hidden }}
                         {{ p.method.as_hidden }}
                         {{ p.date_paid.as_hidden }}
-                        {{ p.amount.as_hidden }}
                         {{ p.contract.as_hidden }}
                         <td>{{ p.user }}</td>
                         <td>{{ p.desc }}</td>
+                        <td>{{ p.amount }}</td>
                         <td>{{ p.verified }}</td>
+                        <td>
+                            {{p.bank_log}}
+                        </td>
+                        <td>
+                            <a target="_blank" href="{% url "admin:hado_banklog_changelist" %}">All BankLog Details</a>
+                        </td>
                         <td>
                             <a href="{% url "admin:hado_payment_change" p.id.value %}">Edit</a>
                         </td>
