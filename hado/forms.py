@@ -184,8 +184,8 @@ class PaymentForm(PaymentFormAdmin):
 
     class Meta:
         model = Payment
-        exclude = ['user', 'verified']
-        # Hide the 'verified' field from the User
+        exclude = ['user', 'verified', 'bank_log']
+        # Hide the 'verified' and 'bank_log' field from the User
 
     def __init__(self, by_user=None, *args, **kwargs):
         super(PaymentForm, self).__init__(*args, **kwargs)
