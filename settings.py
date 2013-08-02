@@ -192,7 +192,8 @@ TEMPLATE_DIRS = (
 COVERAGE_MODULE_EXCLUDES = [
     'tests$', 'settings$', 'urls$', 'locale$',
     'common.views.test', '__init__', 'django',
-    'migrations', 'fixtures', 'templates', 'wsgi$', ]
+    'migrations', 'fixtures', 'templates', 'wsgi$',
+    'features', 'media']
 COVERAGE_CODE_EXCLUDES = [
     'def get_absolute_url\(self\):',
     'from .* import .*', 'import .*', ]
