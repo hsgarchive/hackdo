@@ -310,6 +310,7 @@ def invoice(request):
     first_day = datetime(now.year, now.month, 1)
     last_day = now + relativedelta(days=31)
     payments = Payment.objects.filter(
+        user=request.user,
         verified='VFD',
         date_paid__lte=last_day,
         date_paid__gte=first_day,
