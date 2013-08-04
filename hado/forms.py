@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.models import modelformset_factory
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm
 
 from hado.models import Payment, Contract, MembershipReview
 
@@ -52,7 +52,7 @@ class HackDoUserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        user = super(UserCreationForm, self).save(commit=False)
+        user = super(HackDoUserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
@@ -94,6 +94,54 @@ class HackDoUserChangeForm(UserChangeForm):
             'is_staff', 'is_superuser', 'user_permissions',
             'last_login', 'date_joined',
         )
+
+
+class HackDoUserEmailChangeForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(HackDoUserEmailChangeForm, self).__init__(*args, **kwargs)
+        try:
+            self.fields['email'].initial = self.instance.email
+        except User.DoesNotExist:
+            pass
+
+    def save(self, *args, **kwargs):
+        """
+        Change email address before save form
+        """
+        u = self.instance
+        u.email = self.cleaned_data['email']
+        u.save()
+        profile = super(HackDoUserEmailChangeForm, self).save(*args, **kwargs)
+        return profile
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+
+class HackDoUserAvatarChangeForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(HackDoUserAvatarChangeForm, self).__init__(*args, **kwargs)
+        try:
+            self.fields['profile_image'].initial = self.instance.profile_image
+        except User.DoesNotExist:
+            pass
+
+    def save(self, *args, **kwargs):
+        """
+        Change email address before save form
+        """
+        u = self.instance
+        u.profile_image = self.cleaned_data['profile_image']
+        u.save()
+        profile = super(HackDoUserAvatarChangeForm, self).save(*args, **kwargs)
+        return profile
+
+    class Meta:
+        model = User
+        fields = ('profile_image',)
 
 
 class HackDoPasswordChangeForm(PasswordChangeForm):

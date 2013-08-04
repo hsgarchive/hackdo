@@ -12,7 +12,7 @@ urlpatterns = patterns(
         {'authentication_form': HackDoAuthenticationForm}, name='login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout',
         {'next_page': '/'}, name='logout'),
-    url(r'^accounts/password_reset/$',
+    url(r'^accounts/password-reset/$',
         'django.contrib.auth.views.password_reset',
         {'from_email': settings.DEFAULT_FROM_EMAIL}, name='password_reset'),
     url(r'^accounts/password-reset/done/$',
@@ -25,6 +25,9 @@ urlpatterns = patterns(
         'django.contrib.auth.views.password_reset_complete',
         name='password_reset_complete'),
     url(r'^accounts/register/$', 'hado.views.register', name='register'),
+    url(r'^accounts/change-password/$', 'hado.views.change_password', name='change_password'),
+    url(r'^accounts/change-email/$', 'hado.views.change_email', name='change_email'),
+    url(r'^accounts/change-avatar/$', 'hado.views.change_avatar', name='change_avatar'),
     # pending user
     url(r'^pending-user/$', 'hado.views.pending_user', name='pending_user'),
     # user settings

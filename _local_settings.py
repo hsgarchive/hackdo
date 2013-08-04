@@ -28,6 +28,8 @@ DATABASES = {'default': dj_database_url.parse(
     'postgres://user:password@host:port/database')}
 '''
 
+#SECRET_KEY = 'secret key here'
+
 #EMAIL_HOST_USER = 'user here'
 #EMAIL_HOST_PASSWORD = 'password here'
 

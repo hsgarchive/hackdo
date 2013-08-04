@@ -15,7 +15,8 @@ from django.template import Context
 # Models
 from hado.models import Contract, MembershipReview, Payment, ContractType, \
     Tier
-from hado.forms import PaymentForm, NewAccountForm, HackDoPasswordChangeForm
+from hado.forms import PaymentForm, NewAccountForm, HackDoPasswordChangeForm, \
+    HackDoUserEmailChangeForm, HackDoUserAvatarChangeForm
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -182,7 +183,7 @@ def user_home(request, username):
 @login_required
 def user_settings(request, username=''):
     """
-    User change email, password and TODO: avatar link.
+    User change email, password and avatar.
 
     **Context**
 
@@ -192,31 +193,97 @@ def user_settings(request, username=''):
 
     password change form
 
-    ``pc_errors``
+    ``ecform``
 
-    password change form errors
+    email change form
+
+    ``acform``
+
+    avatar change form
 
     **Template:**
 
     :template:`user/settings.html`
     """
-    #TODO:Allow user to have avatar just for hackdo, allow user to change email
     template = 'user/settings.html'
     user = request.user
-    pc_errors = []
-    if request.method == 'POST':
-        pcform = HackDoPasswordChangeForm(user=user, data=request.POST)
-        pc_errors = pcform.errors
-        if pcform.is_valid():
-            pcform.save()
-            messages.success(
-                request, "User %s's password successfully changed."
-                % (user.username))
-            return HttpResponseRedirect(reverse('logout'))
     pcform = HackDoPasswordChangeForm(user=user)
-    return render(request, template,
-                  {'pcform': pcform,
-                   'pc_errors': pc_errors, })
+    ecform = HackDoUserEmailChangeForm(instance=user)
+    if user.is_gravatar_enabled:
+        return render(request, template,
+                      {
+                          'pcform': pcform,
+                          'ecform': ecform,
+                      })
+    else:
+        acform = HackDoUserAvatarChangeForm(instance=user)
+        return render(request, template,
+                      {
+                          'pcform': pcform,
+                          'ecform': ecform,
+                          'acform': acform,
+                      })
+
+
+@login_required
+def change_password(request):
+    """
+    User change password form process
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(permitted_methods=('POST',))
+    user = request.user
+    pcform = HackDoPasswordChangeForm(user=user, data=request.POST)
+    if not pcform.is_valid():
+        messages.error(request, pcform.errors)
+        return HttpResponseRedirect(
+            reverse('user_settings', args=[user.username]))
+    pcform.save()
+    messages.success(
+        request, "User %s's password successfully changed."
+        % (user.username))
+    return HttpResponseRedirect(reverse('logout'))
+
+
+@login_required
+def change_email(request):
+    """
+    User change email form process
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(permitted_methods=('POST',))
+    user = request.user
+    ecform = HackDoUserEmailChangeForm(data=request.POST, instance=user)
+    if not ecform.is_valid():
+        messages.error(request, ecform.errors)
+    else:
+        ecform.save()
+        messages.success(
+            request, "User %s's email successfully changed."
+            % (user.username))
+    return HttpResponseRedirect(
+        reverse('user_settings', args=[user.username]))
+
+
+@login_required
+def change_avatar(request):
+    """
+    User change avatar form process
+    """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(permitted_methods=('POST',))
+    user = request.user
+    acform = HackDoUserAvatarChangeForm(
+        request.POST, request.FILES, instance=user)
+    if not acform.is_valid():
+        messages.error(request, acform.errors)
+    else:
+        acform.save()
+        messages.success(
+            request, "User %s's avatar successfully changed."
+            % (user.username))
+    return HttpResponseRedirect(
+        reverse('user_settings', args=[user.username]))
 
 
 @login_required
@@ -353,6 +420,9 @@ def contracts_list(request):
 
 # Ajax Views
 def review_membership(request, review_id):
+    """
+    Ajax process membership review request
+    """
     if request.method != 'POST':
         return HttpResponseNotAllowed(permitted_methods=('POST',))
     success = True

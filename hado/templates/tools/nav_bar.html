@@ -20,8 +20,9 @@
                             </li>
                             <li class="divider"></li>
                             {% endif %}
-                            <li><a href="{% url "user_settings" user.username %}">Settings</a></li>
                             <li><a href="{% url "user_home" user.username %}">Home</a></li>
+                            <li><a href="{% url "user_settings" user.username %}">Settings</a></li>
+                            <li><a href="{% url "invoice" %}">Invoice</a></li>
                         </ul>
                     </li>
                     <li>

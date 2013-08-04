@@ -28,7 +28,7 @@ USE_L10N = True
 
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'fv0$p-bwy^8ic!4aj%cat+c5$z_ok6ii8f&iae69r7byi!qh5h'
+SECRET_KEY = 'overwrite in local_settings.py'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -148,6 +148,17 @@ else:
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    "hado.context_processors.globals",
+)
 
 # Django settings for hackdo project.
 try:
