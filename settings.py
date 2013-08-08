@@ -116,9 +116,9 @@ AUTH_USER_MODEL = 'hado.HackDoUser'
 LOGIN_REDIRECT_URL = '/'
 
 # Email Settings
-DEFAULT_FROM_EMAIL = 'no-reply@hackspace.sg'
-SERVER_EMAIL = 'admin@hackspace.sg'
-EMAIL_SUBJECT_PREFIX = '[Hackspace HackDo]'
+DEFAULT_FROM_EMAIL = 'no-reply@hackerspace.sg'
+SERVER_EMAIL = 'admin@hackerspace.sg'
+EMAIL_SUBJECT_PREFIX = '[Hackerspace HackDo]'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587

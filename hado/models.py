@@ -101,7 +101,7 @@ class HackDoUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(
         _('active'), default=False,
         help_text=_('Desingates whether the user \
-                    is a verified hackspacesg member.')
+                    is a verified hackerspacesg member.')
     )
 
     # HackDo User required attribute
@@ -324,7 +324,7 @@ class MembershipReview(models.Model):
         """
         Returns applicant and referrer
         """
-        return '%s requests hackspaceSG membership with %s as referrer.' % (
+        return '%s requests Hackerspace membership with %s as referrer.' % (
             self.applicant.username, self.referrer.username,)
 
 

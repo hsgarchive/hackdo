@@ -4,7 +4,7 @@ from lettuce import step
 @step('I should see hackdo login page displayed')
 def login_page_displayed(step):
     step.then('I should see "Sign In - HackDo" as site title')
-    step.then('I should see big hackspace logo')
+    step.then('I should see big hackerspace logo')
     step.then('I should see hackdo footer')
     step.then('I should see element with "name" of "username" in page')
     step.then('I should see element with "name" of "password" in page')
@@ -50,7 +50,7 @@ def pending_user_page_displayed(step):
 @step('I should see hackdo registration page displayed')
 def registration_page_displayed(step):
     step.then('I should see "New Account - HackDo" as site title')
-    step.then('I should see big hackspace logo')
+    step.then('I should see big hackerspace logo')
     step.then('I should see hackdo footer')
     step.then('I should see element with "name" of "username" in page')
     step.then('I should see element with "name" of "email" in page')

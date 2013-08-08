@@ -235,7 +235,7 @@ def assert_membershipreviews(step, user_email, number):
         int(number))
 
 
-@step('I should see big hackspace logo')
+@step('I should see big hackerspace logo')
 def big_logo(step):
     step.given('I should see element with "id" of "logo-l" in page')
     big_logo = world.browser.find_element_by_id('logo-l')

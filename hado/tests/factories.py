@@ -63,7 +63,7 @@ class NormalUserFactory(UserFactory):
     first_name = 'World'
     last_name = 'Charlie'
     email = factory.LazyAttribute(lambda a:
-                                  '{0}.{1}@hackspace.sg'.format(
+                                  '{0}.{1}@hackerspace.sg'.format(
                                       a.first_name, a.last_name).lower())
     is_superuser = False
     is_staff = False
@@ -75,7 +75,7 @@ class PendingUserFactory(UserFactory):
     first_name = 'World'
     last_name = 'Dave'
     email = factory.LazyAttribute(lambda a:
-                                  '{0}.{1}@hackspace.sg'.format(
+                                  '{0}.{1}@hackerspace.sg'.format(
                                       a.first_name, a.last_name).lower())
     is_superuser = False
     is_staff = False
