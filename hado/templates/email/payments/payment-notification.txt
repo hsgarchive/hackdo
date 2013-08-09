@@ -1,0 +1,11 @@
+{% load i18n %}
+{% blocktrans %}
+Dear {{user}},
+
+You payment made on {{date}} with amount {{amount}} has been {{status}}. Please log in to hackdo system to check it.
+
+This is a system auto-generated email, please don't reply.
+
+Best Regards,
+The HackDo Team
+{% endblocktrans %}

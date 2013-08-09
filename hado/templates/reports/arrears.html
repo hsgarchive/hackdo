@@ -1,25 +1,25 @@
 {% extends "base.html" %}
-
-
+{% load humanize staticfiles i18n %}
+{% block title %}{% trans "Arrears" %}{% endblock %}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
 {% block content %}
-
-	<article id="arrears">
-		<header><h1>Arrears</h1></header>
-
-		<section id="arrears_list">
-			{% regroup contracts by user as user_contracts %}
-			<ul>
-				{% for uc in user_contracts %}
-				<li class="contract_type">
-					{{ uc.grouper }}
-					<ul>
-						{% for c in uc.list %}
-						<li class="contract">({{ c.get_status_display }}) {{ c.ctype }} &mdash; {{ c }} &mdash; <span class="{% if c.balance >= 0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span></li>
-						{% endfor %}
-					</ul>
-				{% endfor %}
-			</ul>
-		</section>
-	</article>
-
-{% endblock content	 %}
+<article id="arrears">
+<header><h1>Arrears</h1></header>
+<section id="arrears_list">
+{% regroup contracts by user as user_contracts %}
+<ul>
+    {% for uc in user_contracts %}
+    <li class="contract_type">
+    {{ uc.grouper }}
+    <ul>
+        {% for c in uc.list %}
+        <li class="contract">({{ c.get_status_display }}) {{ c.ctype }} &mdash; {{ c }} &mdash; <span class="{% if c.balance >= 0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span></li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</ul>
+</section>
+</article>
+{% endblock content %}

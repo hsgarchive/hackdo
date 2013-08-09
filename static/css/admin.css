@@ -1,36 +1,36 @@
 /** Admin page styling **/
 
 #admin {
-	font-size: 16px !important;
-	margin: 20px auto;
-	width: 1140px;
+    font-size: 16px !important;
+    margin: 20px auto;
+    width: 1140px;
 }
 
 #admin > section {
-	margin: 20px 0px;
+    margin: 20px 0px;
 }
 
 #admin > section > ul > li {
-	display: inline-block;
-	list-style-type: none;
-	padding: 10px 25px;
-	width: 20%;
+    display: inline-block;
+    list-style-type: none;
+    padding: 10px 25px;
+    width: 20%;
 }
 
 #stats > ul > li > header {
-	font-size:
+    font-size:
 }
 
 
-#payment_verification table {
-	width: 100%;
+.formset table {
+    width: 100%;
 }
 
-#payment_verification table tr:hover {
-	background-color: #ffebeb;
+.formset table tr:hover {
+    background-color: #ffebeb;
 }
 
-#payment_verification form input[type=submit] {
-	float: right;
-	margin: 10px 0px;
+.formset form input[type=submit] {
+    float: right;
+    margin: 10px 0px;
 }

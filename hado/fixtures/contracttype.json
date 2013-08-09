@@ -1,23 +1,23 @@
 [
- {
-  "pk": 1,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Membership"
-  }
- },
- {
-  "pk": 2,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Locker"
-  }
- },
- {
-  "pk": 3,
-  "model": "hado.contracttype",
-  "fields": {
-   "desc": "Registered Address"
-  }
- }
+{
+    "pk": 1,
+        "model": "hado.contracttype",
+        "fields": {
+            "desc": "Membership"
+        }
+},
+{
+    "pk": 2,
+    "model": "hado.contracttype",
+    "fields": {
+        "desc": "Locker"
+    }
+},
+{
+    "pk": 3,
+    "model": "hado.contracttype",
+    "fields": {
+        "desc": "Registered Address"
+    }
+}
 ]

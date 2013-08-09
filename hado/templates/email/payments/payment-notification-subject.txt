@@ -1,0 +1,4 @@
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans %}{{prefix}} Payment verification request status changed.{% endblocktrans %}
+{% endautoescape %}

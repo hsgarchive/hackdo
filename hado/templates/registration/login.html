@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Sign In" %}{% endblock %}
+{% block header %}
+{% include "tools/top_icon.html" %}
+{% endblock header %}
+{% block content %}
+<div class="row">
+    <div class="span8 offset2 well">
+        <legend>{% trans "Welcome to HackDo - Sign In" %}</legend>
+        {% include "tools/form_error.html" %}
+        <form method="post" action="{% url 'login' %}" class="form-search">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <input type="text" placeholder="username" id="id_username" name="username"/>
+            <input type="password" placeholder="password" id="id_password" name="password"/>
+            <input class="btn btn-primary" type="submit" value="login" id="login-btn"/>
+            <div class="form-actions">
+                <p>
+                <a href="{% url 'password_reset' %}">{% trans "Forgot your password ?" %}</a>
+                |
+                <a href="{% url 'register' %}">{% trans "No account yet ?" %}</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

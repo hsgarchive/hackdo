@@ -1,93 +1,171 @@
 {% extends 'base.html' %}
-{% load humanize %}
-
+{% load humanize staticfiles i18n %}
+{% block title %}{% trans "User Home" %}{% endblock %}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
 {% block content %}
-
-	<article id="user_profile">
-		<header id="user_name">{{ u.get_full_name }}</header>
-
-		<section id="account_summary">
-			<header>Account summary</header>
-			<ul id="account_details">
-				<li><span class="detail_header">Member since</span> <span class="detail_value">{% if u.member_since %}{{ u.member_since|date:"M Y" }}{% else %}-N/A-{% endif %}</span></li>
-				<li><span class="detail_header">Membership status</span> <span class="detail_value {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{% if u.membership_status %}{{ u.membership_status }}{% else %}-N/A-{% endif %}</span></li>
-				<li><span class="detail_header">Paid to date</span> <span class="detail_value currency">{{ paid_to_date|intcomma }}</span></li>
-				<li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
-			</ul>
-		</section>
-
-		<hr>
-
-		<section id="payment_submission">
-			<header>Submit a new Payment</header>
-			<form method="post" action="{% url user_profile u.username %}">
-				{% csrf_token %}
-				{{ pform.media }}
-				<ul>
-					{{ pform.as_ul }}
-				</ul>
-				<input type='submit' value="Notify admins of new payment">
-			</form>
-		</section>
-
-		<hr>
-
-		<section id="contract_summaries">
-			<header>Contracts</header>
-			{% regroup contracts by ctype as contract_list %}
-			<ul id="user_contracts">
-				{% for contract in contract_list %}
-				<li class="contract_type">
-					{{ contract.grouper }}
-					<ul>
-						{% for c in contract.list %}
-						<li class="contract">
-							{{ c }} &mdash; <span title="Contract balance" class="balance currency {% if c.balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span>
-						</li>
-						{% endfor %}
-					</ul>
-				</li>
-				{% empty %}
-				<li class="placeholder">No contracts found</li>
-				{% endfor %}
-			</ul>
-		</section>
-
-		<hr>
-
-		<section id="payment_history">
-			<header>Payment history</header>
-			<table id="payment_history_table">
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Amount (SGD)</th>
-						<th>Contract</th>
-						<th>Method</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for p in payment_history %}
-					<tr class="payment {% if p.verified %}verified{% endif %}">
-						<td>{{ p.date_paid }}</td>
-						<td>{{ p.amount }}</td>
-						<td>{{ p.contract }}</td>
-						<td>{{ p.get_method_display }}</td>
-						<td>{{ p.desc }}</td>
-					</tr>
-					{% empty %}
-					<tr class="payment placeholder">
-						<td colspan="5">No payments found</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-			<div class="legend">
-				<span class="legend_block"></span> <span class="legend_text">verified payments</span>
-			</div>
-		</section>
-
-	</article>
-
+<article id="user_home">
+    <section id="account_summary" class="hero-unit">
+        <header><h4>Account summary</h4></header>
+        <ul id="account_details">
+            <li><span class="detail_header">Member since</span> <span class="detail_value">{% if u.member_since %}{{ u.member_since|date:"M Y" }}{% else %}-N/A-{% endif %}</span></li>
+            <li><span class="detail_header">Membership status</span> <span class="detail_value {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{% if u.membership_status %}{{ u.membership_status }}{% else %}-N/A-{% endif %}</span></li>
+            <li><span class="detail_header">Paid to date</span> <span class="detail_value currency">{{ paid_to_date|intcomma }}</span></li>
+            <li><span class="detail_header">Overall balance</span> <span class="detail_value balance currency {% if account_balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ account_balance|intcomma }}</span></li>
+        </ul>
+    </section>
+    <hr/>
+    <section id="contract_summaries" class="row">
+        <div class="span12">
+            <header><h4>Contracts</h4></header>
+            {% regroup contracts by ctype as contract_list %}
+            <ul id="user_contracts">
+                {% for contract in contract_list %}
+                <li class="contract_type">
+                    {{ contract.grouper }}
+                    <ul>
+                        {% for c in contract.list %}
+                        <li class="contract">
+                            {{ c }} &mdash; <span title="Contract balance" class="balance currency {% if c.balance >= 0.0 %}positive{% else %}negative{% endif %}">{{ c.balance }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% empty %}
+                <li class="placeholder">No contracts found</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    <hr/>
+    <section id="membershipreviews" class="row">
+        <div class="span12">
+            <header><h4>Membership Reviews Requests</h4></header>
+            <table id="membershipreview_table" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Referrer</th>
+                        <th>Reviewed?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reviews %}
+                    <tr class="{% if r.reviewed %}success{% else %}warning{% endif %}">
+                        <td>{{ r.applicant.email }}</td>
+                        <td>{{ r.referrer }}</td>
+                        <td>
+                            {% if not r.reviewed %}
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input type="checkbox" class="review" value="{{r.id}}">
+                                    Check to approve the request.
+                                </label>
+                            </div>
+                            {% else %}
+                            <span class="label label-success">Reviewed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="placeholder">
+                        <td colspan="5">No membership reviews found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="well">
+                <p><span class="legend_block success"></span> <span class="legend_text">verified membership</span></p>
+                <p><span class="legend_block warning"></span> <span class="legend_text">pending membership</span></p>
+            </div>
+        </div>
+    </section>
+    <hr/>
+    <section id="payment_submission" class="row">
+        <div class="span12">
+            <header><h4>Payment Form</h4></header>
+            {% if contract_list %}
+            <form method="post" action="{% url "user_home" u.username %}" class="form-horizontal well">
+                {% csrf_token %}
+                {{ pform.media }}
+                {% for field in pform %}
+                <div class="control-group {% if field.errors %}error{% endif %}">
+                    <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
+                    <div class="controls">
+                        {% if field.name == 'date_paid' %}
+                            <div class="datepicker input-append">
+                                <input name="{{field.name}}" data-format="yyyy-MM-dd" type="text"></input>
+                                <span class="add-on">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                </span>
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        <span class="help-inline">{{ field.errors }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="form-actions">
+                    <input class="btn btn-primary" type="submit" value="Notify admins of new payment">
+                </div>
+            </form>
+            {% else %}
+            <ul>
+                <li class="placeholder">You need a contract before you can make payment.</li>
+            </ul>
+            {% endif %}
+        </div>
+    </section>
+    <hr/>
+    <section id="payment_history" class="row">
+        <div class="span12">
+            <header><h4>Payment history</h4></header>
+            <table id="payment_history_table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount (SGD)</th>
+                        <th>Contract</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payment_history %}
+                    <tr class="
+                        {% if p.verified == 'VFD' %}
+                        success
+                        {% elif p.verified == 'RJD' %}
+                        error
+                        {% else %}
+                        warning
+                        {% endif %}
+                        ">
+                        <td>{{ p.date_paid }}</td>
+                        <td>{{ p.amount }}</td>
+                        <td>{{ p.contract }}</td>
+                        <td>{{ p.get_method_display }}</td>
+                        <td>{{ p.desc }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr class="payment placeholder">
+                        <td colspan="5">No payments found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="well">
+                <p><span class="legend_block success"></span> <span class="legend_text">verified payment</span></p>
+                <p><span class="legend_block warning"></span> <span class="legend_text">pending payment</span></p>
+                <p><span class="legend_block error"></span> <span class="legend_text">rejected payment</span></p>
+            </div>
+        </div>
+    </section>
+</article>
 {% endblock content %}
+{% block footer_js %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="{% static "js/user_home.min.js" %}"></script>
+{% endblock footer_js %}
