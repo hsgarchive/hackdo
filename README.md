@@ -1,7 +1,10 @@
-<del>TallyUp (formerly known as HackDo)</del> HackDo
+HackDo
 ----------------------------------
 
-<del>TallyUp</del> HackDo is meant to be a membership (and others) management system for Hackerspaces.
+[![Build Status](https://travis-ci.org/wgx731/hackdo.png?branch=dev)](https://travis-ci.org/wgx731/hackdo)
+[![Build Status](https://drone.io/github.com/wgx731/hackdo/status.png)](https://drone.io/github.com/wgx731/hackdo/latest)
+
+HackDo is meant to be a membership (and others) management system for Hackerspaces.
 
 Keeping track of membership is a chore that takes time and can end up quite messy, so let's try and solve that pain point.
 
@@ -15,20 +18,26 @@ Setup
         $ virtualenv --no-site-packages dev
         $ . dev/bin/activate
 
-2. Grab the source code, and stick it in the virtualenv created above:
+2. Grab the source code (not compulsory to stick it in the virtualenv created above):
 
-        (dev)$ cd dev
+        (dev)$ cd (where you want to put the code)
         (dev)$ git clone git://github.com/hackerspacesg/hackdo.git
 
 3. Grab and install other dependencies in the virtualenv:
 
-        (dev)$ cd hackdo
-        (dev)$ pip install -r scripts/requirements.txt
+        (dev)$ cd (where you put the code)
+        (dev)$ pip install -r requirements.txt
 
 4. Set up django's tables and migrations:
 
-        (dev)$ ./manage.py syncdb
-        (dev)$ ./manage.py migrate --all
+        (dev)$ mysql -u (your user) -p < scripts/hackdo.sql (NOTE: only run this script if you want to create a new clean database, before run the script remember to change password for hackdo user)
+        (dev)$ python manage.py syncdb
+        (dev)$ python manage.py migrate
+
+5. Set up local settings:
+
+        (dev)$ cp _local_settings.py local_settings.py (change the settings according to instructions inside)
+
 
 Links
 -----

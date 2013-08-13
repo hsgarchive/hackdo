@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load humanize staticfiles i18n %}
+{% block title %}{% trans "Account Settings" %}{% endblock %}
+{% block header %}
+{% include "tools/nav_bar.html" %}
+{% endblock header %}
+{% block content %}
+<article id="user_settings">
+    <section id="change_password" class="row">
+        <div class="span12 well">
+            <header><h4>Change Password</h4></header>
+            <form method="post" action="{% url "change_password" %}" class="form-horizontal">
+                {% csrf_token %}
+                {% for field in pcform %}
+                <div class="control-group">
+                    <label for="id_{{field.name}}" class="control-label">{{ field.label }}</label>
+                    <div class="controls">
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="control-group">
+                    <!-- Button -->
+                    <div class="controls">
+                        <input type="submit" class="btn btn-info" value="Change Password"/>
+                        <input type="reset" class="btn" value="Reset"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section id="change_email" class="row">
+        <div class="span12 well">
+            <header><h4>Change Email</h4></header>
+            <form method="post" action="{% url "change_email" %}" class="form-horizontal">
+                {% csrf_token %}
+                <div class="control-group">
+                    <label for="id_{{ ecform.email.name}}" class="control-label">{{ ecform.email.label }}</label>
+                    <div class="controls">
+                        {{ ecform.email }}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <!-- Button -->
+                    <div class="controls">
+                        <input type="submit" class="btn btn-info" value="Change Email"/>
+                        <input type="reset" class="btn" value="Reset"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    {% if acform %}
+        <section id="change_avatar" class="row">
+            <div class="span12 well">
+                <header><h4>Change Avatar</h4></header>
+                <form enctype="multipart/form-data" method="post" action="{% url "change_avatar" %}" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="control-group">
+                        <label for="id_{{ acform.profile_image.name }}" class="control-label">{{ ecform.profile_image.label }}</label>
+                        <div class="controls">
+                            {{ acform.profile_image }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <!-- Button -->
+                        <div class="controls">
+                            <input type="submit" class="btn btn-info" value="Upload"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    {% endif %}
+</article>
+{% endblock content %}
